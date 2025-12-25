@@ -42,8 +42,8 @@ const Index = () => {
     (activity) => activity.tags?.includes(selectedTag)
   ) || activities[0] || null;
 
-  // Lấy danh sách unique tags từ tất cả activities
-  const availableTags = [...new Set(activities.flatMap(a => a.tags || []))];
+  // Lấy 2 tags đầu tiên từ activities hôm nay
+  const availableTags = [...new Set(activities.flatMap(a => a.tags || []))].slice(0, 2);
 
   if (loading) {
     return (
