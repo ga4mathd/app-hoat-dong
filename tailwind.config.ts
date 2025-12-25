@@ -109,6 +109,16 @@ export default {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-5px)" },
         },
+        "marquee": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(-100%)" },
+        },
+        "blink": {
+          "0%, 100%": { opacity: "1" },
+          "25%": { opacity: "0.3" },
+          "50%": { opacity: "1" },
+          "75%": { opacity: "0.3" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -116,6 +126,8 @@ export default {
         "fade-in": "fade-in 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "bounce-gentle": "bounce-gentle 2s ease-in-out infinite",
+        "marquee": "marquee 4s linear forwards",
+        "blink": "blink 1s ease-in-out",
       },
     },
   },
