@@ -1,8 +1,11 @@
 import { Music, Lightbulb, ShoppingBag } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export function BottomActions() {
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const isStoriesMusicActive = location.pathname === '/stories-music';
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border py-3 px-4 animate-fade-in z-50">
@@ -10,10 +13,16 @@ export function BottomActions() {
         {/* Truyện - nhạc button */}
         <button
           onClick={() => navigate('/stories-music')}
-          className="flex flex-col items-center gap-1 px-5 py-3 bg-pink text-primary-foreground rounded-2xl font-medium text-xs hover:opacity-90 transition-opacity shadow-lg"
+          className={`flex flex-col items-center gap-1 transition-all ${
+            isStoriesMusicActive 
+              ? 'px-5 py-3 bg-pink text-primary-foreground rounded-2xl font-medium text-xs shadow-lg' 
+              : 'px-3 py-2 text-foreground hover:text-primary'
+          }`}
         >
-          <Music className="h-6 w-6" />
-          <span className="leading-tight text-center">Truyện - nhạc<br/>nuôi dạy con</span>
+          <Music className={`h-6 w-6 ${isStoriesMusicActive ? '' : 'text-muted-foreground'}`} />
+          <span className={`text-xs font-medium text-center leading-tight ${isStoriesMusicActive ? '' : 'text-muted-foreground'}`}>
+            Truyện - nhạc<br/>nuôi dạy con
+          </span>
         </button>
 
         {/* Xem hoạt động ngày mai */}
