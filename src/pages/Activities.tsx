@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Calendar, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { BottomActions } from '@/components/home/BottomActions';
-import { format, addDays } from 'date-fns';
+import { format, addDays, startOfMonth, endOfMonth } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
 interface Activity {
@@ -17,10 +17,21 @@ interface Activity {
   points: number | null;
 }
 
+const MONTHS = [
+  'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+  'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+];
+
 export default function Activities() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
+
+  // Get month/year from URL params
+  const monthParam = searchParams.get('month');
+  const yearParam = searchParams.get('year');
+  const isMonthlyView = monthParam !== null && yearParam !== null;
 
   useEffect(() => {
     if (!loading && !user) {
@@ -28,19 +39,30 @@ export default function Activities() {
       return;
     }
 
-    const today = new Date();
-    const nextWeek = addDays(today, 7);
+    let startDate: Date;
+    let endDate: Date;
+
+    if (isMonthlyView) {
+      // Monthly view: show all activities for the selected month
+      const targetDate = new Date(parseInt(yearParam!), parseInt(monthParam!), 1);
+      startDate = startOfMonth(targetDate);
+      endDate = endOfMonth(targetDate);
+    } else {
+      // Default: show next 7 days
+      startDate = new Date();
+      endDate = addDays(startDate, 7);
+    }
 
     supabase
       .from('activities')
       .select('*')
-      .gte('scheduled_date', today.toISOString().split('T')[0])
-      .lte('scheduled_date', nextWeek.toISOString().split('T')[0])
+      .gte('scheduled_date', startDate.toISOString().split('T')[0])
+      .lte('scheduled_date', endDate.toISOString().split('T')[0])
       .order('scheduled_date', { ascending: true })
       .then(({ data }) => {
         if (data) setActivities(data);
       });
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, monthParam, yearParam, isMonthlyView]);
 
   if (loading) {
     return (
@@ -69,7 +91,11 @@ export default function Activities() {
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h1 className="font-bold text-lg">Hoạt động sắp tới</h1>
+          <h1 className="font-bold text-lg">
+            {isMonthlyView 
+              ? `Hoạt động ${MONTHS[parseInt(monthParam!)]} ${yearParam}` 
+              : 'Hoạt động sắp tới'}
+          </h1>
         </div>
 
         <div className="p-4 space-y-4">

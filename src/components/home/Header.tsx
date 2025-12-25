@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import avatarBoy from '@/assets/avatar-boy.png';
 
 export function Header() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string | null; total_activities: number; total_points: number } | null>(null);
   const [currentMonth] = useState(new Date().getMonth());
   const [currentYear] = useState(new Date().getFullYear());
@@ -98,14 +99,17 @@ export function Header() {
           </div>
         </div>
         
-        {/* Right: Month Badge - Compact */}
-        <div className="flex-shrink-0 flex items-center gap-1.5 px-2 py-1.5 bg-primary text-primary-foreground rounded-xl shadow-lg">
-          <Calendar className="h-4 w-4" />
+        {/* Right: Month Badge - Clickable */}
+        <button
+          onClick={() => navigate(`/activities?month=${currentMonth}&year=${currentYear}`)}
+          className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-2xl shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
+        >
+          <Calendar className="h-6 w-6" />
           <div className="text-center leading-tight">
-            <div className="text-[10px] font-bold">{MONTHS[currentMonth]}</div>
-            <div className="text-xs font-bold">{currentYear}</div>
+            <div className="text-xs font-bold">{MONTHS[currentMonth]}</div>
+            <div className="text-base font-bold">{currentYear}</div>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );
