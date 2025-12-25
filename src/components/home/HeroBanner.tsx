@@ -1,11 +1,18 @@
 import heroImage from '@/assets/hero-children.jpg';
+import volcanoImage from '@/assets/volcano-science.png';
 
 interface HeroBannerProps {
   imageUrl?: string | null;
+  activityTag?: string;
 }
 
-export function HeroBanner({ imageUrl }: HeroBannerProps) {
-  const imageSrc = imageUrl || heroImage;
+export function HeroBanner({ imageUrl, activityTag }: HeroBannerProps) {
+  const getDefaultImage = () => {
+    if (activityTag === 'Khoa học') return volcanoImage;
+    return heroImage;
+  };
+
+  const imageSrc = imageUrl || getDefaultImage();
 
   return (
     <div 
