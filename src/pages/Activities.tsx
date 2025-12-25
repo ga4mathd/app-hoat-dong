@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Calendar, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { BottomActions } from '@/components/home/BottomActions';
-import { format, addDays, startOfMonth, endOfMonth } from 'date-fns';
+import { format, addDays, startOfMonth, endOfMonth, isTomorrow, isAfter } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
 interface Activity {
@@ -80,6 +80,19 @@ export default function Activities() {
     'Toán học': 'bg-yellow-light text-accent-foreground',
   };
 
+  // Separate tomorrow's activity from the rest
+  const tomorrow = addDays(new Date(), 1);
+  const tomorrowDateStr = format(tomorrow, 'yyyy-MM-dd');
+  
+  const tomorrowActivities = activities.filter(
+    (a) => a.scheduled_date === tomorrowDateStr
+  );
+  const upcomingActivities = activities.filter(
+    (a) => a.scheduled_date !== tomorrowDateStr
+  );
+
+  const heroActivity = tomorrowActivities[0];
+
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="max-w-md mx-auto">
@@ -98,47 +111,101 @@ export default function Activities() {
           </h1>
         </div>
 
-        <div className="p-4">
+        <div className="p-4 space-y-6">
           {activities.length === 0 ? (
             <div className="text-center py-12">
               <Calendar className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">Chưa có hoạt động nào được lên lịch</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {activities.map((activity, index) => (
-                <div
-                  key={activity.id}
-                  className="bg-card rounded-2xl p-3 card-shadow animate-fade-in cursor-pointer hover:scale-[1.02] transition-transform"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={() => navigate(`/activity/${activity.id}`)}
-                >
-                  <p className="text-xs text-primary font-medium mb-1">
-                    {format(new Date(activity.scheduled_date), 'EEEE, dd/MM', { locale: vi })}
-                  </p>
-                  <h3 className="font-bold text-sm text-foreground line-clamp-2 mb-2">{activity.title}</h3>
-                  
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    {activity.tags?.map((tag) => (
-                      <Badge 
-                        key={tag} 
-                        variant="secondary"
-                        className={`text-[10px] px-1.5 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{activity.description}</p>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Điểm thưởng</span>
-                    <span className="font-bold text-sm text-secondary">+{activity.points || 10}</span>
+            <>
+              {/* Hero Banner - Tomorrow's Activity */}
+              {heroActivity && (
+                <div className="animate-fade-in">
+                  <h2 className="text-lg font-bold text-foreground mb-3">
+                    Ngày mai - {format(tomorrow, 'dd/MM')}
+                  </h2>
+                  <div
+                    className="relative bg-gradient-to-br from-pink via-pink/80 to-primary rounded-3xl p-5 card-shadow cursor-pointer hover:scale-[1.02] transition-transform overflow-hidden"
+                    onClick={() => navigate(`/activity/${heroActivity.id}`)}
+                  >
+                    {/* Decorative elements */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+                    <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+                    
+                    <div className="relative z-10">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-xl text-white mb-2">{heroActivity.title}</h3>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {heroActivity.tags?.map((tag) => (
+                              <Badge 
+                                key={tag} 
+                                variant="secondary"
+                                className="bg-white/20 text-white border-0 text-xs"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <button className="p-3 rounded-full bg-white text-primary shadow-lg">
+                          <Play className="h-5 w-5" />
+                        </button>
+                      </div>
+                      
+                      <p className="text-white/90 text-sm line-clamp-2 mb-4">{heroActivity.description}</p>
+                      
+                      <div className="flex items-center justify-between bg-white/20 rounded-xl px-4 py-2">
+                        <span className="text-white/80 text-sm">Điểm thưởng</span>
+                        <span className="font-bold text-lg text-white">+{heroActivity.points || 10}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+
+              {/* Upcoming Activities */}
+              {upcomingActivities.length > 0 && (
+                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                  <h2 className="text-lg font-bold text-foreground mb-3">Các ngày tiếp theo</h2>
+                  <div className="grid grid-cols-2 gap-3">
+                    {upcomingActivities.map((activity, index) => (
+                      <div
+                        key={activity.id}
+                        className="bg-card rounded-2xl p-3 card-shadow animate-fade-in cursor-pointer hover:scale-[1.02] transition-transform"
+                        style={{ animationDelay: `${(index + 1) * 0.1}s` }}
+                        onClick={() => navigate(`/activity/${activity.id}`)}
+                      >
+                        <p className="text-xs text-primary font-medium mb-1">
+                          {format(new Date(activity.scheduled_date), 'EEEE, dd/MM', { locale: vi })}
+                        </p>
+                        <h3 className="font-bold text-sm text-foreground line-clamp-2 mb-2">{activity.title}</h3>
+                        
+                        <div className="flex flex-wrap gap-1 mb-2">
+                          {activity.tags?.map((tag) => (
+                            <Badge 
+                              key={tag} 
+                              variant="secondary"
+                              className={`text-[10px] px-1.5 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        
+                        <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{activity.description}</p>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">Điểm thưởng</span>
+                          <span className="font-bold text-sm text-secondary">+{activity.points || 10}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
