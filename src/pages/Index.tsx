@@ -19,18 +19,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-md mx-auto p-4 space-y-4">
-        <Header />
-        
-        {/* Hero Banner - Ảnh trẻ em */}
-        <div className="relative rounded-2xl overflow-hidden">
-          <img 
-            src={childrenBg} 
-            alt="Trẻ em vui chơi" 
-            className="w-full h-auto object-cover"
-          />
+      {/* Hero section với ảnh trẻ em làm background */}
+      <div 
+        className="relative px-4 pt-4 pb-8"
+        style={{
+          backgroundImage: `url(${childrenBg})`,
+          backgroundPosition: 'bottom center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+        }}
+      >
+        <div className="max-w-md mx-auto">
+          <Header />
         </div>
-        
+      </div>
+      
+      {/* Nội dung chính */}
+      <div className="max-w-md mx-auto px-4 space-y-4 -mt-2">
         <MotivationBanner />
         <TodayActivity />
         <ExpertSection />
