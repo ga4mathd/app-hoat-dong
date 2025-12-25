@@ -71,39 +71,39 @@ export function Header() {
   const totalPoints = profile?.total_points || 100;
 
   return (
-    <header className="py-3 animate-fade-in">
-      <div className="flex items-center justify-between gap-3">
+    <header className="py-3 animate-fade-in overflow-hidden">
+      <div className="flex items-center justify-between gap-2">
         {/* Left: Avatar + Info */}
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <Avatar className="h-16 w-16 flex-shrink-0 border-4 border-card shadow-lg ring-2 ring-primary/20">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <Avatar className="h-12 w-12 flex-shrink-0 border-3 border-card shadow-lg ring-2 ring-primary/20">
             <AvatarImage src={avatarBoy} alt="Avatar" className="object-cover" />
-            <AvatarFallback className="bg-blue-light text-primary font-bold text-xl">
+            <AvatarFallback className="bg-blue-light text-primary font-bold text-base">
               {displayName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           
           <div className="flex flex-col min-w-0">
-            <p className="text-sm text-muted-foreground leading-tight">{getGreeting()}</p>
-            <h2 className="font-bold text-lg text-foreground leading-tight truncate">{displayName}</h2>
+            <p className="text-xs text-muted-foreground leading-tight">{getGreeting()}</p>
+            <h2 className="font-bold text-sm text-foreground leading-tight truncate">{displayName}</h2>
             
-            {/* Stats Badges */}
-            <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-pink/15 text-pink rounded-full text-[11px] font-semibold whitespace-nowrap border border-pink/30">
+            {/* Stats Badges - Always horizontal */}
+            <div className="flex items-center gap-1 mt-1 flex-nowrap">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-pink/15 text-pink rounded-full text-[10px] font-semibold whitespace-nowrap border border-pink/30">
                 🏃 {totalActivities} hoạt động
               </span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-accent/20 text-orange rounded-full text-[11px] font-semibold whitespace-nowrap border border-orange/30">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-accent/20 text-orange rounded-full text-[10px] font-semibold whitespace-nowrap border border-orange/30">
                 🏆 {totalPoints} điểm
               </span>
             </div>
           </div>
         </div>
         
-        {/* Right: Month Badge */}
-        <div className="flex-shrink-0 flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-xl shadow-lg">
-          <Calendar className="h-5 w-5" />
+        {/* Right: Month Badge - Compact */}
+        <div className="flex-shrink-0 flex items-center gap-1.5 px-2 py-1.5 bg-primary text-primary-foreground rounded-xl shadow-lg">
+          <Calendar className="h-4 w-4" />
           <div className="text-center leading-tight">
-            <div className="text-xs font-bold">{MONTHS[currentMonth]}</div>
-            <div className="text-sm font-bold">{currentYear}</div>
+            <div className="text-[10px] font-bold">{MONTHS[currentMonth]}</div>
+            <div className="text-xs font-bold">{currentYear}</div>
           </div>
         </div>
       </div>
