@@ -1,10 +1,10 @@
 import { Header } from '@/components/home/Header';
-import { HeroBanner } from '@/components/home/HeroBanner';
 import { MotivationBanner } from '@/components/home/MotivationBanner';
 import { TodayActivity } from '@/components/home/TodayActivity';
 import { ExpertSection } from '@/components/home/ExpertSection';
 import { BottomActions } from '@/components/home/BottomActions';
 import { useAuth } from '@/hooks/useAuth';
+import childrenBg from '@/assets/children-background.jpg';
 
 const Index = () => {
   const { loading } = useAuth();
@@ -18,10 +18,18 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div 
+      className="min-h-screen pb-24"
+      style={{
+        backgroundImage: `url(${childrenBg})`,
+        backgroundPosition: 'bottom center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: '100% auto',
+        backgroundColor: 'hsl(var(--background))'
+      }}
+    >
       <div className="max-w-md mx-auto p-4 space-y-4">
         <Header />
-        <HeroBanner />
         <MotivationBanner />
         <TodayActivity />
         <ExpertSection />
