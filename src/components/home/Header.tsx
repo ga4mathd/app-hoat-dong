@@ -1,8 +1,10 @@
-import { Bell, Settings } from 'lucide-react';
+import { Bell, Settings, LogIn } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 
 export function Header() {
   const { user } = useAuth();
@@ -28,6 +30,28 @@ export function Header() {
     return 'Chào buổi tối';
   };
 
+  // Khi chưa đăng nhập
+  if (!user) {
+    return (
+      <header className="flex items-center justify-between p-4 bg-card rounded-2xl card-shadow animate-fade-in">
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-sm text-muted-foreground">{getGreeting()}</p>
+            <h2 className="font-bold text-lg text-foreground">Khách</h2>
+          </div>
+        </div>
+        
+        <Link to="/auth">
+          <Button className="gap-2">
+            <LogIn className="h-4 w-4" />
+            Đăng nhập
+          </Button>
+        </Link>
+      </header>
+    );
+  }
+
+  // Khi đã đăng nhập
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Bạn';
 
   return (
