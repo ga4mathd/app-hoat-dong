@@ -18,18 +18,19 @@ const Index = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen pb-24"
-      style={{
-        backgroundImage: `url(${childrenBg})`,
-        backgroundPosition: 'bottom center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '100% auto',
-        backgroundColor: 'hsl(var(--background))'
-      }}
-    >
+    <div className="min-h-screen bg-background pb-24">
       <div className="max-w-md mx-auto p-4 space-y-4">
         <Header />
+        
+        {/* Hero Banner - Ảnh trẻ em */}
+        <div className="relative rounded-2xl overflow-hidden">
+          <img 
+            src={childrenBg} 
+            alt="Trẻ em vui chơi" 
+            className="w-full h-auto object-cover"
+          />
+        </div>
+        
         <MotivationBanner />
         <TodayActivity />
         <ExpertSection />
