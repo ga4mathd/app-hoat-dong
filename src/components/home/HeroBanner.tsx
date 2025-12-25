@@ -3,7 +3,7 @@ import heroImage from '@/assets/hero-children.jpg';
 export function HeroBanner() {
   return (
     <div 
-      className="relative rounded-3xl overflow-hidden h-56 md:h-72 animate-fade-in"
+      className="relative rounded-3xl overflow-hidden h-56 animate-fade-in"
       style={{ animationDelay: '0.2s' }}
     >
       <img 
