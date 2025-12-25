@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Calendar, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { BottomActions } from '@/components/home/BottomActions';
-import { format, addDays, startOfMonth, endOfMonth, isTomorrow, isAfter } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
 interface Activity {
@@ -28,10 +28,19 @@ export default function Activities() {
   const { user, loading } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
 
-  // Get month/year from URL params
+  // Get month/year from URL params (default to current month)
   const monthParam = searchParams.get('month');
   const yearParam = searchParams.get('year');
-  const isMonthlyView = monthParam !== null && yearParam !== null;
+  const currentDate = new Date();
+  const month = monthParam !== null ? parseInt(monthParam) : currentDate.getMonth();
+  const year = yearParam !== null ? parseInt(yearParam) : currentDate.getFullYear();
+
+  // Get all days in the selected month
+  const targetDate = new Date(year, month, 1);
+  const daysInMonth = eachDayOfInterval({
+    start: startOfMonth(targetDate),
+    end: endOfMonth(targetDate)
+  });
 
   useEffect(() => {
     if (!loading && !user) {
@@ -39,19 +48,8 @@ export default function Activities() {
       return;
     }
 
-    let startDate: Date;
-    let endDate: Date;
-
-    if (isMonthlyView) {
-      // Monthly view: show all activities for the selected month
-      const targetDate = new Date(parseInt(yearParam!), parseInt(monthParam!), 1);
-      startDate = startOfMonth(targetDate);
-      endDate = endOfMonth(targetDate);
-    } else {
-      // Default: show next 7 days
-      startDate = new Date();
-      endDate = addDays(startDate, 7);
-    }
+    const startDate = startOfMonth(targetDate);
+    const endDate = endOfMonth(targetDate);
 
     supabase
       .from('activities')
@@ -62,7 +60,7 @@ export default function Activities() {
       .then(({ data }) => {
         if (data) setActivities(data);
       });
-  }, [user, loading, navigate, monthParam, yearParam, isMonthlyView]);
+  }, [user, loading, navigate, month, year]);
 
   if (loading) {
     return (
@@ -80,18 +78,11 @@ export default function Activities() {
     'Toán học': 'bg-yellow-light text-accent-foreground',
   };
 
-  // Separate tomorrow's activity from the rest
-  const tomorrow = addDays(new Date(), 1);
-  const tomorrowDateStr = format(tomorrow, 'yyyy-MM-dd');
-  
-  const tomorrowActivities = activities.filter(
-    (a) => a.scheduled_date === tomorrowDateStr
-  );
-  const upcomingActivities = activities.filter(
-    (a) => a.scheduled_date !== tomorrowDateStr
-  );
-
-  const heroActivity = tomorrowActivities[0];
+  // Get activities for a specific day
+  const getActivitiesForDay = (day: Date) => {
+    const dateStr = format(day, 'yyyy-MM-dd');
+    return activities.filter((a) => a.scheduled_date === dateStr);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -105,108 +96,79 @@ export default function Activities() {
             <ArrowLeft className="h-5 w-5" />
           </button>
           <h1 className="font-bold text-lg">
-            {isMonthlyView 
-              ? `Hoạt động ${MONTHS[parseInt(monthParam!)]} ${yearParam}` 
-              : 'Hoạt động sắp tới'}
+            {MONTHS[month]} {year}
           </h1>
         </div>
 
-        <div className="p-4 space-y-6">
-          {activities.length === 0 ? (
-            <div className="text-center py-12">
-              <Calendar className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <p className="text-muted-foreground">Chưa có hoạt động nào được lên lịch</p>
-            </div>
-          ) : (
-            <>
-              {/* Hero Banner - Tomorrow's Activity */}
-              {heroActivity && (
-                <div className="animate-fade-in">
-                  <h2 className="text-lg font-bold text-foreground mb-3">
-                    Ngày mai - {format(tomorrow, 'dd/MM')}
-                  </h2>
-                  <div
-                    className="relative bg-gradient-to-br from-pink via-pink/80 to-primary rounded-3xl p-5 card-shadow cursor-pointer hover:scale-[1.02] transition-transform overflow-hidden"
-                    onClick={() => navigate(`/activity/${heroActivity.id}`)}
-                  >
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-                    <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
-                    
-                    <div className="relative z-10">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <h3 className="font-bold text-xl text-white mb-2">{heroActivity.title}</h3>
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {heroActivity.tags?.map((tag) => (
-                              <Badge 
-                                key={tag} 
-                                variant="secondary"
-                                className="bg-white/20 text-white border-0 text-xs"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-                        <button className="p-3 rounded-full bg-white text-primary shadow-lg">
-                          <Play className="h-5 w-5" />
-                        </button>
-                      </div>
-                      
-                      <p className="text-white/90 text-sm line-clamp-2 mb-4">{heroActivity.description}</p>
-                      
-                      <div className="flex items-center justify-between bg-white/20 rounded-xl px-4 py-2">
-                        <span className="text-white/80 text-sm">Điểm thưởng</span>
-                        <span className="font-bold text-lg text-white">+{heroActivity.points || 10}</span>
-                      </div>
-                    </div>
+        <div className="p-4 space-y-4">
+          {daysInMonth.map((day, index) => {
+            const dayActivities = getActivitiesForDay(day);
+            const isToday = format(day, 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd');
+            
+            return (
+              <div 
+                key={day.toISOString()} 
+                className="animate-fade-in"
+                style={{ animationDelay: `${index * 0.02}s` }}
+              >
+                {/* Day Header */}
+                <div className={`flex items-center gap-3 mb-2 ${isToday ? 'text-primary' : 'text-foreground'}`}>
+                  <div className={`flex items-center justify-center w-10 h-10 rounded-full ${isToday ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                    <span className="font-bold text-sm">{format(day, 'd')}</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm capitalize">
+                      {format(day, 'EEEE', { locale: vi })}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {format(day, 'dd/MM/yyyy')}
+                    </p>
                   </div>
                 </div>
-              )}
 
-              {/* Upcoming Activities */}
-              {upcomingActivities.length > 0 && (
-                <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                  <h2 className="text-lg font-bold text-foreground mb-3">Các ngày tiếp theo</h2>
-                  <div className="grid grid-cols-2 gap-3">
-                    {upcomingActivities.map((activity, index) => (
+                {/* Activities for this day */}
+                {dayActivities.length > 0 ? (
+                  <div className="ml-5 pl-8 border-l-2 border-primary/20 space-y-2">
+                    {dayActivities.map((activity) => (
                       <div
                         key={activity.id}
-                        className="bg-card rounded-2xl p-3 card-shadow animate-fade-in cursor-pointer hover:scale-[1.02] transition-transform"
-                        style={{ animationDelay: `${(index + 1) * 0.1}s` }}
+                        className="bg-card rounded-2xl p-4 card-shadow cursor-pointer hover:scale-[1.01] transition-transform"
                         onClick={() => navigate(`/activity/${activity.id}`)}
                       >
-                        <p className="text-xs text-primary font-medium mb-1">
-                          {format(new Date(activity.scheduled_date), 'EEEE, dd/MM', { locale: vi })}
-                        </p>
-                        <h3 className="font-bold text-sm text-foreground line-clamp-2 mb-2">{activity.title}</h3>
-                        
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {activity.tags?.map((tag) => (
-                            <Badge 
-                              key={tag} 
-                              variant="secondary"
-                              className={`text-[10px] px-1.5 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                        
-                        <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{activity.description}</p>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">Điểm thưởng</span>
-                          <span className="font-bold text-sm text-secondary">+{activity.points || 10}</span>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-sm text-foreground mb-1">{activity.title}</h3>
+                            <div className="flex flex-wrap gap-1 mb-2">
+                              {activity.tags?.map((tag) => (
+                                <Badge 
+                                  key={tag} 
+                                  variant="secondary"
+                                  className={`text-[10px] px-1.5 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
+                                >
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{activity.description}</p>
+                          </div>
+                          <div className="flex flex-col items-center gap-1">
+                            <button className="p-2 rounded-full bg-primary/10 text-primary">
+                              <Play className="h-4 w-4" />
+                            </button>
+                            <span className="text-xs font-bold text-secondary">+{activity.points || 10}</span>
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-            </>
-          )}
+                ) : (
+                  <div className="ml-5 pl-8 border-l-2 border-muted py-2">
+                    <p className="text-xs text-muted-foreground italic">Chưa có hoạt động</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
       <BottomActions />

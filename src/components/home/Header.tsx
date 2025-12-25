@@ -1,7 +1,6 @@
-import { Calendar as CalendarIcon, LogIn, User, History, LogOut } from 'lucide-react';
+import { Calendar, LogIn, User, History, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,11 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 
 export function Header() {
   const { user, signOut } = useAuth();
@@ -27,20 +21,10 @@ export function Header() {
   const [currentMonth] = useState(new Date().getMonth());
   const [currentYear] = useState(new Date().getFullYear());
 
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-
   const MONTHS = [
     'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
     'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
   ];
-
-  const handleDateSelect = (date: Date | undefined) => {
-    setSelectedDate(date);
-    if (date) {
-      // Navigate to activities page with the selected month
-      navigate(`/activities?month=${date.getMonth()}&year=${date.getFullYear()}`);
-    }
-  };
 
   useEffect(() => {
     if (user) {
@@ -148,29 +132,17 @@ export function Header() {
           </div>
         </div>
         
-        {/* Right: Month Badge - Calendar Popover */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <button
-              className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-2xl shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
-            >
-              <CalendarIcon className="h-6 w-6" />
-              <div className="text-center leading-tight">
-                <div className="text-xs font-bold">{MONTHS[currentMonth]}</div>
-                <div className="text-base font-bold">{currentYear}</div>
-              </div>
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="end">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={handleDateSelect}
-              initialFocus
-              className="p-3 pointer-events-auto"
-            />
-          </PopoverContent>
-        </Popover>
+        {/* Right: Month Badge - Clickable */}
+        <button
+          onClick={() => navigate(`/activities?month=${currentMonth}&year=${currentYear}`)}
+          className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-2xl shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
+        >
+          <Calendar className="h-6 w-6" />
+          <div className="text-center leading-tight">
+            <div className="text-xs font-bold">{MONTHS[currentMonth]}</div>
+            <div className="text-base font-bold">{currentYear}</div>
+          </div>
+        </button>
       </div>
     </header>
   );
