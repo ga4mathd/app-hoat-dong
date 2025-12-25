@@ -1,8 +1,6 @@
 import { Target, BookOpen, Video } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 interface Activity {
   id: string;
@@ -15,22 +13,17 @@ interface Activity {
   expert_title: string | null;
 }
 
-export function TodayActivity() {
+interface TodayActivityProps {
+  activity: Activity | null;
+  availableTags: string[];
+  selectedTag: string;
+  onTagSelect: (tag: string) => void;
+}
+
+export function TodayActivity({ activity, availableTags, selectedTag, onTagSelect }: TodayActivityProps) {
   const navigate = useNavigate();
-  const [activity, setActivity] = useState<Activity | null>(null);
 
-  useEffect(() => {
-    supabase
-      .from('activities')
-      .select('*')
-      .eq('scheduled_date', new Date().toISOString().split('T')[0])
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) setActivity(data);
-      });
-  }, []);
-
-  // Default activity for display
+  // Default activity for display when no data
   const displayActivity = activity || {
     id: 'demo',
     title: 'Xiên bóng bay không nổ',
@@ -45,14 +38,15 @@ export function TodayActivity() {
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-medium text-base text-foreground">Hoạt động hôm nay</h3>
           <div className="flex gap-2">
-            {displayActivity.tags?.map((tag, index) => (
+            {availableTags.map((tag) => (
               <Badge 
                 key={tag} 
-                variant={index === 0 ? "default" : "outline"}
-                className={index === 0 
-                  ? "bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-medium" 
-                  : "border-foreground/50 text-foreground text-xs px-3 py-1 rounded-full bg-transparent font-medium"
-                }
+                onClick={() => onTagSelect(tag)}
+                className={`cursor-pointer transition-all duration-300 text-xs px-3 py-1 rounded-full font-medium ${
+                  selectedTag === tag 
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                    : "border-foreground/50 text-foreground bg-transparent hover:bg-foreground/10 border"
+                }`}
               >
                 {tag}
               </Badge>
@@ -60,8 +54,10 @@ export function TodayActivity() {
           </div>
         </div>
 
-        {/* Title */}
-        <h4 className="font-bold text-2xl text-foreground">{displayActivity.title}</h4>
+        {/* Title with transition */}
+        <h4 className="font-bold text-2xl text-foreground transition-all duration-300">
+          {displayActivity.title}
+        </h4>
       </div>
 
       {/* Action Cards - Outside the blue card */}
