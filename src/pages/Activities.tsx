@@ -98,52 +98,47 @@ export default function Activities() {
           </h1>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-4">
           {activities.length === 0 ? (
             <div className="text-center py-12">
               <Calendar className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">Chưa có hoạt động nào được lên lịch</p>
             </div>
           ) : (
-            activities.map((activity, index) => (
-              <div
-                key={activity.id}
-                className="bg-card rounded-2xl p-4 card-shadow animate-fade-in cursor-pointer hover:scale-[1.02] transition-transform"
-                style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => navigate(`/activity/${activity.id}`)}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="text-sm text-primary font-medium">
-                      {format(new Date(activity.scheduled_date), 'EEEE, dd/MM', { locale: vi })}
-                    </p>
-                    <h3 className="font-bold text-lg text-foreground">{activity.title}</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {activities.map((activity, index) => (
+                <div
+                  key={activity.id}
+                  className="bg-card rounded-2xl p-3 card-shadow animate-fade-in cursor-pointer hover:scale-[1.02] transition-transform"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                  onClick={() => navigate(`/activity/${activity.id}`)}
+                >
+                  <p className="text-xs text-primary font-medium mb-1">
+                    {format(new Date(activity.scheduled_date), 'EEEE, dd/MM', { locale: vi })}
+                  </p>
+                  <h3 className="font-bold text-sm text-foreground line-clamp-2 mb-2">{activity.title}</h3>
+                  
+                  <div className="flex flex-wrap gap-1 mb-2">
+                    {activity.tags?.map((tag) => (
+                      <Badge 
+                        key={tag} 
+                        variant="secondary"
+                        className={`text-[10px] px-1.5 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
                   </div>
-                  <button className="p-2 rounded-full bg-primary text-primary-foreground">
-                    <Play className="h-4 w-4" />
-                  </button>
+                  
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{activity.description}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Điểm thưởng</span>
+                    <span className="font-bold text-sm text-secondary">+{activity.points || 10}</span>
+                  </div>
                 </div>
-                
-                <div className="flex gap-2 mb-2">
-                  {activity.tags?.map((tag) => (
-                    <Badge 
-                      key={tag} 
-                      variant="secondary"
-                      className={tagColors[tag] || 'bg-muted text-muted-foreground'}
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                
-                <p className="text-sm text-muted-foreground line-clamp-2">{activity.description}</p>
-                
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Điểm thưởng</span>
-                  <span className="font-bold text-secondary">+{activity.points || 10}</span>
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>
