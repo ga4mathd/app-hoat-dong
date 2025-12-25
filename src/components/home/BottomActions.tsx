@@ -6,7 +6,7 @@ export function BottomActions() {
   const location = useLocation();
   
   const isStoriesMusicActive = location.pathname === '/stories-music';
-  const isActivitiesActive = location.pathname === '/activities';
+  const isActivitiesActive = location.pathname === '/activities' && location.search.includes('mode=tomorrow');
   const isShopActive = location.pathname === '/shop';
 
   const activeClass = 'px-5 py-3 bg-pink text-primary-foreground rounded-2xl font-medium text-xs shadow-lg';
@@ -28,7 +28,7 @@ export function BottomActions() {
 
         {/* Xem hoạt động ngày mai */}
         <button
-          onClick={() => navigate('/activities')}
+          onClick={() => navigate('/activities?mode=tomorrow')}
           className={`flex flex-col items-center gap-1 transition-all ${isActivitiesActive ? activeClass : inactiveClass}`}
         >
           <Lightbulb className={`h-6 w-6 ${isActivitiesActive ? '' : 'text-muted-foreground'}`} />
