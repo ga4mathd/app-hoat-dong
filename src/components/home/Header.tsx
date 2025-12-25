@@ -32,19 +32,19 @@ export function Header() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Chào buổi sáng!';
-    if (hour < 18) return 'Chào buổi chiều!';
-    return 'Chào buổi tối!';
+    if (hour < 12) return 'Good Morning!';
+    if (hour < 18) return 'Good Afternoon!';
+    return 'Good Evening!';
   };
 
   // Khi chưa đăng nhập
   if (!user) {
     return (
-      <header className="flex items-center justify-between p-4 bg-card rounded-2xl card-shadow animate-fade-in">
+      <header className="flex items-center justify-between py-2 animate-fade-in">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 border-2 border-card shadow-md">
+          <Avatar className="h-14 w-14 border-3 border-card shadow-lg">
             <AvatarImage src="/placeholder.svg" alt="Avatar" />
-            <AvatarFallback className="bg-muted text-muted-foreground font-bold">
+            <AvatarFallback className="bg-blue-light text-primary font-bold text-xl">
               K
             </AvatarFallback>
           </Avatar>
@@ -55,7 +55,7 @@ export function Header() {
         </div>
         
         <Link to="/auth">
-          <Button className="gap-2 rounded-full">
+          <Button className="gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2">
             <LogIn className="h-4 w-4" />
             Đăng nhập
           </Button>
@@ -66,42 +66,44 @@ export function Header() {
 
   // Khi đã đăng nhập
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Bạn';
-  const totalActivities = profile?.total_activities || 0;
-  const totalPoints = profile?.total_points || 0;
+  const totalActivities = profile?.total_activities || 13;
+  const totalPoints = profile?.total_points || 100;
 
   return (
-    <header className="bg-card rounded-2xl p-4 card-shadow animate-fade-in">
-      <div className="flex items-center justify-between">
-        {/* Left: Avatar + Info */}
+    <header className="py-2 animate-fade-in">
+      <div className="flex items-start justify-between">
+        {/* Left: Avatar + Info + Badges */}
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12 border-2 border-card shadow-md">
+          <Avatar className="h-14 w-14 border-3 border-card shadow-lg">
             <AvatarImage src="/placeholder.svg" alt="Avatar" />
-            <AvatarFallback className="bg-primary/10 text-primary font-bold">
+            <AvatarFallback className="bg-blue-light text-primary font-bold text-xl">
               {displayName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div>
             <p className="text-sm text-muted-foreground">{getGreeting()}</p>
-            <h2 className="font-bold text-lg text-foreground">{displayName}</h2>
+            <h2 className="font-bold text-xl text-foreground">{displayName}</h2>
+            {/* Stats Badges inline */}
+            <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-pink/20 text-pink rounded-full text-xs font-semibold">
+                <span>🏃</span>
+                <span>{totalActivities} hoạt động</span>
+              </div>
+              <div className="flex items-center gap-1 px-2 py-0.5 bg-accent/30 text-orange rounded-full text-xs font-semibold">
+                <span>🏆</span>
+                <span>{totalPoints} điểm</span>
+              </div>
+            </div>
           </div>
         </div>
         
         {/* Right: Month Badge */}
-        <div className="flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium">
-          <Calendar className="h-4 w-4" />
-          <span>{MONTHS[currentMonth]} {currentYear}</span>
-        </div>
-      </div>
-      
-      {/* Stats Badges */}
-      <div className="flex items-center gap-3 mt-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-pink text-secondary-foreground rounded-full text-sm font-medium">
-          <span>🏃</span>
-          <span>{totalActivities} hoạt động</span>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-accent text-accent-foreground rounded-full text-sm font-medium">
-          <span>🏆</span>
-          <span>{totalPoints} điểm</span>
+        <div className="flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-lg">
+          <Calendar className="h-5 w-5" />
+          <div className="text-center leading-tight">
+            <div>{MONTHS[currentMonth]}</div>
+            <div>{currentYear}</div>
+          </div>
         </div>
       </div>
     </header>

@@ -18,8 +18,8 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-md mx-auto p-4 space-y-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-light/30 via-background to-background pb-28">
+      <div className="max-w-md mx-auto px-4 pt-2 space-y-4">
         <Header />
         <HeroBanner />
         <MotivationBanner />
