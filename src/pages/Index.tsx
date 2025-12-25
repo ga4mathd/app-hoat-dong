@@ -57,7 +57,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-b from-blue-light/30 via-background to-background pb-28">
       <div className="w-full max-w-[400px] mx-auto px-4 pt-2 space-y-4">
         <Header />
-        <HeroBanner imageUrl={selectedActivity?.image_url} />
+        <HeroBanner imageUrl={selectedActivity?.image_url} activityTag={selectedTag} />
         <MotivationBanner />
         <TodayActivity 
           activity={selectedActivity}
