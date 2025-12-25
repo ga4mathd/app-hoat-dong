@@ -1,11 +1,9 @@
 import { Header } from '@/components/home/Header';
-import { MonthSelector } from '@/components/home/MonthSelector';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { MotivationBanner } from '@/components/home/MotivationBanner';
 import { TodayActivity } from '@/components/home/TodayActivity';
 import { ExpertSection } from '@/components/home/ExpertSection';
 import { BottomActions } from '@/components/home/BottomActions';
-import { BottomNav } from '@/components/layout/BottomNav';
 import { useAuth } from '@/hooks/useAuth';
 
 const Index = () => {
@@ -23,14 +21,12 @@ const Index = () => {
     <div className="min-h-screen bg-background pb-24">
       <div className="max-w-md mx-auto p-4 space-y-4">
         <Header />
-        <MonthSelector />
         <HeroBanner />
         <MotivationBanner />
         <TodayActivity />
         <ExpertSection />
-        <BottomActions />
       </div>
-      <BottomNav />
+      <BottomActions />
     </div>
   );
 };

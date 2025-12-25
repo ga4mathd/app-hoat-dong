@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Music, BookOpen, Play, Clock } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BottomNav } from '@/components/layout/BottomNav';
+import { BottomActions } from '@/components/home/BottomActions';
 
 interface StoryMusic {
   id: string;
@@ -133,7 +133,7 @@ export default function StoriesMusic() {
           </Tabs>
         </div>
       </div>
-      <BottomNav />
+      <BottomActions />
     </div>
   );
 }

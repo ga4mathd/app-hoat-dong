@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BottomNav } from '@/components/layout/BottomNav';
+import { BottomActions } from '@/components/home/BottomActions';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Profile() {
@@ -163,7 +163,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
-      <BottomNav />
+      <BottomActions />
     </div>
   );
 }

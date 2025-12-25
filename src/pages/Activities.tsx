@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Calendar, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { BottomNav } from '@/components/layout/BottomNav';
+import { BottomActions } from '@/components/home/BottomActions';
 import { format, addDays } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
@@ -121,7 +121,7 @@ export default function Activities() {
           )}
         </div>
       </div>
-      <BottomNav />
+      <BottomActions />
     </div>
   );
 }
