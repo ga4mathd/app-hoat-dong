@@ -1,4 +1,4 @@
-import { Bell, Settings, LogIn } from 'lucide-react';
+import { Calendar, LogIn } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -9,6 +9,13 @@ import { Link } from 'react-router-dom';
 export function Header() {
   const { user } = useAuth();
   const [profile, setProfile] = useState<{ full_name: string | null; total_activities: number; total_points: number } | null>(null);
+  const [currentMonth] = useState(new Date().getMonth());
+  const [currentYear] = useState(new Date().getFullYear());
+
+  const MONTHS = [
+    'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+    'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+  ];
 
   useEffect(() => {
     if (user) {
@@ -25,9 +32,9 @@ export function Header() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return 'Chào buổi sáng';
-    if (hour < 18) return 'Chào buổi chiều';
-    return 'Chào buổi tối';
+    if (hour < 12) return 'Chào buổi sáng!';
+    if (hour < 18) return 'Chào buổi chiều!';
+    return 'Chào buổi tối!';
   };
 
   // Khi chưa đăng nhập
@@ -35,6 +42,12 @@ export function Header() {
     return (
       <header className="flex items-center justify-between p-4 bg-card rounded-2xl card-shadow animate-fade-in">
         <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 border-2 border-card shadow-md">
+            <AvatarImage src="/placeholder.svg" alt="Avatar" />
+            <AvatarFallback className="bg-muted text-muted-foreground font-bold">
+              K
+            </AvatarFallback>
+          </Avatar>
           <div>
             <p className="text-sm text-muted-foreground">{getGreeting()}</p>
             <h2 className="font-bold text-lg text-foreground">Khách</h2>
@@ -42,7 +55,7 @@ export function Header() {
         </div>
         
         <Link to="/auth">
-          <Button className="gap-2">
+          <Button className="gap-2 rounded-full">
             <LogIn className="h-4 w-4" />
             Đăng nhập
           </Button>
@@ -53,39 +66,43 @@ export function Header() {
 
   // Khi đã đăng nhập
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Bạn';
+  const totalActivities = profile?.total_activities || 0;
+  const totalPoints = profile?.total_points || 0;
 
   return (
-    <header className="flex items-center justify-between p-4 bg-card rounded-2xl card-shadow animate-fade-in">
-      <div className="flex items-center gap-3">
-        <Avatar className="h-12 w-12 border-2 border-primary/20">
-          <AvatarImage src="/placeholder.svg" alt="Avatar" />
-          <AvatarFallback className="bg-primary/10 text-primary font-bold">
-            {displayName.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <p className="text-sm text-muted-foreground">{getGreeting()}</p>
-          <h2 className="font-bold text-lg text-foreground">{displayName}</h2>
+    <header className="bg-card rounded-2xl p-4 card-shadow animate-fade-in">
+      <div className="flex items-center justify-between">
+        {/* Left: Avatar + Info */}
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 border-2 border-card shadow-md">
+            <AvatarImage src="/placeholder.svg" alt="Avatar" />
+            <AvatarFallback className="bg-primary/10 text-primary font-bold">
+              {displayName.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="text-sm text-muted-foreground">{getGreeting()}</p>
+            <h2 className="font-bold text-lg text-foreground">{displayName}</h2>
+          </div>
+        </div>
+        
+        {/* Right: Month Badge */}
+        <div className="flex items-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-full text-sm font-medium">
+          <Calendar className="h-4 w-4" />
+          <span>{MONTHS[currentMonth]} {currentYear}</span>
         </div>
       </div>
       
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-4 mr-2">
-          <div className="text-center">
-            <span className="text-xl font-bold text-primary">{profile?.total_activities || 0}</span>
-            <p className="text-xs text-muted-foreground">Hoạt động</p>
-          </div>
-          <div className="text-center">
-            <span className="text-xl font-bold text-secondary">{profile?.total_points || 0}</span>
-            <p className="text-xs text-muted-foreground">Điểm</p>
-          </div>
+      {/* Stats Badges */}
+      <div className="flex items-center gap-3 mt-3">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-pink text-secondary-foreground rounded-full text-sm font-medium">
+          <span>🏃</span>
+          <span>{totalActivities} hoạt động</span>
         </div>
-        <button className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors">
-          <Bell className="h-5 w-5 text-muted-foreground" />
-        </button>
-        <button className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors">
-          <Settings className="h-5 w-5 text-muted-foreground" />
-        </button>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-accent text-accent-foreground rounded-full text-sm font-medium">
+          <span>🏆</span>
+          <span>{totalPoints} điểm</span>
+        </div>
       </div>
     </header>
   );

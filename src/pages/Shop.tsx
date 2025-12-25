@@ -1,6 +1,6 @@
 import { ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BottomNav } from '@/components/layout/BottomNav';
+import { BottomActions } from '@/components/home/BottomActions';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect } from 'react';
 
@@ -48,7 +48,7 @@ export default function Shop() {
           </div>
         </div>
       </div>
-      <BottomNav />
+      <BottomActions />
     </div>
   );
 }

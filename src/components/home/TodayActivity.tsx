@@ -1,4 +1,4 @@
-import { Play, Target, FileText, Video } from 'lucide-react';
+import { Target, BookOpen, Video } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -32,74 +32,69 @@ export function TodayActivity() {
 
   if (!activity) {
     return (
-      <div className="bg-card rounded-2xl p-6 card-shadow animate-fade-in" style={{ animationDelay: '0.4s' }}>
+      <div className="bg-card rounded-2xl p-6 card-shadow animate-fade-in border-2 border-blue-light" style={{ animationDelay: '0.4s' }}>
         <p className="text-muted-foreground text-center">Không có hoạt động cho hôm nay</p>
       </div>
     );
   }
 
-  const tagColors: Record<string, string> = {
-    'Trò chơi': 'bg-blue-light text-blue',
-    'Khoa học': 'bg-green-light text-green',
-    'Nghệ thuật': 'bg-pink-light text-pink',
-    'Sáng tạo': 'bg-orange-light text-orange',
-    'Toán học': 'bg-yellow-light text-accent-foreground',
-  };
-
   return (
     <div 
-      className="bg-card rounded-2xl p-6 card-shadow animate-fade-in"
+      className="bg-gradient-to-br from-blue-light/50 to-card rounded-2xl p-5 card-shadow animate-fade-in border-2 border-blue-light"
       style={{ animationDelay: '0.4s' }}
     >
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-lg text-foreground">Hoạt động hôm nay</h3>
-        <button 
-          onClick={() => navigate(`/activity/${activity.id}`)}
-          className="p-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-        >
-          <Play className="h-5 w-5" />
-        </button>
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-3">
+        <h3 className="font-bold text-base text-foreground">Hoạt động hôm nay</h3>
+        <div className="flex gap-2">
+          {activity.tags?.map((tag, index) => (
+            <Badge 
+              key={tag} 
+              variant={index === 0 ? "default" : "outline"}
+              className={index === 0 
+                ? "bg-primary text-primary-foreground text-xs" 
+                : "border-primary text-primary text-xs bg-transparent"
+              }
+            >
+              {tag}
+            </Badge>
+          ))}
+        </div>
       </div>
 
-      <h4 className="font-semibold text-xl text-foreground mb-2">{activity.title}</h4>
-      
-      <div className="flex gap-2 mb-4">
-        {activity.tags?.map((tag) => (
-          <Badge 
-            key={tag} 
-            variant="secondary"
-            className={tagColors[tag] || 'bg-muted text-muted-foreground'}
-          >
-            {tag}
-          </Badge>
-        ))}
-      </div>
+      {/* Title */}
+      <h4 className="font-bold text-xl text-foreground mb-4">{activity.title}</h4>
 
-      <p className="text-muted-foreground mb-6">{activity.description}</p>
-
+      {/* Action Cards */}
       <div className="grid grid-cols-3 gap-3">
         <button 
           onClick={() => navigate(`/activity/${activity.id}?tab=goals`)}
-          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-yellow-light hover:bg-accent transition-colors"
+          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card hover:bg-muted transition-colors card-shadow"
         >
-          <Target className="h-6 w-6 text-accent-foreground" />
-          <span className="text-sm font-medium text-accent-foreground">Mục tiêu</span>
+          <div className="w-10 h-10 rounded-full bg-foreground flex items-center justify-center">
+            <Target className="h-5 w-5 text-card" />
+          </div>
+          <span className="text-xs font-medium text-foreground text-center">Mục tiêu</span>
         </button>
         
         <button 
           onClick={() => navigate(`/activity/${activity.id}?tab=instructions`)}
-          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-blue-light hover:bg-primary/20 transition-colors"
+          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card hover:bg-muted transition-colors card-shadow"
         >
-          <FileText className="h-6 w-6 text-blue" />
-          <span className="text-sm font-medium text-blue">Hướng dẫn</span>
+          <div className="w-10 h-10 rounded-full bg-pink flex items-center justify-center">
+            <BookOpen className="h-5 w-5 text-primary-foreground" />
+          </div>
+          <span className="text-xs font-medium text-foreground text-center leading-tight">Hướng dẫn thực hiện</span>
         </button>
         
         <button 
           onClick={() => navigate(`/activity/${activity.id}?tab=video`)}
-          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-pink-light hover:bg-secondary/20 transition-colors"
+          className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card hover:bg-muted transition-colors card-shadow"
         >
-          <Video className="h-6 w-6 text-pink" />
-          <span className="text-sm font-medium text-pink">Video</span>
+          <div className="w-10 h-10 rounded-full bg-pink-light flex items-center justify-center">
+            <Video className="h-5 w-5 text-pink" />
+          </div>
+          <span className="text-xs font-medium text-foreground text-center leading-tight">Video hướng dẫn từ chuyên gia</span>
         </button>
       </div>
     </div>

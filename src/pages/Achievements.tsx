@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Trophy, Star, Target, CheckCircle } from 'lucide-react';
-import { BottomNav } from '@/components/layout/BottomNav';
+import { BottomActions } from '@/components/home/BottomActions';
 import { Progress } from '@/components/ui/progress';
 
 interface UserProgress {
@@ -165,7 +165,7 @@ export default function Achievements() {
           </div>
         </div>
       </div>
-      <BottomNav />
+      <BottomActions />
     </div>
   );
 }
