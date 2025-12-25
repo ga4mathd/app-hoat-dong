@@ -7,18 +7,9 @@ import { ExpertSection } from '@/components/home/ExpertSection';
 import { BottomActions } from '@/components/home/BottomActions';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 
 const Index = () => {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate('/auth');
-    }
-  }, [user, loading, navigate]);
+  const { loading } = useAuth();
 
   if (loading) {
     return (
@@ -26,10 +17,6 @@ const Index = () => {
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
       </div>
     );
-  }
-
-  if (!user) {
-    return null;
   }
 
   return (

@@ -1,11 +1,11 @@
-import { Home, BookOpen, Star, User, LogOut } from 'lucide-react';
+import { Home, BookOpen, Star, User, LogOut, LogIn } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 export function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { icon: Home, label: 'Trang chủ', path: '/' },
@@ -39,13 +39,23 @@ export function BottomNav() {
             </button>
           );
         })}
-        <button
-          onClick={handleLogout}
-          className="flex flex-col items-center gap-1 p-2 rounded-xl text-muted-foreground hover:text-destructive transition-all"
-        >
-          <LogOut className="h-6 w-6" />
-          <span className="text-xs font-medium">Đăng xuất</span>
-        </button>
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="flex flex-col items-center gap-1 p-2 rounded-xl text-muted-foreground hover:text-destructive transition-all"
+          >
+            <LogOut className="h-6 w-6" />
+            <span className="text-xs font-medium">Đăng xuất</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate('/auth')}
+            className="flex flex-col items-center gap-1 p-2 rounded-xl text-primary hover:bg-primary/10 transition-all"
+          >
+            <LogIn className="h-6 w-6" />
+            <span className="text-xs font-medium">Đăng nhập</span>
+          </button>
+        )}
       </div>
     </nav>
   );
