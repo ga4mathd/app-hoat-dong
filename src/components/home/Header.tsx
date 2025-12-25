@@ -1,4 +1,4 @@
-import { Calendar, LogIn } from 'lucide-react';
+import { Calendar, LogIn, User, History, LogOut } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -6,9 +6,16 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
 import avatarBoy from '@/assets/avatar-boy.png';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export function Header() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string | null; total_activities: number; total_points: number } | null>(null);
   const [currentMonth] = useState(new Date().getMonth());
@@ -76,12 +83,38 @@ export function Header() {
       <div className="flex items-center justify-between gap-2">
         {/* Left: Avatar + Info */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <Avatar className="h-12 w-12 flex-shrink-0 border-3 border-card shadow-lg ring-2 ring-primary/20">
-            <AvatarImage src={avatarBoy} alt="Avatar" className="object-cover" />
-            <AvatarFallback className="bg-blue-light text-primary font-bold text-base">
-              {displayName.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="focus:outline-none">
+                <Avatar className="h-12 w-12 flex-shrink-0 border-3 border-card shadow-lg ring-2 ring-primary/20 cursor-pointer hover:ring-4 hover:ring-primary/30 transition-all">
+                  <AvatarImage src={avatarBoy} alt="Avatar" className="object-cover" />
+                  <AvatarFallback className="bg-blue-light text-primary font-bold text-base">
+                    {displayName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 bg-card border shadow-lg z-50">
+              <div className="px-3 py-2">
+                <p className="font-semibold text-foreground">{displayName}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                Thông tin cá nhân
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/achievements')} className="cursor-pointer">
+                <History className="mr-2 h-4 w-4" />
+                Hoạt động đã thực hiện
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
+                <LogOut className="mr-2 h-4 w-4" />
+                Đăng xuất
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <div className="flex flex-col min-w-0">
             <p className="text-xs text-muted-foreground leading-tight">{getGreeting()}</p>
