@@ -22,20 +22,45 @@ interface Activity {
 
 const Index = () => {
   const { loading, user } = useAuth();
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [selectedTag, setSelectedTag] = useState<string>('Trò chơi');
+  const [todayActivities, setTodayActivities] = useState<Activity[]>([]);
+  const [yesterdayActivities, setYesterdayActivities] = useState<Activity[]>([]);
+  const [tomorrowActivities, setTomorrowActivities] = useState<Activity[]>([]);
   const [totalActivities, setTotalActivities] = useState<number>(0);
+  const [currentDay, setCurrentDay] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
+
+  const getDateString = (offset: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + offset);
+    return date.toISOString().split('T')[0];
+  };
 
   useEffect(() => {
     if (user) {
+      // Fetch today's activities
       supabase
         .from('activities')
         .select('*')
-        .eq('scheduled_date', new Date().toISOString().split('T')[0])
+        .eq('scheduled_date', getDateString(0))
         .then(({ data }) => {
-          if (data && data.length > 0) {
-            setActivities(data);
-          }
+          if (data) setTodayActivities(data);
+        });
+
+      // Fetch yesterday's activities
+      supabase
+        .from('activities')
+        .select('*')
+        .eq('scheduled_date', getDateString(-1))
+        .then(({ data }) => {
+          if (data) setYesterdayActivities(data);
+        });
+
+      // Fetch tomorrow's activities
+      supabase
+        .from('activities')
+        .select('*')
+        .eq('scheduled_date', getDateString(1))
+        .then(({ data }) => {
+          if (data) setTomorrowActivities(data);
         });
     }
   }, [user]);
@@ -54,13 +79,22 @@ const Index = () => {
     }
   }, [user]);
 
-  // Tìm activity phù hợp với tag được chọn
-  const selectedActivity = activities.find(
-    (activity) => activity.tags?.includes(selectedTag)
-  ) || activities[0] || null;
+  // Get first activity from each day
+  const todayActivity = todayActivities[0] || null;
+  const yesterdayActivity = yesterdayActivities[0] || null;
+  const tomorrowActivity = tomorrowActivities[0] || null;
 
-  // Lấy 2 tags đầu tiên từ activities hôm nay
-  const availableTags = [...new Set(activities.flatMap(a => a.tags || []))].slice(0, 2);
+  // Get current activity based on selected day
+  const getCurrentActivity = () => {
+    switch (currentDay) {
+      case 'yesterday': return yesterdayActivity;
+      case 'tomorrow': return tomorrowActivity;
+      default: return todayActivity;
+    }
+  };
+
+  // Lấy tags từ activities hôm nay
+  const availableTags = [...new Set(todayActivities.flatMap(a => a.tags || []))].slice(0, 2);
 
   if (loading) {
     return (
@@ -84,21 +118,29 @@ const Index = () => {
   // Giao diện cho user đã đăng nhập
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)]">
-      <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
-        <Header />
+      {/* Header with different background */}
+      <div className="w-full bg-gradient-to-r from-primary via-blue to-primary">
+        <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
+          <Header />
+        </div>
+      </div>
+
+      {/* Activity Section */}
+      <div className="w-full max-w-[400px] mx-auto px-4">
         <TodayActivity 
-          activity={selectedActivity}
-          availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi', 'Khoa học']}
-          selectedTag={selectedTag}
-          onTagSelect={setSelectedTag}
+          todayActivity={todayActivity}
+          yesterdayActivity={yesterdayActivity}
+          tomorrowActivity={tomorrowActivity}
+          availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi']}
           totalActivities={totalActivities}
+          onDayChange={setCurrentDay}
         />
       </div>
       
       {/* White card section - full width on mobile */}
-      <div className="w-full mt-4 bg-card rounded-t-3xl min-h-[calc(100vh-350px)] pb-32">
+      <div className="w-full mt-2 bg-card rounded-t-3xl min-h-[calc(100vh-380px)] pb-24">
         <div className="max-w-[400px] mx-auto">
-          <ActivityCard activity={selectedActivity} />
+          <ActivityCard activity={getCurrentActivity()} />
         </div>
       </div>
       
