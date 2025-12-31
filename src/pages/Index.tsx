@@ -95,9 +95,11 @@ const Index = () => {
         />
       </div>
       
-      {/* White card section - full width, extends to bottom */}
-      <div className="w-full max-w-[400px] mx-auto mt-4 bg-card rounded-t-3xl min-h-[calc(100vh-350px)] pb-32">
-        <ActivityCard activity={selectedActivity} />
+      {/* White card section - full width on mobile */}
+      <div className="w-full mt-4 bg-card rounded-t-3xl min-h-[calc(100vh-350px)] pb-32">
+        <div className="max-w-[400px] mx-auto">
+          <ActivityCard activity={selectedActivity} />
+        </div>
       </div>
       
       <BottomActions />
