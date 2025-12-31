@@ -53,22 +53,19 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
-      {/* Orange gradient background */}
-      <div className="bg-gradient-to-b from-orange to-[hsl(18,90%,52%)] rounded-b-[2.5rem]">
-        <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
-          <Header />
-          <TodayActivity 
-            activity={selectedActivity}
-            availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi', 'Khoa học']}
-            selectedTag={selectedTag}
-            onTagSelect={setSelectedTag}
-          />
-        </div>
+    <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)] pb-32">
+      <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
+        <Header />
+        <TodayActivity 
+          activity={selectedActivity}
+          availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi', 'Khoa học']}
+          selectedTag={selectedTag}
+          onTagSelect={setSelectedTag}
+        />
       </div>
       
       {/* White card section */}
-      <div className="w-full max-w-[400px] mx-auto px-4 -mt-2">
+      <div className="w-full max-w-[400px] mx-auto px-4 mt-4">
         <ActivityCard activity={selectedActivity} />
       </div>
       
