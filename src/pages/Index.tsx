@@ -20,9 +20,10 @@ interface Activity {
 }
 
 const Index = () => {
-  const { loading } = useAuth();
+  const { loading, user } = useAuth();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedTag, setSelectedTag] = useState<string>('Trò chơi');
+  const [totalActivities, setTotalActivities] = useState<number>(0);
 
   useEffect(() => {
     supabase
@@ -35,6 +36,20 @@ const Index = () => {
         }
       });
   }, []);
+
+  // Fetch user's total activities for this month
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from('profiles')
+        .select('total_activities')
+        .eq('user_id', user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) setTotalActivities(data.total_activities || 0);
+        });
+    }
+  }, [user]);
 
   // Tìm activity phù hợp với tag được chọn
   const selectedActivity = activities.find(
@@ -61,6 +76,7 @@ const Index = () => {
           availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi', 'Khoa học']}
           selectedTag={selectedTag}
           onTagSelect={setSelectedTag}
+          totalActivities={totalActivities}
         />
       </div>
       

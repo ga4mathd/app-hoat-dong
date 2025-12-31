@@ -20,9 +20,18 @@ interface TodayActivityProps {
   onTagSelect: (tag: string) => void;
 }
 
-export function TodayActivity({ activity, availableTags, selectedTag, onTagSelect }: TodayActivityProps) {
+interface TodayActivityPropsExtended extends TodayActivityProps {
+  totalActivities?: number;
+}
+
+export function TodayActivity({ activity, availableTags, selectedTag, onTagSelect, totalActivities = 0 }: TodayActivityPropsExtended) {
   return (
     <div className="flex flex-col items-center text-center pt-2 pb-6 animate-fade-in">
+      {/* Motivation Text */}
+      <p className="text-white/80 text-xs font-medium mb-2 tracking-wide uppercase">
+        Bạn đã thực hiện <span className="text-yellow font-bold">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
+      </p>
+
       {/* Title */}
       <h2 className="text-white/90 text-sm font-medium mb-4 tracking-wide">
         Hoạt động hôm nay
@@ -41,23 +50,14 @@ export function TodayActivity({ activity, availableTags, selectedTag, onTagSelec
         </div>
       </div>
 
-      {/* Tags */}
-      <div className="flex gap-2 mb-3">
-        {availableTags.map((tag) => (
-          <Badge
-            key={tag}
-            variant={selectedTag === tag ? "default" : "outline"}
-            className={`cursor-pointer px-4 py-1.5 text-sm font-medium transition-all ${
-              selectedTag === tag
-                ? 'bg-yellow text-foreground border-yellow hover:bg-yellow/90'
-                : 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-            }`}
-            onClick={() => onTagSelect(tag)}
-          >
-            {tag}
-          </Badge>
-        ))}
-      </div>
+      {/* Single Tag - Only show first available tag */}
+      {availableTags.length > 0 && (
+        <div className="mb-3">
+          <span className="px-4 py-1.5 text-sm font-medium bg-yellow text-foreground rounded-full">
+            {availableTags[0]}
+          </span>
+        </div>
+      )}
 
       {/* Activity Title */}
       <h1 className="text-white text-2xl font-bold leading-tight px-4">
