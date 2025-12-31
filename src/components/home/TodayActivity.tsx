@@ -30,11 +30,11 @@ export function TodayActivity({ activity, availableTags, selectedTag, onTagSelec
       {/* Motivation Text - Marquee */}
       <div className="w-full overflow-hidden mb-2">
         <div className="animate-marquee whitespace-nowrap">
-          <span className="text-white/80 text-xs font-medium tracking-wide uppercase mx-8">
-            Bạn đã thực hiện <span className="text-yellow font-bold">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
+          <span className="text-white text-sm font-bold tracking-wide uppercase mx-8">
+            Bạn đã thực hiện <span className="text-yellow">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
           </span>
-          <span className="text-white/80 text-xs font-medium tracking-wide uppercase mx-8">
-            Bạn đã thực hiện <span className="text-yellow font-bold">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
+          <span className="text-white text-sm font-bold tracking-wide uppercase mx-8">
+            Bạn đã thực hiện <span className="text-yellow">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
           </span>
         </div>
       </div>
