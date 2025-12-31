@@ -125,8 +125,8 @@ export function Header() {
           </DropdownMenu>
           
           <div className="flex flex-col min-w-0">
-            <p className="text-xs text-muted-foreground leading-tight">{getGreeting()}</p>
-            <h2 className="font-bold text-sm text-foreground leading-tight truncate">{displayName}</h2>
+            <p className="text-xs text-white/80 leading-tight">{getGreeting()}</p>
+            <h2 className="font-bold text-sm text-white leading-tight truncate">{displayName}</h2>
             
             {/* Stats Badges - Always horizontal with light colors */}
             <div className="flex items-center gap-1 mt-1 flex-nowrap">
