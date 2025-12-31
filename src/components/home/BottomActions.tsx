@@ -10,7 +10,7 @@ export function BottomActions() {
   const isShopActive = location.pathname === '/shop';
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border py-3 px-4 animate-fade-in z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border py-3 px-4 animate-fade-in z-50">
       <div className="w-full max-w-[400px] mx-auto flex items-center justify-between">
         {/* Truyện - nhạc button */}
         <button
