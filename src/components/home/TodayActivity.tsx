@@ -1,6 +1,5 @@
-import { Target, BookOpen, Video } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
+import avatarBoy from '@/assets/avatar-boy.png';
 
 interface Activity {
   id: string;
@@ -11,6 +10,7 @@ interface Activity {
   instructions: string | null;
   expert_name: string | null;
   expert_title: string | null;
+  image_url: string | null;
 }
 
 interface TodayActivityProps {
@@ -21,77 +21,48 @@ interface TodayActivityProps {
 }
 
 export function TodayActivity({ activity, availableTags, selectedTag, onTagSelect }: TodayActivityProps) {
-  const navigate = useNavigate();
-
-  // Default activity for display when no data
-  const displayActivity = activity || {
-    id: 'demo',
-    title: 'Xiên bóng bay không nổ',
-    tags: ['Trò chơi', 'Khoa học'],
-  };
-
   return (
-    <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
-      {/* Activity Info Card */}
-      <div className="bg-gradient-to-br from-blue-light via-blue-light/80 to-blue-light/60 rounded-3xl p-5 mb-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-medium text-base text-foreground">Hoạt động hôm nay</h3>
-          <div className="flex gap-2">
-            {availableTags.map((tag) => (
-              <Badge 
-                key={tag} 
-                onClick={() => onTagSelect(tag)}
-                className={`cursor-pointer transition-all duration-300 text-xs px-3 py-1 rounded-full font-medium ${
-                  selectedTag === tag 
-                    ? "bg-primary text-primary-foreground hover:bg-primary/90" 
-                    : "border-foreground/50 text-foreground bg-transparent hover:bg-foreground/10 border"
-                }`}
-              >
-                {tag}
-              </Badge>
-            ))}
+    <div className="flex flex-col items-center text-center pt-2 pb-6 animate-fade-in">
+      {/* Title */}
+      <h2 className="text-white/90 text-sm font-medium mb-4 tracking-wide">
+        Hoạt động hôm nay
+      </h2>
+
+      {/* Large Avatar with gradient border */}
+      <div className="relative mb-4">
+        <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-br from-blue to-orange">
+          <div className="w-full h-full rounded-full overflow-hidden bg-card">
+            <img 
+              src={activity?.image_url || avatarBoy} 
+              alt="Activity"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
-
-        {/* Title with transition */}
-        <h4 className="font-bold text-2xl text-foreground transition-all duration-300">
-          {displayActivity.title}
-        </h4>
       </div>
 
-      {/* Action Cards - Outside the blue card */}
-      <div className="grid grid-cols-3 gap-3">
-        <button 
-          onClick={() => navigate(`/activity/${displayActivity.id}?tab=goals`)}
-          className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-card border border-border hover:bg-muted/50 transition-colors"
-        >
-          <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center">
-            <Target className="h-7 w-7 text-foreground" />
-          </div>
-          <span className="text-sm font-medium text-foreground text-center">Mục tiêu</span>
-        </button>
-        
-        <button 
-          onClick={() => navigate(`/activity/${displayActivity.id}?tab=instructions`)}
-          className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-card border border-pink/30 hover:bg-pink-light/30 transition-colors"
-        >
-          <div className="w-14 h-14 rounded-full bg-pink-light flex items-center justify-center">
-            <BookOpen className="h-7 w-7 text-pink" />
-          </div>
-          <span className="text-sm font-medium text-foreground text-center leading-tight">Hướng dẫn<br/>thực hiện</span>
-        </button>
-        
-        <button 
-          onClick={() => navigate(`/activity/${displayActivity.id}?tab=video`)}
-          className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-card border border-pink/30 hover:bg-pink-light/30 transition-colors"
-        >
-          <div className="w-14 h-14 rounded-full bg-pink-light flex items-center justify-center">
-            <Video className="h-7 w-7 text-pink" />
-          </div>
-          <span className="text-sm font-medium text-foreground text-center leading-tight">Video hướng dẫn<br/>từ chuyên gia</span>
-        </button>
+      {/* Tags */}
+      <div className="flex gap-2 mb-3">
+        {availableTags.map((tag) => (
+          <Badge
+            key={tag}
+            variant={selectedTag === tag ? "default" : "outline"}
+            className={`cursor-pointer px-4 py-1.5 text-sm font-medium transition-all ${
+              selectedTag === tag
+                ? 'bg-yellow text-foreground border-yellow hover:bg-yellow/90'
+                : 'bg-white/20 text-white border-white/30 hover:bg-white/30'
+            }`}
+            onClick={() => onTagSelect(tag)}
+          >
+            {tag}
+          </Badge>
+        ))}
       </div>
+
+      {/* Activity Title */}
+      <h1 className="text-white text-2xl font-bold leading-tight px-4">
+        {activity?.title || 'Chưa có hoạt động'}
+      </h1>
     </div>
   );
 }

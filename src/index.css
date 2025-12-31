@@ -49,6 +49,10 @@ All colors MUST be HSL.
     --green-light: 145 70% 90%;
     --orange: 25 90% 55%;
     --orange-light: 25 95% 90%;
+    --orange-gradient-start: 25 95% 58%;
+    --orange-gradient-end: 18 90% 52%;
+    --pink-gradient-start: 340 70% 60%;
+    --pink-gradient-end: 280 70% 55%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -99,6 +103,10 @@ All colors MUST be HSL.
     --green-light: 145 40% 20%;
     --orange: 25 90% 55%;
     --orange-light: 25 50% 25%;
+    --orange-gradient-start: 25 95% 58%;
+    --orange-gradient-end: 18 90% 52%;
+    --pink-gradient-start: 340 70% 60%;
+    --pink-gradient-end: 280 70% 55%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
