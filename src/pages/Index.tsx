@@ -118,8 +118,8 @@ const Index = () => {
   // Giao diện cho user đã đăng nhập
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)]">
-      {/* Header with different background */}
-      <div className="w-full bg-gradient-to-r from-primary via-blue to-primary">
+      {/* Header with purple gradient background */}
+      <div className="w-full bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500">
         <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
           <Header />
         </div>
