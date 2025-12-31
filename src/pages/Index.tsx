@@ -3,6 +3,7 @@ import { Header } from '@/components/home/Header';
 import { TodayActivity } from '@/components/home/TodayActivity';
 import { ActivityCard } from '@/components/home/ActivityCard';
 import { BottomActions } from '@/components/home/BottomActions';
+import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -26,16 +27,18 @@ const Index = () => {
   const [totalActivities, setTotalActivities] = useState<number>(0);
 
   useEffect(() => {
-    supabase
-      .from('activities')
-      .select('*')
-      .eq('scheduled_date', new Date().toISOString().split('T')[0])
-      .then(({ data }) => {
-        if (data && data.length > 0) {
-          setActivities(data);
-        }
-      });
-  }, []);
+    if (user) {
+      supabase
+        .from('activities')
+        .select('*')
+        .eq('scheduled_date', new Date().toISOString().split('T')[0])
+        .then(({ data }) => {
+          if (data && data.length > 0) {
+            setActivities(data);
+          }
+        });
+    }
+  }, [user]);
 
   // Fetch user's total activities for this month
   useEffect(() => {
@@ -67,6 +70,18 @@ const Index = () => {
     );
   }
 
+  // Giao diện cho khách (chưa đăng nhập)
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)]">
+        <div className="w-full max-w-[400px] mx-auto px-4 pt-4 pb-8">
+          <GuestWelcome />
+        </div>
+      </div>
+    );
+  }
+
+  // Giao diện cho user đã đăng nhập
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)]">
       <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
