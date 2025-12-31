@@ -93,7 +93,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   }
 
   return (
-    <div className="bg-card rounded-t-[2rem] px-5 pt-6 pb-8 shadow-lg -mt-4 relative z-10">
+    <div className="px-5 pt-6 pb-8">
       {/* Expert Info */}
       <div className="flex items-center gap-3 mb-5">
         <Avatar className="h-12 w-12 border-2 border-orange/30">
