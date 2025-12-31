@@ -110,24 +110,24 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
       {/* Tabs */}
       <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="w-full bg-white shadow-sm p-1.5 rounded-full mb-5">
+        <TabsList className="w-full bg-gray-100 shadow-inner p-1.5 rounded-full mb-5">
           <TabsTrigger 
             value="goals" 
-            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-foreground transition-all duration-200"
+            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:shadow-pink-200/50 data-[state=active]:text-foreground data-[state=active]:scale-105 transition-all duration-300 ease-out"
           >
             <Target className="h-4 w-4" />
             Mục tiêu
           </TabsTrigger>
           <TabsTrigger 
             value="instructions"
-            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-foreground transition-all duration-200"
+            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:shadow-pink-200/50 data-[state=active]:text-foreground data-[state=active]:scale-105 transition-all duration-300 ease-out"
           >
             <FileText className="h-4 w-4" />
             Hướng dẫn
           </TabsTrigger>
           <TabsTrigger 
             value="video"
-            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-foreground transition-all duration-200"
+            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:shadow-lg data-[state=active]:shadow-pink-200/50 data-[state=active]:text-foreground data-[state=active]:scale-105 transition-all duration-300 ease-out"
           >
             <Play className="h-4 w-4" />
             Video
