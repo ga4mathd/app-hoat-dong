@@ -94,11 +94,11 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
   return (
     <div className="px-5 pt-6 pb-8">
-      {/* Expert Info */}
-      <div className="flex items-center gap-3 mb-5">
-        <Avatar className="h-12 w-12 border-2 border-orange/30">
+      {/* Expert Info - Box riêng */}
+      <div className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3 mb-4">
+        <Avatar className="h-14 w-14">
           <AvatarImage src="/placeholder.svg" />
-          <AvatarFallback className="bg-orange-light text-orange font-bold">
+          <AvatarFallback className="bg-gradient-to-br from-purple-400 via-purple-500 to-pink-400 text-white font-bold text-lg">
             {activity.expert_name?.charAt(0) || 'C'}
           </AvatarFallback>
         </Avatar>
@@ -110,24 +110,24 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
       {/* Tabs */}
       <Tabs defaultValue="goals" className="w-full">
-        <TabsList className="w-full bg-muted/50 p-1 rounded-xl mb-4">
+        <TabsList className="w-full bg-white shadow-sm p-1.5 rounded-full mb-5">
           <TabsTrigger 
             value="goals" 
-            className="flex-1 data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-lg gap-1.5 text-sm"
+            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-foreground transition-all duration-200"
           >
             <Target className="h-4 w-4" />
             Mục tiêu
           </TabsTrigger>
           <TabsTrigger 
             value="instructions"
-            className="flex-1 data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-lg gap-1.5 text-sm"
+            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-foreground transition-all duration-200"
           >
             <FileText className="h-4 w-4" />
             Hướng dẫn
           </TabsTrigger>
           <TabsTrigger 
             value="video"
-            className="flex-1 data-[state=active]:bg-card data-[state=active]:shadow-sm rounded-lg gap-1.5 text-sm"
+            className="flex-1 rounded-full py-2.5 gap-1.5 text-sm text-muted-foreground data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-foreground transition-all duration-200"
           >
             <Play className="h-4 w-4" />
             Video
@@ -135,9 +135,9 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsList>
 
         <TabsContent value="goals" className="mt-0">
-          <div className="bg-muted/30 rounded-xl p-4 min-h-[100px]">
-            <div className="flex items-start gap-2">
-              <Target className="h-5 w-5 text-orange mt-0.5 shrink-0" />
+          <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm">
+            <div className="flex items-start gap-3">
+              <Target className="h-5 w-5 text-pink-500 mt-0.5 shrink-0" />
               <div>
                 <p className="font-semibold text-foreground mb-1">Mục tiêu hoạt động</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -149,9 +149,9 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsContent>
 
         <TabsContent value="instructions" className="mt-0">
-          <div className="bg-muted/30 rounded-xl p-4 min-h-[100px]">
-            <div className="flex items-start gap-2">
-              <FileText className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+          <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm">
+            <div className="flex items-start gap-3">
+              <FileText className="h-5 w-5 text-pink-500 mt-0.5 shrink-0" />
               <div>
                 <p className="font-semibold text-foreground mb-1">Hướng dẫn thực hiện</p>
                 <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
@@ -163,13 +163,13 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsContent>
 
         <TabsContent value="video" className="mt-0">
-          <div className="bg-muted/30 rounded-xl p-4 min-h-[100px] flex items-center justify-center">
+          <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm flex items-center justify-center">
             <button 
               onClick={() => navigate(`/activity/${activity.id}?tab=video`)}
               className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                <Play className="h-8 w-8 text-primary" />
+              <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center">
+                <Play className="h-8 w-8 text-pink-500" />
               </div>
               <span className="text-sm font-medium">Xem video hướng dẫn</span>
             </button>
@@ -181,7 +181,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       <Button
         onClick={handleComplete}
         disabled={isCompleting}
-        className="w-full mt-5 h-14 text-base font-bold rounded-2xl bg-gradient-to-r from-pink to-secondary hover:opacity-90 transition-opacity"
+        className="w-full mt-6 h-14 text-base font-bold rounded-2xl bg-gradient-to-r from-pink-400 via-pink-500 to-blue-500 hover:opacity-90 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
       >
         {isCompleting ? (
           'Đang xử lý...'
