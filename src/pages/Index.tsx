@@ -64,8 +64,8 @@ const Index = () => {
         />
       </div>
       
-      {/* White card section */}
-      <div className="w-full max-w-[400px] mx-auto px-4 mt-4">
+      {/* White card section - full width */}
+      <div className="w-full max-w-[400px] mx-auto mt-4">
         <ActivityCard activity={selectedActivity} />
       </div>
       
