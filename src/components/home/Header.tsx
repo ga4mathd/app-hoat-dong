@@ -152,6 +152,9 @@ export function Header() {
           </div>
         </button>
       </div>
+      
+      {/* Divider line */}
+      <div className="mt-3 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
     </header>
   );
 }
