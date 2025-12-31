@@ -9,19 +9,18 @@ export function BottomActions() {
   const isActivitiesActive = location.pathname === '/activities' && location.search.includes('mode=tomorrow');
   const isShopActive = location.pathname === '/shop';
 
-  const activeClass = 'px-5 py-3 bg-pink text-primary-foreground rounded-2xl font-medium text-xs shadow-lg';
-  const inactiveClass = 'px-3 py-2 text-foreground hover:text-primary';
-
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border py-3 px-4 animate-fade-in z-50">
       <div className="w-full max-w-[400px] mx-auto flex items-center justify-between">
         {/* Truyện - nhạc button */}
         <button
           onClick={() => navigate('/stories-music')}
-          className={`flex flex-col items-center gap-1 transition-all ${isStoriesMusicActive ? activeClass : inactiveClass}`}
+          className="flex flex-col items-center gap-1 transition-all"
         >
-          <Music className={`h-6 w-6 ${isStoriesMusicActive ? '' : 'text-muted-foreground'}`} />
-          <span className={`text-xs font-medium text-center leading-tight ${isStoriesMusicActive ? '' : 'text-muted-foreground'}`}>
+          <div className={`p-3 rounded-full transition-all ${isStoriesMusicActive ? 'bg-pink' : ''}`}>
+            <Music className={`h-6 w-6 ${isStoriesMusicActive ? 'text-white' : 'text-muted-foreground'}`} />
+          </div>
+          <span className={`text-xs font-medium text-center leading-tight ${isStoriesMusicActive ? 'text-pink' : 'text-muted-foreground'}`}>
             Truyện - nhạc<br/>nuôi dạy con
           </span>
         </button>
@@ -29,10 +28,12 @@ export function BottomActions() {
         {/* Xem hoạt động ngày mai */}
         <button
           onClick={() => navigate('/activities?mode=tomorrow')}
-          className={`flex flex-col items-center gap-1 transition-all ${isActivitiesActive ? activeClass : inactiveClass}`}
+          className="flex flex-col items-center gap-1 transition-all"
         >
-          <Lightbulb className={`h-6 w-6 ${isActivitiesActive ? '' : 'text-muted-foreground'}`} />
-          <span className={`text-xs font-medium text-center leading-tight ${isActivitiesActive ? '' : 'text-muted-foreground'}`}>
+          <div className={`p-3 rounded-full transition-all ${isActivitiesActive ? 'bg-pink' : ''}`}>
+            <Lightbulb className={`h-6 w-6 ${isActivitiesActive ? 'text-white' : 'text-muted-foreground'}`} />
+          </div>
+          <span className={`text-xs font-medium text-center leading-tight ${isActivitiesActive ? 'text-pink' : 'text-muted-foreground'}`}>
             Xem hoạt động<br/>ngày mai
           </span>
         </button>
@@ -40,10 +41,12 @@ export function BottomActions() {
         {/* Shop */}
         <button
           onClick={() => navigate('/shop')}
-          className={`flex flex-col items-center gap-1 transition-all ${isShopActive ? activeClass : inactiveClass}`}
+          className="flex flex-col items-center gap-1 transition-all"
         >
-          <ShoppingBag className={`h-6 w-6 ${isShopActive ? '' : 'text-muted-foreground'}`} />
-          <span className={`text-xs font-medium text-center leading-tight ${isShopActive ? '' : 'text-muted-foreground'}`}>
+          <div className={`p-3 rounded-full transition-all ${isShopActive ? 'bg-pink' : ''}`}>
+            <ShoppingBag className={`h-6 w-6 ${isShopActive ? 'text-white' : 'text-muted-foreground'}`} />
+          </div>
+          <span className={`text-xs font-medium text-center leading-tight ${isShopActive ? 'text-pink' : 'text-muted-foreground'}`}>
             Shop đồ tốt<br/>mẹ và bé
           </span>
         </button>

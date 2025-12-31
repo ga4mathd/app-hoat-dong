@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/home/Header';
-import { HeroBanner } from '@/components/home/HeroBanner';
-import { MotivationBanner } from '@/components/home/MotivationBanner';
 import { TodayActivity } from '@/components/home/TodayActivity';
-import { ExpertSection } from '@/components/home/ExpertSection';
+import { ActivityCard } from '@/components/home/ActivityCard';
 import { BottomActions } from '@/components/home/BottomActions';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,6 +16,7 @@ interface Activity {
   expert_name: string | null;
   expert_title: string | null;
   image_url: string | null;
+  points?: number | null;
 }
 
 const Index = () => {
@@ -54,19 +53,25 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-light/30 via-background to-background pb-28">
-      <div className="w-full max-w-[400px] mx-auto px-4 pt-2 space-y-4">
-        <Header />
-        <HeroBanner imageUrl={selectedActivity?.image_url} activityTag={selectedTag} />
-        <MotivationBanner />
-        <TodayActivity 
-          activity={selectedActivity}
-          availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi', 'Khoa học']}
-          selectedTag={selectedTag}
-          onTagSelect={setSelectedTag}
-        />
-        <ExpertSection />
+    <div className="min-h-screen bg-background pb-32">
+      {/* Orange gradient background */}
+      <div className="bg-gradient-to-b from-orange to-[hsl(18,90%,52%)] rounded-b-[2.5rem]">
+        <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
+          <Header />
+          <TodayActivity 
+            activity={selectedActivity}
+            availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi', 'Khoa học']}
+            selectedTag={selectedTag}
+            onTagSelect={setSelectedTag}
+          />
+        </div>
       </div>
+      
+      {/* White card section */}
+      <div className="w-full max-w-[400px] mx-auto px-4 -mt-2">
+        <ActivityCard activity={selectedActivity} />
+      </div>
+      
       <BottomActions />
     </div>
   );
