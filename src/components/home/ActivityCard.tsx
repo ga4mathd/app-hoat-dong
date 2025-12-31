@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import avatarBoy from '@/assets/avatar-boy.png';
 
 interface Activity {
   id: string;
@@ -96,13 +97,14 @@ export function ActivityCard({ activity }: ActivityCardProps) {
     <div className="px-5 pt-6 pb-8">
       {/* Expert Info - Box riêng */}
       <div className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3 mb-4">
-        <Avatar className="h-14 w-14">
-          <AvatarImage src="/placeholder.svg" />
+        <Avatar className="h-14 w-14 border-2 border-purple-200">
+          <AvatarImage src={avatarBoy} className="object-cover" />
           <AvatarFallback className="bg-gradient-to-br from-purple-400 via-purple-500 to-pink-400 text-white font-bold text-lg">
             {activity.expert_name?.charAt(0) || 'C'}
           </AvatarFallback>
         </Avatar>
         <div>
+          <p className="text-xs text-muted-foreground">Giáo viên hướng dẫn</p>
           <p className="font-bold text-foreground">{activity.expert_name || 'Chuyên gia'}</p>
           <p className="text-sm text-muted-foreground">{activity.expert_title || 'Chuyên gia giáo dục'}</p>
         </div>
