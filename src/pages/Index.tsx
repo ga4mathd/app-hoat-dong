@@ -53,7 +53,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)] pb-32">
+    <div className="min-h-screen bg-gradient-to-b from-orange to-[hsl(18,90%,52%)]">
       <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
         <Header />
         <TodayActivity 
@@ -64,8 +64,8 @@ const Index = () => {
         />
       </div>
       
-      {/* White card section - full width */}
-      <div className="w-full max-w-[400px] mx-auto mt-4">
+      {/* White card section - full width, extends to bottom */}
+      <div className="w-full max-w-[400px] mx-auto mt-4 bg-card rounded-t-3xl min-h-[calc(100vh-350px)] pb-32">
         <ActivityCard activity={selectedActivity} />
       </div>
       
