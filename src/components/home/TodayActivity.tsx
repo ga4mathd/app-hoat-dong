@@ -27,10 +27,17 @@ interface TodayActivityPropsExtended extends TodayActivityProps {
 export function TodayActivity({ activity, availableTags, selectedTag, onTagSelect, totalActivities = 0 }: TodayActivityPropsExtended) {
   return (
     <div className="flex flex-col items-center text-center pt-2 pb-6 animate-fade-in">
-      {/* Motivation Text */}
-      <p className="text-white/80 text-xs font-medium mb-2 tracking-wide uppercase">
-        Bạn đã thực hiện <span className="text-yellow font-bold">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
-      </p>
+      {/* Motivation Text - Marquee */}
+      <div className="w-full overflow-hidden mb-2">
+        <div className="animate-marquee whitespace-nowrap">
+          <span className="text-white/80 text-xs font-medium tracking-wide uppercase mx-8">
+            Bạn đã thực hiện <span className="text-yellow font-bold">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
+          </span>
+          <span className="text-white/80 text-xs font-medium tracking-wide uppercase mx-8">
+            Bạn đã thực hiện <span className="text-yellow font-bold">{totalActivities}</span> hoạt động trong tháng! Cố gắng nhé!
+          </span>
+        </div>
+      </div>
 
       {/* Title */}
       <h2 className="text-white/90 text-sm font-medium mb-4 tracking-wide">

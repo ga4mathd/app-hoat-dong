@@ -120,7 +120,7 @@ export default {
         "fade-in": "fade-in 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "bounce-gentle": "bounce-gentle 2s ease-in-out infinite",
-        "marquee": "marquee 8s linear infinite",
+        "marquee": "marquee 15s linear infinite",
       },
     },
   },
