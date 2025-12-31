@@ -128,26 +128,26 @@ export function Header() {
             <p className="text-xs text-muted-foreground leading-tight">{getGreeting()}</p>
             <h2 className="font-bold text-sm text-foreground leading-tight truncate">{displayName}</h2>
             
-            {/* Stats Badges - Always horizontal */}
+            {/* Stats Badges - Always horizontal with light colors */}
             <div className="flex items-center gap-1 mt-1 flex-nowrap">
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-pink/15 text-pink rounded-full text-[10px] font-semibold whitespace-nowrap border border-pink/30">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/20 text-white rounded-full text-[10px] font-semibold whitespace-nowrap border border-white/30">
                 🏃 {totalActivities} hoạt động
               </span>
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-accent/20 text-orange rounded-full text-[10px] font-semibold whitespace-nowrap border border-orange/30">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/20 text-white rounded-full text-[10px] font-semibold whitespace-nowrap border border-white/30">
                 🏆 {totalPoints} điểm
               </span>
             </div>
           </div>
         </div>
         
-        {/* Right: Month Badge - Clickable */}
+        {/* Right: Date Badge - Clickable */}
         <button
           onClick={() => navigate(`/activities?month=${currentMonth}&year=${currentYear}`)}
           className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-2xl shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
         >
           <Calendar className="h-6 w-6" />
           <div className="text-center leading-tight">
-            <div className="text-xs font-bold">{MONTHS[currentMonth]}</div>
+            <div className="text-xs font-bold">{new Date().getDate()} {MONTHS[currentMonth]}</div>
             <div className="text-base font-bold">{currentYear}</div>
           </div>
         </button>
