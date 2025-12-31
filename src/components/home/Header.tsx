@@ -1,7 +1,8 @@
-import { Calendar, LogIn, User, History, LogOut } from 'lucide-react';
+import { Calendar, LogIn, User, History, LogOut, Shield } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useAdmin } from '@/hooks/useAdmin';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
@@ -16,6 +17,7 @@ import {
 
 export function Header() {
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string | null; total_activities: number; total_points: number } | null>(null);
   const [currentMonth] = useState(new Date().getMonth());
@@ -108,6 +110,12 @@ export function Header() {
                 <History className="mr-2 h-4 w-4" />
                 Hoạt động đã thực hiện
               </DropdownMenuItem>
+              {isAdmin && (
+                <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
+                  <Shield className="mr-2 h-4 w-4" />
+                  Quản trị
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={signOut} className="cursor-pointer text-destructive focus:text-destructive">
                 <LogOut className="mr-2 h-4 w-4" />
