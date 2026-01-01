@@ -65,10 +65,24 @@ const Admin = () => {
     try {
       const saveData = { ...data, video_url: convertToEmbedUrl(data.video_url) || data.video_url };
       if (editingActivity) {
-        await supabase.from('activities').update(saveData).eq('id', editingActivity.id);
+        const { error } = await supabase.from('activities').update(saveData).eq('id', editingActivity.id);
+        if (error) {
+          if (error.code === '42501' || error.message?.includes('row-level security')) {
+            toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+            return;
+          }
+          throw error;
+        }
         toast({ title: 'Thành công', description: 'Đã cập nhật hoạt động' });
       } else {
-        await supabase.from('activities').insert({ title: saveData.title as string, ...saveData });
+        const { error } = await supabase.from('activities').insert({ title: saveData.title as string, ...saveData });
+        if (error) {
+          if (error.code === '42501' || error.message?.includes('row-level security')) {
+            toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+            return;
+          }
+          throw error;
+        }
         toast({ title: 'Thành công', description: 'Đã thêm hoạt động mới' });
       }
       setFormOpen(false);
@@ -82,7 +96,15 @@ const Admin = () => {
   };
 
   const handleDelete = async (id: string) => {
-    await supabase.from('activities').delete().eq('id', id);
+    const { error } = await supabase.from('activities').delete().eq('id', id);
+    if (error) {
+      if (error.code === '42501' || error.message?.includes('row-level security')) {
+        toast({ title: 'Không có quyền', description: 'Bạn không có quyền xóa hoạt động này', variant: 'destructive' });
+        return;
+      }
+      toast({ title: 'Lỗi', description: 'Không thể xóa hoạt động', variant: 'destructive' });
+      return;
+    }
     toast({ title: 'Thành công', description: 'Đã xóa hoạt động' });
     fetchActivities();
   };
@@ -90,8 +112,19 @@ const Admin = () => {
   const handleImport = async (parsedActivities: Array<{ scheduled_date: string; title: string; description: string; tags: string[]; instructions: string; goals: string; video_url: string; points: number; expert_name: string; expert_title: string; image_url: string; expert_avatar: string }>, mode: 'add' | 'replace') => {
     setSaving(true);
     try {
-      if (mode === 'replace') await supabase.from('activities').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      await supabase.from('activities').insert(parsedActivities);
+      if (mode === 'replace') {
+        const { error: deleteError } = await supabase.from('activities').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (deleteError?.code === '42501' || deleteError?.message?.includes('row-level security')) {
+          toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+          return;
+        }
+      }
+      const { error } = await supabase.from('activities').insert(parsedActivities);
+      if (error?.code === '42501' || error?.message?.includes('row-level security')) {
+        toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+        return;
+      }
+      if (error) throw error;
       toast({ title: 'Thành công', description: `Đã import ${parsedActivities.length} hoạt động` });
       setImportOpen(false);
       fetchActivities();
@@ -105,8 +138,19 @@ const Admin = () => {
   const handleStoryMusicImport = async (data: Array<{ title: string; type: string; description: string | null; content_url: string | null; thumbnail_url: string | null; duration_minutes: number | null }>, mode: 'add' | 'replace') => {
     setSaving(true);
     try {
-      if (mode === 'replace') await supabase.from('stories_music').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      await supabase.from('stories_music').insert(data);
+      if (mode === 'replace') {
+        const { error: deleteError } = await supabase.from('stories_music').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (deleteError?.code === '42501' || deleteError?.message?.includes('row-level security')) {
+          toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+          return;
+        }
+      }
+      const { error } = await supabase.from('stories_music').insert(data);
+      if (error?.code === '42501' || error?.message?.includes('row-level security')) {
+        toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+        return;
+      }
+      if (error) throw error;
       toast({ title: 'Thành công', description: `Đã import ${data.length} mục` });
       setStoryMusicImportOpen(false);
       fetchStoriesMusic();
@@ -120,8 +164,19 @@ const Admin = () => {
   const handleShopProductImport = async (data: Array<{ name: string; description: string | null; price: number | null; image_url: string | null; category: string | null; link: string | null }>, mode: 'add' | 'replace') => {
     setSaving(true);
     try {
-      if (mode === 'replace') await supabase.from('shop_products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      await supabase.from('shop_products').insert(data);
+      if (mode === 'replace') {
+        const { error: deleteError } = await supabase.from('shop_products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        if (deleteError?.code === '42501' || deleteError?.message?.includes('row-level security')) {
+          toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+          return;
+        }
+      }
+      const { error } = await supabase.from('shop_products').insert(data);
+      if (error?.code === '42501' || error?.message?.includes('row-level security')) {
+        toast({ title: 'Không có quyền', description: 'Bạn không có quyền thực hiện thao tác này', variant: 'destructive' });
+        return;
+      }
+      if (error) throw error;
       toast({ title: 'Thành công', description: `Đã import ${data.length} sản phẩm` });
       setShopProductImportOpen(false);
       fetchShopProducts();
