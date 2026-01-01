@@ -6,7 +6,7 @@ import { Target, FileText, Play, Check } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { VideoDialog } from '@/components/ui/video-dialog';
+import { convertToEmbedUrl } from '@/lib/youtube';
 import avatarBoy from '@/assets/avatar-boy.png';
 
 interface Activity {
@@ -31,7 +31,6 @@ interface ActivityCardProps {
 export function ActivityCard({ activity }: ActivityCardProps) {
   const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
-  const [videoOpen, setVideoOpen] = useState(false);
 
   const handleComplete = async () => {
     if (!user || !activity) {
@@ -170,16 +169,27 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsContent>
 
         <TabsContent value="video" className="mt-0">
-          <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm flex items-center justify-center">
-            <button 
-              onClick={() => setVideoOpen(true)}
-              className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-            >
-              <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center">
-                <Play className="h-8 w-8 text-pink-500" />
+          <div className="bg-[#FFF8E7] rounded-2xl overflow-hidden shadow-sm">
+            {activity.video_url ? (
+              <div className="aspect-video w-full">
+                <iframe
+                  src={convertToEmbedUrl(activity.video_url) || ''}
+                  title={activity.title}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
               </div>
-              <span className="text-sm font-medium">Xem video hướng dẫn</span>
-            </button>
+            ) : (
+              <div className="p-5 min-h-[100px] flex items-center justify-center">
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center">
+                    <Play className="h-8 w-8 text-pink-500" />
+                  </div>
+                  <span className="text-sm font-medium">Chưa có video</span>
+                </div>
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>
@@ -199,14 +209,6 @@ export function ActivityCard({ activity }: ActivityCardProps) {
           </>
         )}
       </Button>
-
-      {/* Video Dialog */}
-      <VideoDialog
-        open={videoOpen}
-        onOpenChange={setVideoOpen}
-        videoUrl={activity.video_url}
-        title={activity.title}
-      />
     </div>
   );
 }
