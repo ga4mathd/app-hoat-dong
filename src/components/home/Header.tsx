@@ -1,4 +1,4 @@
-import { Calendar, LogIn, User, History, LogOut, Shield } from 'lucide-react';
+import { Calendar, Bell, LogIn, User, History, LogOut, Shield } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -20,13 +20,6 @@ export function Header() {
   const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string | null; total_activities: number; total_points: number } | null>(null);
-  const [currentMonth] = useState(new Date().getMonth());
-  const [currentYear] = useState(new Date().getFullYear());
-
-  const MONTHS = [
-    'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
-    'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
-  ];
 
   useEffect(() => {
     if (user) {
@@ -51,9 +44,9 @@ export function Header() {
   // Khi chưa đăng nhập
   if (!user) {
     return (
-      <header className="flex items-center justify-between py-3 animate-fade-in">
+      <header className="flex items-center justify-between py-4 animate-fade-in">
         <div className="flex items-center gap-3">
-          <Avatar className="h-16 w-16 border-4 border-card shadow-lg ring-2 ring-primary/20">
+          <Avatar className="h-14 w-14 border-2 border-border shadow-md">
             <AvatarImage src={avatarBoy} alt="Avatar" className="object-cover" />
             <AvatarFallback className="bg-blue-light text-primary font-bold text-xl">
               K
@@ -81,14 +74,14 @@ export function Header() {
   const totalPoints = profile?.total_points || 100;
 
   return (
-    <header className="py-3 animate-fade-in overflow-hidden">
-      <div className="flex items-center justify-between gap-2">
+    <header className="py-4 animate-fade-in">
+      <div className="flex items-center justify-between gap-3">
         {/* Left: Avatar + Info */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="focus:outline-none">
-                <Avatar className="h-12 w-12 flex-shrink-0 border-3 border-card shadow-lg ring-2 ring-primary/20 cursor-pointer hover:ring-4 hover:ring-primary/30 transition-all">
+                <Avatar className="h-14 w-14 flex-shrink-0 border-2 border-border shadow-md cursor-pointer hover:shadow-lg transition-all">
                   <AvatarImage src={avatarBoy} alt="Avatar" className="object-cover" />
                   <AvatarFallback className="bg-blue-light text-primary font-bold text-base">
                     {displayName.charAt(0).toUpperCase()}
@@ -125,36 +118,36 @@ export function Header() {
           </DropdownMenu>
           
           <div className="flex flex-col min-w-0">
-            <p className="text-xs text-white/80 leading-tight">{getGreeting()}</p>
-            <h2 className="font-bold text-sm text-white leading-tight truncate">{displayName}</h2>
+            <p className="text-sm text-muted-foreground leading-tight">{getGreeting()}</p>
+            <h2 className="font-bold text-lg text-[hsl(210,85%,35%)] leading-tight truncate">{displayName}</h2>
             
-            {/* Stats Badges - Always horizontal with light colors */}
-            <div className="flex items-center gap-1 mt-1 flex-nowrap">
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/20 text-white rounded-full text-[10px] font-semibold whitespace-nowrap border border-white/30">
-                🏃 {totalActivities} hoạt động
+            {/* Stats Badges - Orange/Yellow colors */}
+            <div className="flex items-center gap-2 mt-1.5 flex-nowrap">
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-orange whitespace-nowrap">
+                🚀 {totalActivities} hoạt động
               </span>
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/20 text-white rounded-full text-[10px] font-semibold whitespace-nowrap border border-white/30">
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-yellow whitespace-nowrap">
                 🏆 {totalPoints} điểm
               </span>
             </div>
           </div>
         </div>
         
-        {/* Right: Date Badge - Clickable */}
-        <button
-          onClick={() => navigate(`/activities?month=${currentMonth}&year=${currentYear}`)}
-          className="flex-shrink-0 flex items-center gap-2 px-4 py-3 bg-primary text-primary-foreground rounded-2xl shadow-lg hover:bg-primary/90 active:scale-95 transition-all cursor-pointer"
-        >
-          <Calendar className="h-6 w-6" />
-          <div className="text-center leading-tight">
-            <div className="text-xs font-bold">{new Date().getDate()} {MONTHS[currentMonth]}</div>
-            <div className="text-base font-bold">{currentYear}</div>
-          </div>
-        </button>
+        {/* Right: Calendar and Bell icons */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={() => navigate('/activities')}
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md hover:bg-primary/90 transition-all"
+          >
+            <Calendar className="h-5 w-5 text-primary-foreground" />
+          </button>
+          <button
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md hover:bg-primary/90 transition-all"
+          >
+            <Bell className="h-5 w-5 text-primary-foreground" />
+          </button>
+        </div>
       </div>
-      
-      {/* Divider line */}
-      <div className="mt-3 h-[1px] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
     </header>
   );
 }
