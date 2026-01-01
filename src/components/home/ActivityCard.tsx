@@ -128,9 +128,28 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   };
 
   // Parse content into steps for displaying with dividers
+  // Split by "Bước X" pattern instead of newlines
   const parseSteps = (content: string | null) => {
     if (!content) return [];
-    return content.split('\n').filter(line => line.trim());
+    // Split by "Bước" but keep "Bước" in the result
+    const steps = content.split(/(?=Bước\s*\d+)/);
+    return steps.filter(step => step.trim());
+  };
+
+  // Render step content with bold "Bước X:" prefix
+  const renderStepContent = (step: string) => {
+    const match = step.match(/^(Bước\s*\d+\s*:?)/);
+    if (match) {
+      const boldPart = match[1];
+      const rest = step.slice(boldPart.length);
+      return (
+        <>
+          <span className="font-bold text-foreground">{boldPart}</span>
+          {rest}
+        </>
+      );
+    }
+    return step;
   };
 
   if (!activity) {
@@ -275,8 +294,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
                   <div className="space-y-0">
                     {instructionSteps.map((step, index) => (
                       <div key={index}>
-                        <p className="text-sm text-muted-foreground leading-relaxed py-2">
-                          {step}
+                        <p className="text-sm text-muted-foreground leading-relaxed py-2 whitespace-pre-wrap">
+                          {renderStepContent(step)}
                         </p>
                         {index < instructionSteps.length - 1 && (
                           <div className="h-[1px] bg-orange/20" />
