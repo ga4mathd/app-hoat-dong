@@ -21,6 +21,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { convertToEmbedUrl } from '@/lib/youtube';
 
 interface ExcelRow {
   ngay: string;
@@ -33,6 +34,8 @@ interface ExcelRow {
   diem?: number;
   chuyen_gia?: string;
   chuc_danh?: string;
+  avatar_gv?: string;
+  hinh_anh?: string;
 }
 
 interface ParsedActivity {
@@ -46,6 +49,8 @@ interface ParsedActivity {
   points: number;
   expert_name: string;
   expert_title: string;
+  image_url: string;
+  expert_avatar: string;
 }
 
 interface ExcelImportProps {
@@ -70,10 +75,12 @@ export const ExcelImport = ({ open, onClose, onImport, loading }: ExcelImportPro
         'Danh mục': 'Sáng tạo, Nghệ thuật',
         'Hướng dẫn': 'Bước 1: Chuẩn bị giấy và bút màu...',
         'Mục đích': 'Phát triển tư duy sáng tạo, kỹ năng vận động tinh',
-        'Video': 'https://youtube.com/...',
+        'Video': 'https://youtube.com/watch?v=xxxxx',
         'Điểm': 15,
         'Chuyên gia': 'Chuyên gia Jenna',
         'Chức danh': 'Chuyên gia Tâm lý Giáo dục',
+        'Avatar GV': 'https://example.com/avatar.jpg',
+        'Hình ảnh': 'https://example.com/activity.jpg',
       },
     ];
 
@@ -84,8 +91,8 @@ export const ExcelImport = ({ open, onClose, onImport, loading }: ExcelImportPro
     // Set column widths
     ws['!cols'] = [
       { wch: 15 }, { wch: 25 }, { wch: 40 }, { wch: 20 },
-      { wch: 50 }, { wch: 40 }, { wch: 30 }, { wch: 8 },
-      { wch: 20 }, { wch: 25 },
+      { wch: 50 }, { wch: 40 }, { wch: 40 }, { wch: 8 },
+      { wch: 20 }, { wch: 25 }, { wch: 40 }, { wch: 40 },
     ];
 
     XLSX.writeFile(wb, 'mau_hoat_dong.xlsx');
@@ -162,10 +169,12 @@ export const ExcelImport = ({ open, onClose, onImport, loading }: ExcelImportPro
             tags,
             instructions: String(row['Hướng dẫn'] || row['huong_dan'] || row['Instructions'] || ''),
             goals: String(row['Mục đích'] || row['muc_dich'] || row['Goals'] || ''),
-            video_url: String(row['Video'] || row['video'] || row['Video URL'] || ''),
+            video_url: convertToEmbedUrl(String(row['Video'] || row['video'] || row['Video URL'] || '')) || '',
             points: Number(row['Điểm'] || row['diem'] || row['Points'] || 10),
             expert_name: String(row['Chuyên gia'] || row['chuyen_gia'] || row['Expert'] || 'Chuyên gia Jenna'),
             expert_title: String(row['Chức danh'] || row['chuc_danh'] || row['Title'] || 'Chuyên gia Tâm lý Giáo dục'),
+            image_url: String(row['Hình ảnh'] || row['hinh_anh'] || row['Image'] || ''),
+            expert_avatar: String(row['Avatar GV'] || row['avatar_gv'] || row['Avatar'] || ''),
           });
         });
 
