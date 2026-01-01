@@ -165,11 +165,11 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       </div>
 
       {/* Divider Line */}
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent my-5" />
+      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent my-8" />
 
       {/* Large Icon Tabs - Improved Design */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full bg-transparent p-0 mb-6 flex justify-around px-2 sm:justify-center sm:gap-16">
+        <TabsList className="w-full bg-transparent p-0 mb-10 flex justify-around px-2 sm:justify-center sm:gap-16">
           {/* Mục tiêu Tab */}
           <TabsTrigger 
             value="goals" 
@@ -235,7 +235,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsList>
 
         {/* Goals Tab Content */}
-        <TabsContent value="goals" className="mt-0 animate-fade-in">
+        <TabsContent value="goals" className="mt-4 animate-fade-in">
           <div className="bg-[#FFF8E7] rounded-2xl p-4 min-h-[100px] shadow-sm">
             <div className="flex items-start gap-3">
               <FileText className="h-5 w-5 text-orange flex-shrink-0 mt-0.5" />
@@ -265,7 +265,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsContent>
 
         {/* Instructions Tab Content */}
-        <TabsContent value="instructions" className="mt-0 animate-fade-in">
+        <TabsContent value="instructions" className="mt-4 animate-fade-in">
           <div className="bg-[#FFF8E7] rounded-2xl p-4 min-h-[100px] shadow-sm">
             <div className="flex items-start gap-3">
               <FileText className="h-5 w-5 text-orange flex-shrink-0 mt-0.5" />
@@ -295,7 +295,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         </TabsContent>
 
         {/* Video Tab Content */}
-        <TabsContent value="video" className="mt-0 animate-fade-in">
+        <TabsContent value="video" className="mt-4 animate-fade-in">
           <div className="bg-[#FFF8E7] rounded-2xl overflow-hidden shadow-sm">
             {activity.video_url ? (
               <div className="aspect-video w-full">
