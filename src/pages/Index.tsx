@@ -115,16 +115,16 @@ const Index = () => {
     );
   }
 
-  // Giao diện cho user đã đăng nhập
+  // Giao diện cho user đã đăng nhập - White background
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-600 via-purple-500 to-pink-500">
-      {/* Header section */}
-      <div className="w-full max-w-[400px] mx-auto px-4 pt-2">
+    <div className="min-h-screen bg-background">
+      {/* Header section - White background */}
+      <div className="w-full max-w-[400px] mx-auto px-4 pt-2 bg-background">
         <Header />
       </div>
 
-      {/* Activity Section */}
-      <div className="w-full max-w-[400px] mx-auto px-4">
+      {/* Activity Section - White background */}
+      <div className="w-full max-w-[400px] mx-auto px-4 bg-background">
         <TodayActivity 
           todayActivity={todayActivity}
           yesterdayActivity={yesterdayActivity}
@@ -135,11 +135,9 @@ const Index = () => {
         />
       </div>
       
-      {/* White card section - full width on mobile */}
-      <div className="w-full mt-2 bg-card rounded-t-3xl min-h-[calc(100vh-380px)] pb-24">
-        <div className="max-w-[400px] mx-auto">
-          <ActivityCard activity={getCurrentActivity()} />
-        </div>
+      {/* Activity Card section */}
+      <div className="w-full max-w-[400px] mx-auto bg-background pb-24">
+        <ActivityCard activity={getCurrentActivity()} />
       </div>
       
       <BottomActions />
