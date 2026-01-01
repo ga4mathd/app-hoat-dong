@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          expert_avatar: string | null
           expert_name: string | null
           expert_title: string | null
           goals: string | null
@@ -33,6 +34,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          expert_avatar?: string | null
           expert_name?: string | null
           expert_title?: string | null
           goals?: string | null
@@ -48,6 +50,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          expert_avatar?: string | null
           expert_name?: string | null
           expert_title?: string | null
           goals?: string | null
@@ -92,6 +95,39 @@ export type Database = {
           total_points?: number | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      shop_products: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          link: string | null
+          name: string
+          price: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          name: string
+          price?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          name?: string
+          price?: number | null
         }
         Relationships: []
       }

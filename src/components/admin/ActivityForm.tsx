@@ -43,6 +43,8 @@ export const ActivityForm = ({ activity, open, onClose, onSave, loading }: Activ
     points: 10,
     expert_name: 'Chuyên gia Jenna',
     expert_title: 'Chuyên gia Tâm lý Giáo dục',
+    image_url: '',
+    expert_avatar: '',
   });
   const [tagInput, setTagInput] = useState('');
 
@@ -59,6 +61,8 @@ export const ActivityForm = ({ activity, open, onClose, onSave, loading }: Activ
         points: activity.points || 10,
         expert_name: activity.expert_name || 'Chuyên gia Jenna',
         expert_title: activity.expert_title || 'Chuyên gia Tâm lý Giáo dục',
+        image_url: activity.image_url || '',
+        expert_avatar: activity.expert_avatar || '',
       });
     } else {
       setFormData({
@@ -72,6 +76,8 @@ export const ActivityForm = ({ activity, open, onClose, onSave, loading }: Activ
         points: 10,
         expert_name: 'Chuyên gia Jenna',
         expert_title: 'Chuyên gia Tâm lý Giáo dục',
+        image_url: '',
+        expert_avatar: '',
       });
     }
     setTagInput('');
@@ -254,6 +260,35 @@ export const ActivityForm = ({ activity, open, onClose, onSave, loading }: Activ
                 value={formData.expert_title}
                 onChange={(e) => setFormData(prev => ({ ...prev, expert_title: e.target.value }))}
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="expert_avatar">Avatar giáo viên (URL)</Label>
+              <Input
+                id="expert_avatar"
+                type="url"
+                value={formData.expert_avatar}
+                onChange={(e) => setFormData(prev => ({ ...prev, expert_avatar: e.target.value }))}
+                placeholder="https://example.com/avatar.jpg"
+              />
+              {formData.expert_avatar && (
+                <img src={formData.expert_avatar} alt="Preview" className="w-12 h-12 rounded-full object-cover mt-2" />
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="image_url">Hình ảnh hoạt động (URL)</Label>
+              <Input
+                id="image_url"
+                type="url"
+                value={formData.image_url}
+                onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                placeholder="https://example.com/activity.jpg"
+              />
+              {formData.image_url && (
+                <img src={formData.image_url} alt="Preview" className="w-16 h-16 rounded-lg object-cover mt-2" />
+              )}
             </div>
           </div>
 

@@ -3,10 +3,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Target, FileText, Play, Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { VideoDialog } from '@/components/ui/video-dialog';
 import avatarBoy from '@/assets/avatar-boy.png';
 
 interface Activity {
@@ -19,6 +19,8 @@ interface Activity {
   expert_name: string | null;
   expert_title: string | null;
   image_url: string | null;
+  expert_avatar?: string | null;
+  video_url?: string | null;
   points?: number | null;
 }
 
@@ -27,9 +29,9 @@ interface ActivityCardProps {
 }
 
 export function ActivityCard({ activity }: ActivityCardProps) {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   const handleComplete = async () => {
     if (!user || !activity) {
@@ -98,7 +100,10 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       {/* Expert Info - Box riêng */}
       <div className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-3 mb-4">
         <Avatar className="h-14 w-14 border-2 border-purple-200">
-          <AvatarImage src={avatarBoy} className="object-cover" />
+          <AvatarImage 
+            src={activity.expert_avatar || avatarBoy} 
+            className="object-cover" 
+          />
           <AvatarFallback className="bg-gradient-to-br from-purple-400 via-purple-500 to-pink-400 text-white font-bold text-lg">
             {activity.expert_name?.charAt(0) || 'C'}
           </AvatarFallback>
@@ -167,7 +172,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         <TabsContent value="video" className="mt-0">
           <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm flex items-center justify-center">
             <button 
-              onClick={() => navigate(`/activity/${activity.id}?tab=video`)}
+              onClick={() => setVideoOpen(true)}
               className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
             >
               <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center">
@@ -194,6 +199,14 @@ export function ActivityCard({ activity }: ActivityCardProps) {
           </>
         )}
       </Button>
+
+      {/* Video Dialog */}
+      <VideoDialog
+        open={videoOpen}
+        onOpenChange={setVideoOpen}
+        videoUrl={activity.video_url}
+        title={activity.title}
+      />
     </div>
   );
 }
