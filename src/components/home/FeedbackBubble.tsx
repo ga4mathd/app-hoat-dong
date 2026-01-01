@@ -78,7 +78,7 @@ export function FeedbackBubble() {
 
       {/* Feedback Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md mx-4 rounded-2xl bg-card">
+        <DialogContent className="sm:max-w-md w-[calc(100%-2rem)] rounded-2xl bg-card">
           <DialogHeader>
             <DialogTitle className="text-center text-lg font-bold text-foreground leading-relaxed">
               Cùng chúng tôi cải tiến app để hỗ trợ con bạn tốt hơn
