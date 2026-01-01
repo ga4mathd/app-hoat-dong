@@ -172,42 +172,46 @@ export default function Activities() {
               )}
             </div>
 
-            {/* Upcoming Days */}
+            {/* Upcoming Days - List layout */}
             <div>
               <h2 className="font-bold text-foreground mb-4">Các ngày tiếp theo</h2>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-3">
                 {upcomingDays.map((day, index) => {
                   const dayActivities = getActivitiesForDay(day);
                   return (
                     <div
                       key={day.toISOString()}
-                      className="bg-card rounded-2xl p-4 card-shadow animate-fade-in"
+                      className="bg-card rounded-2xl p-4 card-shadow animate-fade-in flex items-start gap-4"
                       style={{ animationDelay: `${index * 0.05}s` }}
                     >
-                      <p className="font-semibold text-sm text-foreground capitalize">
-                        {format(day, 'EEEE', { locale: vi })}
-                      </p>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {format(day, 'dd/MM')}
-                      </p>
-                      {dayActivities.length > 0 ? (
-                        <div className="space-y-1">
-                          {dayActivities.slice(0, 2).map((activity) => (
-                            <p 
-                              key={activity.id} 
-                              className="text-xs text-primary truncate cursor-pointer hover:underline"
-                              onClick={() => navigate(`/activity/${activity.id}`)}
-                            >
-                              • {activity.title}
-                            </p>
-                          ))}
-                          {dayActivities.length > 2 && (
-                            <p className="text-xs text-muted-foreground">+{dayActivities.length - 2} khác</p>
-                          )}
-                        </div>
-                      ) : (
-                        <p className="text-xs text-muted-foreground italic">Chưa có</p>
-                      )}
+                      {/* Date column */}
+                      <div className="flex flex-col items-center min-w-[50px]">
+                        <p className="font-semibold text-sm text-foreground capitalize">
+                          {format(day, 'EEEE', { locale: vi }).slice(0, 7)}
+                        </p>
+                        <p className="text-lg font-bold text-primary">
+                          {format(day, 'dd/MM')}
+                        </p>
+                      </div>
+                      
+                      {/* Activities column */}
+                      <div className="flex-1 border-l-2 border-primary/20 pl-4">
+                        {dayActivities.length > 0 ? (
+                          <div className="space-y-1">
+                            {dayActivities.map((activity) => (
+                              <p 
+                                key={activity.id} 
+                                className="text-sm text-foreground cursor-pointer hover:text-primary transition-colors"
+                                onClick={() => navigate(`/activity/${activity.id}`)}
+                              >
+                                • {activity.title}
+                              </p>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground italic">Chưa có hoạt động</p>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
