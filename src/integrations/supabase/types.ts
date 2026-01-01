@@ -65,6 +65,33 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          points_awarded: number
+          submission_date: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          points_awarded?: number
+          submission_date?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          points_awarded?: number
+          submission_date?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -229,6 +256,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      submit_feedback: { Args: { p_content: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "user"

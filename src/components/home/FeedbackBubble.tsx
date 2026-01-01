@@ -29,33 +29,58 @@ export function FeedbackBubble() {
       return;
     }
 
+    if (!user) {
+      toast({
+        title: "Vui lòng đăng nhập",
+        description: "Bạn cần đăng nhập để gửi góp ý",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (feedback.length > 2000) {
+      toast({
+        title: "Góp ý quá dài",
+        description: "Vui lòng giới hạn góp ý trong 2000 ký tự",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Add 50 points to user profile if logged in
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('total_points')
-          .eq('user_id', user.id)
-          .maybeSingle();
+      // Use secure database function for server-side validation
+      const { data, error } = await supabase.rpc('submit_feedback', {
+        p_content: feedback.trim()
+      });
 
-        if (profile) {
-          await supabase
-            .from('profiles')
-            .update({ total_points: (profile.total_points || 0) + 50 })
-            .eq('user_id', user.id);
-        }
+      if (error) {
+        throw error;
+      }
+
+      const result = data as { success: boolean; error?: string; points_awarded?: number };
+
+      if (!result.success) {
+        toast({
+          title: "Không thể gửi góp ý",
+          description: result.error === 'Already submitted feedback today' 
+            ? "Bạn đã gửi góp ý hôm nay rồi. Hãy quay lại vào ngày mai!"
+            : result.error || "Vui lòng thử lại sau",
+          variant: "destructive"
+        });
+        return;
       }
 
       toast({
         title: "🎉 Cảm ơn bạn đã góp ý!",
-        description: "Bạn đã nhận được 50 điểm thưởng",
+        description: `Bạn đã nhận được ${result.points_awarded || 50} điểm thưởng`,
       });
 
       setFeedback('');
       setIsOpen(false);
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Feedback submission error:', error);
       toast({
         title: "Có lỗi xảy ra",
         description: "Vui lòng thử lại sau",
