@@ -2,12 +2,22 @@ import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Target, FileText, Play, Check, Heart } from 'lucide-react';
+import { Target, FileText, Play, Check, X, Heart } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { convertToEmbedUrl } from '@/lib/youtube';
 import avatarBoy from '@/assets/avatar-boy.png';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 interface Activity {
   id: string;
@@ -28,11 +38,27 @@ interface ActivityCardProps {
   activity: Activity | null;
 }
 
+// Motivational messages for skip popup
+const motivationalMessages = [
+  "Chỉ 5-10 phút thôi, giá trị với con lắm đó!",
+  "Giữ chuỗi đi mà!",
+  "Đúng - đủ - đều bạn nha!",
+  "Mỗi ngày một chút, thành công lớn!",
+  "Con đang làm rất tốt, đừng dừng lại nhé!",
+];
+
 export function ActivityCard({ activity }: ActivityCardProps) {
   const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
+  const [showSkipDialog, setShowSkipDialog] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [childConfirmed, setChildConfirmed] = useState(false);
+  const [parentConfirmed, setParentConfirmed] = useState(false);
+  const [activeTab, setActiveTab] = useState('instructions');
 
-  const handleComplete = async () => {
+  const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+
+  const handleConfirmComplete = async () => {
     if (!user || !activity) {
       toast.error('Vui lòng đăng nhập để hoàn thành hoạt động');
       return;
@@ -51,6 +77,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       if (existing) {
         toast.info('Bạn đã hoàn thành hoạt động này rồi!');
         setIsCompleting(false);
+        setShowConfirmDialog(false);
         return;
       }
 
@@ -78,12 +105,32 @@ export function ActivityCard({ activity }: ActivityCardProps) {
           .eq('user_id', user.id);
       }
 
-      toast.success(`Chúc mừng! Bạn nhận được +${activity.points || 25} điểm`);
+      toast.success(`🎉 Chúc mừng! Bạn nhận được +${activity.points || 25} điểm`);
+      setShowConfirmDialog(false);
+      setChildConfirmed(false);
+      setParentConfirmed(false);
     } catch (error) {
       toast.error('Có lỗi xảy ra, vui lòng thử lại');
     } finally {
       setIsCompleting(false);
     }
+  };
+
+  // Handle complete button click
+  const handleCompleteClick = () => {
+    if (!user) {
+      toast.error('Vui lòng đăng nhập để hoàn thành hoạt động');
+      return;
+    }
+    setShowConfirmDialog(true);
+    setChildConfirmed(false);
+    setParentConfirmed(false);
+  };
+
+  // Parse content into steps for displaying with dividers
+  const parseSteps = (content: string | null) => {
+    if (!content) return [];
+    return content.split('\n').filter(line => line.trim());
   };
 
   if (!activity) {
@@ -94,11 +141,14 @@ export function ActivityCard({ activity }: ActivityCardProps) {
     );
   }
 
+  const goalSteps = parseSteps(activity.goals || activity.description);
+  const instructionSteps = parseSteps(activity.instructions);
+
   return (
-    <div className="px-5 pt-6 pb-8">
+    <div className="px-4 pt-5 pb-6">
       {/* Expert Info Section */}
       <div className="flex items-center gap-3 mb-3">
-        <Avatar className="h-14 w-14 border-2 border-pink-200">
+        <Avatar className="h-14 w-14 border-2 border-pink-200 shadow-md">
           <AvatarImage 
             src={activity.expert_avatar || avatarBoy} 
             className="object-cover" 
@@ -115,75 +165,137 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       </div>
 
       {/* Divider Line */}
-      <div className="h-[1px] bg-border mb-5" />
+      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
 
-      {/* Large Icon Tabs */}
-      <Tabs defaultValue="instructions" className="w-full">
-        <TabsList className="w-full bg-transparent p-0 mb-5 flex justify-center gap-6">
+      {/* Large Icon Tabs - Improved Design */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="w-full bg-transparent p-0 mb-4 flex justify-center gap-4 sm:gap-8">
+          {/* Mục tiêu Tab */}
           <TabsTrigger 
             value="goals" 
-            className="flex flex-col items-center gap-1.5 p-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            className="flex flex-col items-center gap-1.5 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className="w-14 h-14 rounded-full bg-orange-light flex items-center justify-center">
-              <Target className="h-7 w-7 text-orange" />
+            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+              activeTab === 'goals' 
+                ? 'bg-orange ring-2 ring-orange ring-offset-2 shadow-lg' 
+                : 'bg-orange-light hover:bg-orange/20'
+            }`}>
+              <Target className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300 ${
+                activeTab === 'goals' ? 'text-white' : 'text-orange'
+              }`} />
             </div>
-            <span className="text-xs font-medium text-muted-foreground data-[state=active]:text-foreground">Mục tiêu</span>
+            <span className={`text-xs font-medium transition-all duration-300 px-2 py-0.5 rounded-full ${
+              activeTab === 'goals' 
+                ? 'text-foreground border border-foreground' 
+                : 'text-muted-foreground'
+            }`}>Mục tiêu</span>
           </TabsTrigger>
+          
+          {/* Hướng dẫn Tab */}
           <TabsTrigger 
             value="instructions"
-            className="flex flex-col items-center gap-1.5 p-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none group"
+            className="flex flex-col items-center gap-1.5 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className="w-14 h-14 rounded-full bg-yellow-light flex items-center justify-center group-data-[state=active]:ring-2 group-data-[state=active]:ring-foreground">
-              <FileText className="h-7 w-7 text-yellow" />
+            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+              activeTab === 'instructions' 
+                ? 'bg-yellow ring-2 ring-yellow ring-offset-2 shadow-lg' 
+                : 'bg-yellow-light hover:bg-yellow/20'
+            }`}>
+              <FileText className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300 ${
+                activeTab === 'instructions' ? 'text-white' : 'text-yellow'
+              }`} />
             </div>
-            <span className="text-xs font-medium text-muted-foreground group-data-[state=active]:text-foreground group-data-[state=active]:border group-data-[state=active]:border-foreground group-data-[state=active]:rounded-full group-data-[state=active]:px-2">Hướng dẫn</span>
+            <span className={`text-xs font-medium transition-all duration-300 px-2 py-0.5 rounded-full ${
+              activeTab === 'instructions' 
+                ? 'text-foreground border border-foreground' 
+                : 'text-muted-foreground'
+            }`}>Hướng dẫn</span>
           </TabsTrigger>
+          
+          {/* Video Tab */}
           <TabsTrigger 
             value="video"
-            className="flex flex-col items-center gap-1.5 p-0 bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            className="flex flex-col items-center gap-1.5 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className="w-14 h-14 rounded-full bg-blue-light flex items-center justify-center">
-              <Play className="h-7 w-7 text-primary fill-primary" />
+            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+              activeTab === 'video' 
+                ? 'bg-primary ring-2 ring-primary ring-offset-2 shadow-lg' 
+                : 'bg-blue-light hover:bg-primary/20'
+            }`}>
+              <Play className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300 ${
+                activeTab === 'video' ? 'text-white fill-white' : 'text-primary fill-primary'
+              }`} />
             </div>
-            <span className="text-xs font-medium text-muted-foreground data-[state=active]:text-foreground">Video</span>
+            <span className={`text-xs font-medium transition-all duration-300 px-2 py-0.5 rounded-full ${
+              activeTab === 'video' 
+                ? 'text-foreground border border-foreground' 
+                : 'text-muted-foreground'
+            }`}>Video</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="goals" className="mt-0">
-          <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm">
+        {/* Goals Tab Content */}
+        <TabsContent value="goals" className="mt-0 animate-fade-in">
+          <div className="bg-[#FFF8E7] rounded-2xl p-4 min-h-[100px] shadow-sm">
             <div className="flex items-start gap-3">
-              <div className="flex items-center gap-1">
-                <FileText className="h-5 w-5 text-orange" />
-                <Heart className="h-3 w-3 text-pink -ml-1" />
-              </div>
-              <div>
-                <p className="font-semibold text-[hsl(0,70%,45%)] mb-2">Mục tiêu hoạt động</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {activity.goals || activity.description || 'Trải nghiệm hoạt động vui vẻ cùng con'}
-                </p>
+              <FileText className="h-5 w-5 text-orange flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-semibold text-[hsl(0,70%,45%)] mb-3">Mục tiêu hoạt động</p>
+                {goalSteps.length > 0 ? (
+                  <div className="space-y-0">
+                    {goalSteps.map((step, index) => (
+                      <div key={index}>
+                        <p className="text-sm text-muted-foreground leading-relaxed py-2">
+                          {step}
+                        </p>
+                        {index < goalSteps.length - 1 && (
+                          <div className="h-[1px] bg-orange/20" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Trải nghiệm hoạt động vui vẻ cùng con
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="instructions" className="mt-0">
-          <div className="bg-[#FFF8E7] rounded-2xl p-5 min-h-[100px] shadow-sm">
+        {/* Instructions Tab Content */}
+        <TabsContent value="instructions" className="mt-0 animate-fade-in">
+          <div className="bg-[#FFF8E7] rounded-2xl p-4 min-h-[100px] shadow-sm">
             <div className="flex items-start gap-3">
-              <div className="flex items-center gap-1">
-                <FileText className="h-5 w-5 text-orange" />
-                <Heart className="h-3 w-3 text-pink -ml-1" />
-              </div>
-              <div>
-                <p className="font-semibold text-[hsl(0,70%,45%)] mb-2">Hướng dẫn thực hiện</p>
-                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {activity.instructions || 'Hướng dẫn chi tiết sẽ được cập nhật'}
-                </p>
+              <FileText className="h-5 w-5 text-orange flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="font-semibold text-[hsl(0,70%,45%)] mb-3">Hướng dẫn thực hiện</p>
+                {instructionSteps.length > 0 ? (
+                  <div className="space-y-0">
+                    {instructionSteps.map((step, index) => (
+                      <div key={index}>
+                        <p className="text-sm text-muted-foreground leading-relaxed py-2">
+                          {step}
+                        </p>
+                        {index < instructionSteps.length - 1 && (
+                          <div className="h-[1px] bg-orange/20" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Hướng dẫn chi tiết sẽ được cập nhật
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="video" className="mt-0">
+        {/* Video Tab Content */}
+        <TabsContent value="video" className="mt-0 animate-fade-in">
           <div className="bg-[#FFF8E7] rounded-2xl overflow-hidden shadow-sm">
             {activity.video_url ? (
               <div className="aspect-video w-full">
@@ -211,19 +323,130 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
       {/* Complete Button */}
       <Button
-        onClick={handleComplete}
+        onClick={handleCompleteClick}
         disabled={isCompleting}
-        className="w-full mt-6 h-14 text-base font-bold rounded-2xl bg-gradient-to-r from-pink via-pink to-primary hover:opacity-90 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+        className="w-full mt-5 h-12 text-base font-bold rounded-2xl bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
       >
-        {isCompleting ? (
-          'Đang xử lý...'
-        ) : (
-          <>
-            <Check className="h-5 w-5 mr-2" />
-            Hoàn thành (+{activity.points || 25} điểm)
-          </>
-        )}
+        <Check className="h-5 w-5 mr-2" />
+        Hoàn thành (+{activity.points || 25} điểm)
       </Button>
+
+      {/* Skip Button */}
+      <Button
+        variant="ghost"
+        onClick={() => setShowSkipDialog(true)}
+        className="w-full mt-3 h-10 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+      >
+        <X className="h-4 w-4 mr-1.5" />
+        Không làm hôm nay
+      </Button>
+
+      {/* Skip Motivation Dialog */}
+      <AlertDialog open={showSkipDialog} onOpenChange={setShowSkipDialog}>
+        <AlertDialogContent className="max-w-[90vw] sm:max-w-md rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center text-lg">
+              🌟 Đừng bỏ cuộc nhé!
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-base py-4">
+              {randomMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <AlertDialogAction 
+              onClick={() => setShowSkipDialog(false)}
+              className="w-full h-12 bg-gradient-to-r from-pink via-pink to-primary hover:opacity-90 rounded-xl font-bold"
+            >
+              <Heart className="h-4 w-4 mr-2" />
+              Yes! Làm với con
+            </AlertDialogAction>
+            <AlertDialogCancel 
+              className="w-full h-10 mt-0 border-muted-foreground/30 text-muted-foreground rounded-xl"
+            >
+              Vẫn không làm
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent className="max-w-[90vw] sm:max-w-md rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-center text-lg">
+              ✅ Xác nhận hoàn thành
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-sm pt-2">
+              Cần cả con và bố mẹ xác nhận để ghi nhận điểm
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="flex flex-col gap-3 py-4">
+            <Button
+              variant={childConfirmed ? "default" : "outline"}
+              onClick={() => setChildConfirmed(true)}
+              disabled={childConfirmed}
+              className={`w-full h-14 rounded-xl text-base font-semibold transition-all duration-300 ${
+                childConfirmed 
+                  ? 'bg-gradient-to-r from-yellow to-orange text-white shadow-md' 
+                  : 'border-2 border-yellow hover:bg-yellow/10'
+              }`}
+            >
+              {childConfirmed ? (
+                <>
+                  <Check className="h-5 w-5 mr-2" />
+                  Con đã xác nhận ✓
+                </>
+              ) : (
+                '👧 Xác nhận của con'
+              )}
+            </Button>
+            
+            <Button
+              variant={parentConfirmed ? "default" : "outline"}
+              onClick={() => setParentConfirmed(true)}
+              disabled={parentConfirmed}
+              className={`w-full h-14 rounded-xl text-base font-semibold transition-all duration-300 ${
+                parentConfirmed 
+                  ? 'bg-gradient-to-r from-primary to-blue-600 text-white shadow-md' 
+                  : 'border-2 border-primary hover:bg-primary/10'
+              }`}
+            >
+              {parentConfirmed ? (
+                <>
+                  <Check className="h-5 w-5 mr-2" />
+                  Bố mẹ đã xác nhận ✓
+                </>
+              ) : (
+                '👨‍👩‍👧 Xác nhận của bố mẹ'
+              )}
+            </Button>
+          </div>
+
+          <AlertDialogFooter className="flex-col gap-2 sm:flex-col">
+            <Button
+              onClick={handleConfirmComplete}
+              disabled={!childConfirmed || !parentConfirmed || isCompleting}
+              className={`w-full h-12 rounded-xl font-bold transition-all duration-300 ${
+                childConfirmed && parentConfirmed
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white shadow-lg animate-pulse'
+                  : 'bg-muted text-muted-foreground'
+              }`}
+            >
+              {isCompleting ? (
+                'Đang xử lý...'
+              ) : (
+                <>
+                  🎉 Nhận {activity.points || 25} điểm
+                </>
+              )}
+            </Button>
+            <AlertDialogCancel className="w-full h-10 mt-0 rounded-xl">
+              Hủy
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
