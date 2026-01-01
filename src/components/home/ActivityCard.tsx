@@ -137,8 +137,15 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   };
 
   // Handle YouTube video click
-  const handleYouTubeClick = (url: string) => {
-    window.open(url, '_blank');
+  const handleYouTubeClick = (e: React.MouseEvent, url: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Ensure URL has https protocol
+    let fullUrl = url;
+    if (!url.startsWith('http')) {
+      fullUrl = 'https://' + url;
+    }
+    window.open(fullUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Render step content with bold "Bước X:" prefix and inline YouTube buttons
@@ -185,15 +192,15 @@ export function ActivityCard({ activity }: ActivityCardProps) {
           } else {
             // Render YouTube button inline
             return (
-              <Button
+              <button
                 key={idx}
-                size="sm"
-                onClick={() => handleYouTubeClick(part.url)}
-                className="inline-flex mx-1 bg-red-500 hover:bg-red-600 text-white rounded-full px-3 py-1 text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 items-center gap-1.5 h-auto"
+                type="button"
+                onClick={(e) => handleYouTubeClick(e, part.url)}
+                className="inline-flex mx-1 my-1 bg-red-500 hover:bg-red-600 text-white rounded-full px-3 py-1.5 text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 items-center gap-1.5 cursor-pointer"
               >
                 <Play className="h-3 w-3 fill-white" />
                 Xem video ngay
-              </Button>
+              </button>
             );
           }
         })}
