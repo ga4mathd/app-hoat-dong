@@ -68,16 +68,12 @@ export function FeedbackBubble() {
 
   return (
     <>
-      {/* Fixed Bubble Button */}
+      {/* Fixed Bubble Button - positioned above footer */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gradient-to-r from-orange to-yellow text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fade-in"
+        className="fixed bottom-20 right-4 z-40 w-12 h-12 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fade-in flex items-center justify-center"
       >
-        <div className="relative">
-          <MessageCircle className="h-5 w-5" />
-          <Gift className="h-3 w-3 absolute -top-1 -right-1 text-white" />
-        </div>
-        <span className="font-semibold text-sm whitespace-nowrap">Góp ý - Nhận quà</span>
+        <Gift className="h-5 w-5" />
       </button>
 
       {/* Feedback Dialog */}
