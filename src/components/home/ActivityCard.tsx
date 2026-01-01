@@ -169,67 +169,67 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
       {/* Large Icon Tabs - Improved Design */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full bg-transparent p-0 mb-4 flex justify-center gap-4 sm:gap-8">
+        <TabsList className="w-full bg-transparent p-0 mb-5 flex justify-between px-4 sm:justify-center sm:gap-12">
           {/* Mục tiêu Tab */}
           <TabsTrigger 
             value="goals" 
-            className="flex flex-col items-center gap-1.5 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
+            className="flex flex-col items-center gap-2 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm ${
               activeTab === 'goals' 
-                ? 'bg-orange ring-2 ring-orange ring-offset-2 shadow-lg' 
+                ? 'bg-orange shadow-orange/30 shadow-lg' 
                 : 'bg-orange-light hover:bg-orange/20'
             }`}>
-              <Target className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300 ${
+              <Target className={`h-7 w-7 transition-colors duration-300 ${
                 activeTab === 'goals' ? 'text-white' : 'text-orange'
               }`} />
             </div>
-            <span className={`text-xs font-medium transition-all duration-300 px-2 py-0.5 rounded-full ${
+            <span className={`text-xs font-semibold transition-all duration-300 px-3 py-1 rounded-full ${
               activeTab === 'goals' 
-                ? 'text-foreground border border-foreground' 
-                : 'text-muted-foreground'
+                ? 'bg-orange text-white shadow-sm' 
+                : 'text-muted-foreground bg-transparent'
             }`}>Mục tiêu</span>
           </TabsTrigger>
           
           {/* Hướng dẫn Tab */}
           <TabsTrigger 
             value="instructions"
-            className="flex flex-col items-center gap-1.5 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
+            className="flex flex-col items-center gap-2 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm ${
               activeTab === 'instructions' 
-                ? 'bg-yellow ring-2 ring-yellow ring-offset-2 shadow-lg' 
+                ? 'bg-yellow shadow-yellow/30 shadow-lg' 
                 : 'bg-yellow-light hover:bg-yellow/20'
             }`}>
-              <FileText className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300 ${
+              <FileText className={`h-7 w-7 transition-colors duration-300 ${
                 activeTab === 'instructions' ? 'text-white' : 'text-yellow'
               }`} />
             </div>
-            <span className={`text-xs font-medium transition-all duration-300 px-2 py-0.5 rounded-full ${
+            <span className={`text-xs font-semibold transition-all duration-300 px-3 py-1 rounded-full ${
               activeTab === 'instructions' 
-                ? 'text-foreground border border-foreground' 
-                : 'text-muted-foreground'
+                ? 'bg-yellow text-white shadow-sm' 
+                : 'text-muted-foreground bg-transparent'
             }`}>Hướng dẫn</span>
           </TabsTrigger>
           
           {/* Video Tab */}
           <TabsTrigger 
             value="video"
-            className="flex flex-col items-center gap-1.5 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
+            className="flex flex-col items-center gap-2 p-0 bg-transparent border-none data-[state=active]:bg-transparent data-[state=active]:shadow-none transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+            <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm ${
               activeTab === 'video' 
-                ? 'bg-primary ring-2 ring-primary ring-offset-2 shadow-lg' 
+                ? 'bg-primary shadow-primary/30 shadow-lg' 
                 : 'bg-blue-light hover:bg-primary/20'
             }`}>
-              <Play className={`h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300 ${
+              <Play className={`h-7 w-7 transition-colors duration-300 ${
                 activeTab === 'video' ? 'text-white fill-white' : 'text-primary fill-primary'
               }`} />
             </div>
-            <span className={`text-xs font-medium transition-all duration-300 px-2 py-0.5 rounded-full ${
+            <span className={`text-xs font-semibold transition-all duration-300 px-3 py-1 rounded-full ${
               activeTab === 'video' 
-                ? 'text-foreground border border-foreground' 
-                : 'text-muted-foreground'
+                ? 'bg-primary text-white shadow-sm' 
+                : 'text-muted-foreground bg-transparent'
             }`}>Video</span>
           </TabsTrigger>
         </TabsList>
