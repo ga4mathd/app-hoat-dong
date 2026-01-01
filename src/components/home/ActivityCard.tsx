@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { convertToEmbedUrl } from '@/lib/youtube';
 import avatarBoy from '@/assets/avatar-boy.png';
+import { VideoDialog } from '@/components/ui/video-dialog';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,6 +56,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   const [childConfirmed, setChildConfirmed] = useState(false);
   const [parentConfirmed, setParentConfirmed] = useState(false);
   const [activeTab, setActiveTab] = useState('instructions');
+  const [videoDialogOpen, setVideoDialogOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
 
   const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
 
@@ -136,7 +139,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
     return steps.filter(step => step.trim());
   };
 
-  // Handle YouTube video click
+  // Handle YouTube video click - open in dialog
   const handleYouTubeClick = (e: React.MouseEvent, url: string) => {
     e.preventDefault();
     e.stopPropagation();
@@ -145,7 +148,8 @@ export function ActivityCard({ activity }: ActivityCardProps) {
     if (!url.startsWith('http')) {
       fullUrl = 'https://' + url;
     }
-    window.open(fullUrl, '_blank', 'noopener,noreferrer');
+    setCurrentVideoUrl(fullUrl);
+    setVideoDialogOpen(true);
   };
 
   // Render step content with bold "Bước X:" prefix and inline YouTube buttons
@@ -522,6 +526,14 @@ export function ActivityCard({ activity }: ActivityCardProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Video Dialog for inline YouTube videos */}
+      <VideoDialog
+        open={videoDialogOpen}
+        onOpenChange={setVideoDialogOpen}
+        videoUrl={currentVideoUrl}
+        title="Video hướng dẫn"
+      />
     </div>
   );
 }
