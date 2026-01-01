@@ -4,6 +4,7 @@ import { TodayActivity } from '@/components/home/TodayActivity';
 import { ActivityCard } from '@/components/home/ActivityCard';
 import { BottomActions } from '@/components/home/BottomActions';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
+import { FeedbackBubble } from '@/components/home/FeedbackBubble';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -141,6 +142,7 @@ const Index = () => {
       </div>
       
       <BottomActions />
+      <FeedbackBubble />
     </div>
   );
 };
