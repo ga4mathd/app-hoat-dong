@@ -165,11 +165,11 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       </div>
 
       {/* Divider Line */}
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent mb-4" />
+      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent my-5" />
 
       {/* Large Icon Tabs - Improved Design */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full bg-transparent p-0 mb-5 flex justify-between px-4 sm:justify-center sm:gap-12">
+        <TabsList className="w-full bg-transparent p-0 mb-6 flex justify-around px-2 sm:justify-center sm:gap-16">
           {/* Mục tiêu Tab */}
           <TabsTrigger 
             value="goals" 
