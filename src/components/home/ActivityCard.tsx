@@ -136,20 +136,59 @@ export function ActivityCard({ activity }: ActivityCardProps) {
     return steps.filter(step => step.trim());
   };
 
-  // Render step content with bold "Bước X:" prefix
+  // Extract YouTube URLs from text
+  const extractYouTubeUrls = (text: string): string[] => {
+    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\S*)?/g;
+    const matches = text.match(youtubeRegex);
+    return matches || [];
+  };
+
+  // Handle YouTube video click
+  const handleYouTubeClick = (url: string) => {
+    const embedUrl = convertToEmbedUrl(url);
+    if (embedUrl) {
+      window.open(url, '_blank');
+    }
+  };
+
+  // Render step content with bold "Bước X:" prefix and YouTube buttons
   const renderStepContent = (step: string) => {
     const match = step.match(/^(Bước\s*\d+\s*:?)/);
-    if (match) {
-      const boldPart = match[1];
-      const rest = step.slice(boldPart.length);
-      return (
-        <>
-          <span className="font-bold text-foreground">{boldPart}</span>
-          {rest}
-        </>
-      );
-    }
-    return step;
+    const youtubeUrls = extractYouTubeUrls(step);
+    
+    // Remove YouTube URLs from the text for cleaner display
+    let cleanedStep = step;
+    youtubeUrls.forEach(url => {
+      cleanedStep = cleanedStep.replace(url, '');
+    });
+    
+    const content = match ? (
+      <>
+        <span className="font-bold text-foreground">{match[1]}</span>
+        {cleanedStep.slice(match[1].length)}
+      </>
+    ) : cleanedStep;
+
+    return (
+      <>
+        {content}
+        {youtubeUrls.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {youtubeUrls.map((url, idx) => (
+              <Button
+                key={idx}
+                size="sm"
+                onClick={() => handleYouTubeClick(url)}
+                className="bg-red-500 hover:bg-red-600 text-white rounded-full px-4 py-2 text-xs font-semibold shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+              >
+                <Play className="h-4 w-4 fill-white" />
+                Xem video ngay {youtubeUrls.length > 1 ? `(${idx + 1})` : ''}
+              </Button>
+            ))}
+          </div>
+        )}
+      </>
+    );
   };
 
   if (!activity) {
