@@ -71,7 +71,7 @@ export function FeedbackBubble() {
       {/* Fixed Bubble Button - positioned above footer */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 right-4 z-40 w-12 h-12 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fade-in flex items-center justify-center"
+        className="fixed bottom-28 right-4 z-40 w-12 h-12 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fade-in flex items-center justify-center"
       >
         <Gift className="h-5 w-5" />
       </button>
