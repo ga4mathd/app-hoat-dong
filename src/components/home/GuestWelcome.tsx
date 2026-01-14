@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Sparkles, Star, Heart } from 'lucide-react';
@@ -12,6 +13,8 @@ export function GuestWelcome() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [childAge, setChildAge] = useState('');
+  const [childGender, setChildGender] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +31,7 @@ export function GuestWelcome() {
           toast.success('Đăng nhập thành công!');
         }
       } else {
-        const { error } = await signUp(email, password, fullName);
+        const { error } = await signUp(email, password, fullName, childAge, childGender);
         if (error) {
           toast.error(error.message || 'Đăng ký thất bại');
         } else {
@@ -103,14 +106,41 @@ export function GuestWelcome() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <Input
-              type="text"
-              placeholder="Họ và tên"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="h-12 rounded-xl bg-muted/50 border-0 text-sm"
-              required={!isLogin}
-            />
+            <>
+              <Input
+                type="text"
+                placeholder="Họ và tên"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="h-12 rounded-xl bg-muted/50 border-0 text-sm"
+                required={!isLogin}
+              />
+              
+              <Select value={childAge} onValueChange={setChildAge}>
+                <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0 text-sm">
+                  <SelectValue placeholder="Độ tuổi con bạn" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0-1">0 - 1 tuổi</SelectItem>
+                  <SelectItem value="1-2">1 - 2 tuổi</SelectItem>
+                  <SelectItem value="2-3">2 - 3 tuổi</SelectItem>
+                  <SelectItem value="3-4">3 - 4 tuổi</SelectItem>
+                  <SelectItem value="4-5">4 - 5 tuổi</SelectItem>
+                  <SelectItem value="5-6">5 - 6 tuổi</SelectItem>
+                  <SelectItem value="6+">Trên 6 tuổi</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={childGender} onValueChange={setChildGender}>
+                <SelectTrigger className="h-12 rounded-xl bg-muted/50 border-0 text-sm">
+                  <SelectValue placeholder="Giới tính con" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Bé trai</SelectItem>
+                  <SelectItem value="female">Bé gái</SelectItem>
+                </SelectContent>
+              </Select>
+            </>
           )}
           
           <Input
