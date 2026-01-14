@@ -107,8 +107,8 @@ export default function Activities() {
     const tomorrowActivities = getActivitiesForDay(tomorrow);
     
     return (
-      <div className="min-h-screen bg-background pb-24">
-        <div className="max-w-md mx-auto">
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
+        <div className="max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto">
           {/* Header */}
           <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
             <button
@@ -120,7 +120,7 @@ export default function Activities() {
             <h1 className="font-bold text-lg">Hoạt động</h1>
           </div>
 
-          <div className="p-4 space-y-6">
+          <div className="p-4 md:p-6 space-y-6">
             {/* Tomorrow Hero Banner */}
             <div className="bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 rounded-3xl p-5 animate-fade-in">
               <div className="flex items-center gap-2 mb-3">
@@ -132,22 +132,22 @@ export default function Activities() {
               </div>
               
               {tomorrowActivities.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 md:space-y-0">
                   {tomorrowActivities.map((activity) => (
                     <div
                       key={activity.id}
-                      className="bg-card rounded-2xl p-4 card-shadow cursor-pointer hover:scale-[1.01] transition-transform"
+                      className="bg-card rounded-2xl p-4 md:p-5 card-shadow cursor-pointer hover:scale-[1.01] transition-transform"
                       onClick={() => navigate(`/activity/${activity.id}`)}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
-                          <h3 className="font-bold text-foreground mb-2">{activity.title}</h3>
+                          <h3 className="font-bold text-foreground mb-2 md:text-lg">{activity.title}</h3>
                           <div className="flex flex-wrap gap-1 mb-2">
                             {activity.tags?.map((tag) => (
                               <Badge 
                                 key={tag} 
                                 variant="secondary"
-                                className={`text-[10px] px-2 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
+                                className={`text-[10px] md:text-xs px-2 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
                               >
                                 {tag}
                               </Badge>
@@ -156,8 +156,8 @@ export default function Activities() {
                           <p className="text-sm text-muted-foreground line-clamp-2">{activity.description}</p>
                         </div>
                         <div className="flex flex-col items-center gap-2">
-                          <button className="p-3 rounded-full bg-primary text-primary-foreground">
-                            <Play className="h-5 w-5" />
+                          <button className="p-3 md:p-4 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+                            <Play className="h-5 w-5 md:h-6 md:w-6" />
                           </button>
                           <span className="text-sm font-bold text-secondary">+{activity.points || 10}</span>
                         </div>
@@ -174,8 +174,8 @@ export default function Activities() {
 
             {/* Upcoming Days - List layout */}
             <div>
-              <h2 className="font-bold text-foreground mb-4">Các ngày tiếp theo</h2>
-              <div className="space-y-3">
+              <h2 className="font-bold text-foreground mb-4 md:text-lg">Các ngày tiếp theo</h2>
+              <div className="space-y-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 md:gap-4 md:space-y-0">
                 {upcomingDays.map((day, index) => {
                   const dayActivities = getActivitiesForDay(day);
                   return (
@@ -226,8 +226,8 @@ export default function Activities() {
 
   // Month mode: List all days
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background pb-24 md:pb-28">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
           <button
@@ -241,7 +241,7 @@ export default function Activities() {
           </h1>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="p-4 md:p-6 space-y-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:space-y-0">
           {daysInMonth.map((day, index) => {
             const dayActivities = getActivitiesForDay(day);
             const isToday = format(day, 'yyyy-MM-dd') === format(currentDate, 'yyyy-MM-dd');

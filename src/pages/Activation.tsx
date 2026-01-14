@@ -46,27 +46,27 @@ const Activation = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 via-background to-background">
-      <div className="w-full max-w-[400px] mx-auto px-6 py-12">
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto px-6 py-12 md:py-16">
         {/* Welcome Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 mb-6">
-            <Gift className="w-10 h-10 text-primary" />
+          <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary/20 mb-6">
+            <Gift className="w-10 h-10 md:w-12 md:h-12 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
             Chào mừng bạn đến với App Hoạt Động! 🎊
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground md:text-lg">
             Kích hoạt tài khoản để bắt đầu trải nghiệm
           </p>
         </div>
 
         {/* Benefits */}
-        <div className="bg-card rounded-2xl p-6 shadow-lg mb-8">
-          <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
+        <div className="bg-card rounded-2xl p-6 md:p-8 shadow-lg mb-8">
+          <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2 md:text-lg">
+            <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             Quyền lợi 30 ngày dùng thử
           </h2>
-          <ul className="space-y-3">
+          <ul className="space-y-3 md:space-y-4">
             {[
               "Truy cập tất cả hoạt động hàng ngày",
               "Xem chi tiết hướng dẫn đầy đủ",
@@ -75,21 +75,21 @@ const Activation = () => {
               "Tích lũy điểm thưởng",
             ].map((benefit, index) => (
               <li key={index} className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-foreground">{benefit}</span>
+                <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6 text-green-500 flex-shrink-0 mt-0.5" />
+                <span className="text-sm md:text-base text-foreground">{benefit}</span>
               </li>
             ))}
           </ul>
         </div>
 
         {/* Trial Info */}
-        <div className="bg-primary/10 rounded-xl p-4 mb-8 flex items-center gap-3">
-          <Clock className="w-6 h-6 text-primary flex-shrink-0" />
+        <div className="bg-primary/10 rounded-xl p-4 md:p-5 mb-8 flex items-center gap-3">
+          <Clock className="w-6 h-6 md:w-7 md:h-7 text-primary flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-sm md:text-base font-medium text-foreground">
               30 ngày miễn phí
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs md:text-sm text-muted-foreground">
               Sau đó nâng cấp Pro để tiếp tục sử dụng
             </p>
           </div>
@@ -99,7 +99,7 @@ const Activation = () => {
         <Button
           onClick={handleActivate}
           disabled={activating}
-          className="w-full h-14 text-lg font-semibold rounded-xl"
+          className="w-full h-14 md:h-16 text-lg md:text-xl font-semibold rounded-xl"
           size="lg"
         >
           {activating ? (

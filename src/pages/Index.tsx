@@ -120,7 +120,7 @@ const Index = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-600 via-purple-500 to-pink-500">
-        <div className="w-full max-w-[400px] mx-auto px-4 pt-4 pb-8">
+        <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto px-4 pt-4 pb-8">
           <GuestWelcome />
         </div>
       </div>
@@ -130,31 +130,37 @@ const Index = () => {
   // Giao diện cho user đã đăng nhập - White background
   return (
     <div className="min-h-screen bg-background">
-      {/* Header section - White background */}
-      <div className="w-full max-w-[400px] mx-auto px-4 pt-2 bg-background">
-        <Header />
-      </div>
+      {/* Container for tablet/PC - centered layout */}
+      <div className="w-full max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto">
+        {/* Header section - White background */}
+        <div className="px-4 pt-2 bg-background">
+          <Header />
+        </div>
 
-      {/* Subscription Banner */}
-      <div className="w-full max-w-[400px] mx-auto">
-        <SubscriptionBanner />
-      </div>
+        {/* Subscription Banner */}
+        <div className="w-full">
+          <SubscriptionBanner />
+        </div>
 
-      {/* Activity Section - White background */}
-      <div className="w-full max-w-[400px] mx-auto px-4 bg-background">
-        <TodayActivity 
-          todayActivity={todayActivity}
-          yesterdayActivity={yesterdayActivity}
-          tomorrowActivity={tomorrowActivity}
-          availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi']}
-          totalActivities={totalActivities}
-          onDayChange={setCurrentDay}
-        />
-      </div>
-      
-      {/* Activity Card section */}
-      <div className="w-full max-w-[400px] mx-auto bg-background pb-24">
-        <ActivityCard activity={getCurrentActivity()} />
+        {/* Main content grid for tablet/PC */}
+        <div className="px-4 bg-background md:grid md:grid-cols-2 md:gap-6 lg:gap-8">
+          {/* Activity Section */}
+          <div className="md:col-span-2 lg:col-span-1">
+            <TodayActivity 
+              todayActivity={todayActivity}
+              yesterdayActivity={yesterdayActivity}
+              tomorrowActivity={tomorrowActivity}
+              availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi']}
+              totalActivities={totalActivities}
+              onDayChange={setCurrentDay}
+            />
+          </div>
+          
+          {/* Activity Card section */}
+          <div className="pb-24 md:pb-28 md:col-span-2 lg:col-span-1">
+            <ActivityCard activity={getCurrentActivity()} />
+          </div>
+        </div>
       </div>
       
       <BottomActions />
