@@ -23,8 +23,8 @@ export default function Shop() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background pb-24 md:pb-28">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
           <button
@@ -36,13 +36,13 @@ export default function Shop() {
           <h1 className="font-bold text-lg">Shop</h1>
         </div>
 
-        <div className="p-4">
-          <div className="text-center py-16 animate-fade-in">
-            <div className="w-24 h-24 rounded-full bg-yellow-light mx-auto mb-6 flex items-center justify-center">
-              <ShoppingBag className="h-12 w-12 text-accent-foreground" />
+        <div className="p-4 md:p-6">
+          <div className="text-center py-16 md:py-24 animate-fade-in">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-yellow-light mx-auto mb-6 flex items-center justify-center">
+              <ShoppingBag className="h-12 w-12 md:h-16 md:w-16 text-accent-foreground" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Sắp ra mắt!</h2>
-            <p className="text-muted-foreground max-w-xs mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Sắp ra mắt!</h2>
+            <p className="text-muted-foreground max-w-xs md:max-w-md mx-auto md:text-lg">
               Shop đổi quà sẽ sớm được cập nhật. Hãy tích điểm để đổi những phần quà hấp dẫn nhé!
             </p>
           </div>

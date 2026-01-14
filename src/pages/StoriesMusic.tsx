@@ -83,8 +83,8 @@ export default function StoriesMusic() {
   );
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background pb-24 md:pb-28">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
           <button
@@ -96,7 +96,7 @@ export default function StoriesMusic() {
           <h1 className="font-bold text-lg">Truyện & Nhạc</h1>
         </div>
 
-        <div className="p-4">
+        <div className="p-4 md:p-6">
           <Tabs defaultValue="stories" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="stories" className="flex items-center gap-2">
@@ -109,9 +109,9 @@ export default function StoriesMusic() {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="stories" className="space-y-4">
+            <TabsContent value="stories" className="space-y-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 md:space-y-0">
               {stories.length === 0 ? (
-                <div className="text-center py-12">
+                <div className="text-center py-12 md:col-span-full">
                   <BookOpen className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">Chưa có truyện nào</p>
                 </div>
@@ -120,9 +120,9 @@ export default function StoriesMusic() {
               )}
             </TabsContent>
             
-            <TabsContent value="music" className="space-y-4">
+            <TabsContent value="music" className="space-y-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-4 md:space-y-0">
               {music.length === 0 ? (
-                <div className="text-center py-12">
+                <div className="text-center py-12 md:col-span-full">
                   <Music className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                   <p className="text-muted-foreground">Chưa có nhạc nào</p>
                 </div>

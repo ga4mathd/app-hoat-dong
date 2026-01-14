@@ -82,7 +82,7 @@ const Upgrade = () => {
   if (isPro) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="w-full max-w-[400px] mx-auto px-6 py-8">
+        <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto px-6 py-8">
           <Button
             variant="ghost"
             size="sm"
@@ -93,14 +93,14 @@ const Upgrade = () => {
             Quay lại
           </Button>
 
-          <div className="text-center py-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/20 mb-6">
-              <Crown className="w-10 h-10 text-primary" />
+          <div className="text-center py-12 md:py-16">
+            <div className="inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary/20 mb-6">
+              <Crown className="w-10 h-10 md:w-12 md:h-12 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
               Bạn đã là thành viên Pro! 👑
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground md:text-lg">
               Cảm ơn bạn đã ủng hộ. Hãy tận hưởng tất cả tính năng!
             </p>
           </div>
@@ -111,7 +111,7 @@ const Upgrade = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/5 via-background to-background">
-      <div className="w-full max-w-[400px] mx-auto px-6 py-8">
+      <div className="w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto px-6 py-8 md:py-12">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -125,45 +125,45 @@ const Upgrade = () => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4 shadow-lg">
-            <Crown className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4 shadow-lg">
+            <Crown className="w-8 h-8 md:w-10 md:h-10 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
             Nâng cấp lên Pro
           </h1>
           {isTrial && daysRemaining !== null && (
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground md:text-lg">
               Còn <span className="font-semibold text-primary">{daysRemaining} ngày</span> dùng thử
             </p>
           )}
           {isExpired && (
-            <p className="text-destructive">
+            <p className="text-destructive md:text-lg">
               Thời gian dùng thử đã hết
             </p>
           )}
         </div>
 
         {/* Price Card */}
-        <div className="bg-card rounded-2xl p-6 shadow-xl border-2 border-primary/20 mb-6">
+        <div className="bg-card rounded-2xl p-6 md:p-8 shadow-xl border-2 border-primary/20 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-lg font-semibold text-foreground">Pro 1 năm</span>
+            <span className="text-lg md:text-xl font-semibold text-foreground">Pro 1 năm</span>
             <div className="text-right">
-              <span className="text-3xl font-bold text-primary">99.000đ</span>
-              <span className="text-sm text-muted-foreground">/năm</span>
+              <span className="text-3xl md:text-4xl font-bold text-primary">99.000đ</span>
+              <span className="text-sm md:text-base text-muted-foreground">/năm</span>
             </div>
           </div>
-          <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-2 text-center">
+          <div className="text-xs md:text-sm text-muted-foreground bg-muted/50 rounded-lg p-2 md:p-3 text-center">
             Chỉ ~8.250đ/tháng • Tiết kiệm hơn 50%
           </div>
         </div>
 
         {/* Benefits */}
-        <div className="bg-card rounded-2xl p-6 shadow-lg mb-8">
-          <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
+        <div className="bg-card rounded-2xl p-6 md:p-8 shadow-lg mb-8">
+          <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2 md:text-lg">
+            <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             Quyền lợi Pro
           </h2>
-          <ul className="space-y-3">
+          <ul className="space-y-3 md:space-y-4">
             {[
               { icon: Calendar, text: "365 ngày truy cập không giới hạn" },
               { icon: Zap, text: "Tất cả hoạt động chi tiết" },
@@ -171,8 +171,8 @@ const Upgrade = () => {
               { icon: CheckCircle2, text: "Hỗ trợ ưu tiên" },
             ].map((benefit, index) => (
               <li key={index} className="flex items-start gap-3">
-                <benefit.icon className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                <span className="text-sm text-foreground">{benefit.text}</span>
+                <benefit.icon className="w-5 h-5 md:w-6 md:h-6 text-primary flex-shrink-0 mt-0.5" />
+                <span className="text-sm md:text-base text-foreground">{benefit.text}</span>
               </li>
             ))}
           </ul>

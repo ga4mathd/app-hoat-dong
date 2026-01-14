@@ -120,7 +120,7 @@ export default function ActivityDetail() {
 
   return (
     <div className="min-h-screen bg-background pb-8">
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
           <button
@@ -138,37 +138,37 @@ export default function ActivityDetail() {
           )}
         </div>
 
-        <div className="p-4 space-y-6">
+        <div className="p-4 md:p-6 space-y-6 md:grid md:grid-cols-2 md:gap-6 lg:gap-8">
           {/* Title & Tags */}
-          <div className="space-y-3">
-            <h2 className="text-2xl font-bold text-foreground">{activity.title}</h2>
+          <div className="space-y-3 md:col-span-2">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">{activity.title}</h2>
             <div className="flex gap-2 flex-wrap">
               {activity.tags?.map((tag) => (
                 <Badge 
                   key={tag} 
                   variant="secondary"
-                  className={tagColors[tag] || 'bg-muted text-muted-foreground'}
+                  className={`${tagColors[tag] || 'bg-muted text-muted-foreground'} md:text-sm md:px-3 md:py-1`}
                 >
                   {tag}
                 </Badge>
               ))}
             </div>
-            <p className="text-muted-foreground">{activity.description}</p>
+            <p className="text-muted-foreground md:text-lg">{activity.description}</p>
           </div>
 
           {/* Expert Info */}
-          <div className="flex items-center gap-3 p-4 bg-card rounded-xl card-shadow">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
+          <div className="flex items-center gap-3 p-4 md:p-5 bg-card rounded-xl card-shadow md:col-span-2 lg:col-span-1">
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold md:text-lg">
               {activity.expert_name?.charAt(0) || 'J'}
             </div>
             <div>
-              <p className="font-semibold text-foreground">{activity.expert_name || 'Chuyên gia Jenna'}</p>
-              <p className="text-sm text-muted-foreground">{activity.expert_title || 'Chuyên gia Tâm lý Giáo dục'}</p>
+              <p className="font-semibold text-foreground md:text-lg">{activity.expert_name || 'Chuyên gia Jenna'}</p>
+              <p className="text-sm md:text-base text-muted-foreground">{activity.expert_title || 'Chuyên gia Tâm lý Giáo dục'}</p>
             </div>
           </div>
 
           {/* Tabs */}
-          <Tabs defaultValue={defaultTab} className="w-full">
+          <Tabs defaultValue={defaultTab} className="w-full md:col-span-2">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="goals" className="flex items-center gap-2">
                 <Target className="h-4 w-4" />
@@ -185,9 +185,9 @@ export default function ActivityDetail() {
             </TabsList>
             
             <TabsContent value="goals" className="mt-4">
-              <div className="bg-yellow-light rounded-xl p-6">
-                <h3 className="font-bold text-lg text-accent-foreground mb-3">🎯 Mục tiêu hoạt động</h3>
-                <p className="text-accent-foreground whitespace-pre-line">
+              <div className="bg-yellow-light rounded-xl p-6 md:p-8">
+                <h3 className="font-bold text-lg md:text-xl text-accent-foreground mb-3">🎯 Mục tiêu hoạt động</h3>
+                <p className="text-accent-foreground whitespace-pre-line md:text-lg">
                   {activity.goals || 'Phát triển kỹ năng và khả năng tư duy cho bé'}
                 </p>
               </div>
@@ -195,9 +195,9 @@ export default function ActivityDetail() {
             
             <TabsContent value="instructions" className="mt-4">
               {canAccessFullContent ? (
-                <div className="bg-blue-light rounded-xl p-6">
-                  <h3 className="font-bold text-lg text-blue mb-3">📋 Hướng dẫn thực hiện</h3>
-                  <p className="text-blue whitespace-pre-line">
+                <div className="bg-blue-light rounded-xl p-6 md:p-8">
+                  <h3 className="font-bold text-lg md:text-xl text-blue mb-3">📋 Hướng dẫn thực hiện</h3>
+                  <p className="text-blue whitespace-pre-line md:text-lg">
                     {activity.instructions || 'Hướng dẫn chi tiết sẽ được cập nhật'}
                   </p>
                 </div>
@@ -220,8 +220,8 @@ export default function ActivityDetail() {
             
             <TabsContent value="video" className="mt-4">
               {canAccessFullContent ? (
-                <div className="bg-pink-light rounded-xl p-6">
-                  <h3 className="font-bold text-lg text-pink mb-3">🎬 Video hướng dẫn</h3>
+                <div className="bg-pink-light rounded-xl p-6 md:p-8">
+                  <h3 className="font-bold text-lg md:text-xl text-pink mb-3">🎬 Video hướng dẫn</h3>
                   {activity.video_url ? (
                     <div className="aspect-video rounded-lg overflow-hidden bg-card">
                       <iframe
@@ -254,21 +254,25 @@ export default function ActivityDetail() {
 
           {/* Complete Button */}
           {!isCompleted && canAccessFullContent && (
-            <Button 
-              onClick={handleMarkComplete}
-              disabled={isMarking}
-              className="w-full h-14 text-lg bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-            >
-              {isMarking ? 'Đang xử lý...' : `Hoàn thành (+${activity.points || 10} điểm)`}
-            </Button>
+            <div className="md:col-span-2">
+              <Button 
+                onClick={handleMarkComplete}
+                disabled={isMarking}
+                className="w-full h-14 md:h-16 text-lg md:text-xl bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+              >
+                {isMarking ? 'Đang xử lý...' : `Hoàn thành (+${activity.points || 10} điểm)`}
+              </Button>
+            </div>
           )}
           
           {/* Expired user prompt */}
           {isExpired && !isCompleted && (
-            <UpgradePrompt 
-              title="Nâng cấp để hoàn thành hoạt động"
-              description="Bạn cần tài khoản Pro để hoàn thành và nhận điểm"
-            />
+            <div className="md:col-span-2">
+              <UpgradePrompt 
+                title="Nâng cấp để hoàn thành hoạt động"
+                description="Bạn cần tài khoản Pro để hoàn thành và nhận điểm"
+              />
+            </div>
           )}
         </div>
       </div>

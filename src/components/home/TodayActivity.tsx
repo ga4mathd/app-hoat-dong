@@ -83,12 +83,12 @@ export function TodayActivity({
       </div>
 
       {/* Swipeable Carousel */}
-      <div className="w-full overflow-hidden" ref={emblaRef}>
+      <div className="w-full overflow-hidden md:max-w-2xl lg:max-w-3xl mx-auto" ref={emblaRef}>
         <div className="flex">
           {activities.map((activity, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0 px-2">
+            <div key={index} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 px-2">
               {/* Blue Gradient Activity Card */}
-              <div className="bg-gradient-to-br from-[hsl(210,85%,55%)] via-[hsl(230,70%,50%)] to-[hsl(270,60%,50%)] rounded-3xl p-5 shadow-xl">
+              <div className="bg-gradient-to-br from-[hsl(210,85%,55%)] via-[hsl(230,70%,50%)] to-[hsl(270,60%,50%)] rounded-3xl p-5 md:p-6 shadow-xl h-full">
                 {/* Header: Label + Date */}
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-white/90 text-sm font-medium">
@@ -100,7 +100,7 @@ export function TodayActivity({
                 </div>
 
                 {/* Activity Title */}
-                <h1 className="text-white text-2xl font-bold leading-tight mb-4 text-left">
+                <h1 className="text-white text-2xl md:text-3xl font-bold leading-tight mb-4 text-left">
                   {activity?.title || 'Chưa có hoạt động'}
                 </h1>
 

@@ -78,8 +78,8 @@ export default function Profile() {
   const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Người dùng';
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-background pb-24 md:pb-28">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
           <button
@@ -91,12 +91,12 @@ export default function Profile() {
           <h1 className="font-bold text-lg">Hồ sơ</h1>
         </div>
 
-        <div className="p-4 space-y-6">
+        <div className="p-4 md:p-6 space-y-6 md:grid md:grid-cols-2 md:gap-6 md:space-y-0">
           {/* Avatar & Name */}
-          <div className="bg-card rounded-2xl p-6 card-shadow animate-fade-in text-center">
-            <Avatar className="h-24 w-24 mx-auto mb-4 border-4 border-primary/20">
+          <div className="bg-card rounded-2xl p-6 md:p-8 card-shadow animate-fade-in text-center md:col-span-2">
+            <Avatar className="h-24 w-24 md:h-32 md:w-32 mx-auto mb-4 border-4 border-primary/20">
               <AvatarImage src={profile?.avatar_url || undefined} alt="Avatar" />
-              <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white text-3xl font-bold">
+              <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-white text-3xl md:text-4xl font-bold">
                 {displayName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -125,7 +125,7 @@ export default function Profile() {
               </div>
             ) : (
               <>
-                <h2 className="text-2xl font-bold text-foreground">{displayName}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground">{displayName}</h2>
                 <button
                   onClick={() => setIsEditing(true)}
                   className="mt-2 text-primary hover:underline flex items-center gap-1 mx-auto"
@@ -151,14 +151,14 @@ export default function Profile() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 gap-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <div className="bg-card rounded-2xl p-4 card-shadow text-center">
-              <p className="text-3xl font-bold text-primary">{profile?.total_points || 0}</p>
-              <p className="text-sm text-muted-foreground">Tổng điểm</p>
+          <div className="grid grid-cols-2 gap-4 animate-fade-in md:col-span-2" style={{ animationDelay: '0.2s' }}>
+            <div className="bg-card rounded-2xl p-4 md:p-6 card-shadow text-center">
+              <p className="text-3xl md:text-4xl font-bold text-primary">{profile?.total_points || 0}</p>
+              <p className="text-sm md:text-base text-muted-foreground">Tổng điểm</p>
             </div>
-            <div className="bg-card rounded-2xl p-4 card-shadow text-center">
-              <p className="text-3xl font-bold text-secondary">{profile?.total_activities || 0}</p>
-              <p className="text-sm text-muted-foreground">Hoạt động</p>
+            <div className="bg-card rounded-2xl p-4 md:p-6 card-shadow text-center">
+              <p className="text-3xl md:text-4xl font-bold text-secondary">{profile?.total_activities || 0}</p>
+              <p className="text-sm md:text-base text-muted-foreground">Hoạt động</p>
             </div>
           </div>
         </div>
