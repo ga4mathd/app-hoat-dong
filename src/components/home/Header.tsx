@@ -1,8 +1,9 @@
-import { Calendar, Bell, LogIn, User, History, LogOut, Shield, CheckCircle, AlertCircle, ListTodo } from 'lucide-react';
+import { Calendar, Bell, LogIn, User, History, LogOut, Shield, CheckCircle, AlertCircle, ListTodo, Crown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdmin } from '@/hooks/useAdmin';
+import { useSubscription } from '@/hooks/useSubscription';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link, useNavigate } from 'react-router-dom';
@@ -25,6 +26,7 @@ interface NotificationData {
 export function Header() {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
+  const { isPro } = useSubscription();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string | null; total_activities: number; total_points: number } | null>(null);
   const [notifications, setNotifications] = useState<NotificationData>({
@@ -144,13 +146,18 @@ export function Header() {
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="focus:outline-none">
+              <button className="focus:outline-none relative">
                 <Avatar className="h-14 w-14 flex-shrink-0 border-2 border-border shadow-md cursor-pointer hover:shadow-lg transition-all">
                   <AvatarImage src={avatarBoy} alt="Avatar" className="object-cover" />
                   <AvatarFallback className="bg-blue-light text-primary font-bold text-base">
                     {displayName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
+                {isPro && (
+                  <div className="absolute -bottom-1 -right-1 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full p-1 shadow-lg border-2 border-white">
+                    <Crown className="h-3 w-3 text-white" />
+                  </div>
+                )}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56 bg-card border shadow-lg z-50">
