@@ -38,8 +38,8 @@ const Upgrade = () => {
     setProcessingPayment(method);
 
     try {
-      // Create order ID
-      const orderId = `ORDER_${user.id.slice(0, 8)}_${Date.now()}`;
+      // Create cryptographically random order ID to prevent enumeration attacks
+      const orderId = `ORDER_${crypto.randomUUID()}`;
 
       // Create subscription record
       const { error: subError } = await supabase
