@@ -13,6 +13,9 @@ import Achievements from "./pages/Achievements";
 import Profile from "./pages/Profile";
 import Shop from "./pages/Shop";
 import Admin from "./pages/Admin";
+import Activation from "./pages/Activation";
+import Upgrade from "./pages/Upgrade";
+import PaymentResult from "./pages/PaymentResult";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +37,9 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/activation" element={<Activation />} />
+            <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/payment-result" element={<PaymentResult />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

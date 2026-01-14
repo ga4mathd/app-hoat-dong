@@ -94,32 +94,44 @@ export type Database = {
       }
       profiles: {
         Row: {
+          activated_at: string | null
           avatar_url: string | null
           created_at: string | null
           full_name: string | null
           id: string
+          pro_expires_at: string | null
+          subscription_status: string
           total_activities: number | null
           total_points: number | null
+          trial_ends_at: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          activated_at?: string | null
           avatar_url?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          pro_expires_at?: string | null
+          subscription_status?: string
           total_activities?: number | null
           total_points?: number | null
+          trial_ends_at?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          activated_at?: string | null
           avatar_url?: string | null
           created_at?: string | null
           full_name?: string | null
           id?: string
+          pro_expires_at?: string | null
+          subscription_status?: string
           total_activities?: number | null
           total_points?: number | null
+          trial_ends_at?: string | null
           updated_at?: string | null
           user_id?: string
         }
@@ -191,6 +203,45 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          amount: number
+          completed_at: string | null
+          created_at: string | null
+          currency: string | null
+          id: string
+          order_id: string
+          payment_method: string
+          status: string
+          transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          completed_at?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          order_id: string
+          payment_method: string
+          status?: string
+          transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          completed_at?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          order_id?: string
+          payment_method?: string
+          status?: string
+          transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_progress: {
         Row: {
           activity_id: string
@@ -249,6 +300,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      activate_trial: { Args: never; Returns: Json }
+      check_subscription_status: { Args: never; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -257,6 +310,10 @@ export type Database = {
         Returns: boolean
       }
       submit_feedback: { Args: { p_content: string }; Returns: Json }
+      upgrade_to_pro: {
+        Args: { p_order_id: string; p_transaction_id: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "admin" | "user"

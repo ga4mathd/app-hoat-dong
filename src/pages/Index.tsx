@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/home/Header';
 import { TodayActivity } from '@/components/home/TodayActivity';
 import { ActivityCard } from '@/components/home/ActivityCard';
 import { BottomActions } from '@/components/home/BottomActions';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { FeedbackBubble } from '@/components/home/FeedbackBubble';
+import { SubscriptionBanner } from '@/components/subscription/SubscriptionBanner';
 import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Activity {
@@ -22,7 +25,9 @@ interface Activity {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const { loading, user } = useAuth();
+  const { isPendingActivation, loading: subscriptionLoading } = useSubscription();
   const [todayActivities, setTodayActivities] = useState<Activity[]>([]);
   const [yesterdayActivities, setYesterdayActivities] = useState<Activity[]>([]);
   const [tomorrowActivities, setTomorrowActivities] = useState<Activity[]>([]);
@@ -80,6 +85,12 @@ const Index = () => {
     }
   }, [user]);
 
+  // Redirect to activation if pending
+  useEffect(() => {
+    if (user && !subscriptionLoading && isPendingActivation) {
+      navigate('/activation');
+    }
+  }, [user, isPendingActivation, subscriptionLoading, navigate]);
   // Get first activity from each day
   const todayActivity = todayActivities[0] || null;
   const yesterdayActivity = yesterdayActivities[0] || null;
@@ -97,7 +108,7 @@ const Index = () => {
   // Lấy tags từ activities hôm nay
   const availableTags = [...new Set(todayActivities.flatMap(a => a.tags || []))].slice(0, 2);
 
-  if (loading) {
+  if (loading || (user && subscriptionLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
@@ -122,6 +133,11 @@ const Index = () => {
       {/* Header section - White background */}
       <div className="w-full max-w-[400px] mx-auto px-4 pt-2 bg-background">
         <Header />
+      </div>
+
+      {/* Subscription Banner */}
+      <div className="w-full max-w-[400px] mx-auto">
+        <SubscriptionBanner />
       </div>
 
       {/* Activity Section - White background */}

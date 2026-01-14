@@ -2,12 +2,13 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { ArrowLeft, Target, FileText, Video, CheckCircle } from 'lucide-react';
+import { useSubscription } from '@/hooks/useSubscription';
+import { ArrowLeft, Target, FileText, Video, CheckCircle, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-
+import { UpgradePrompt } from '@/components/subscription/UpgradePrompt';
 interface Activity {
   id: string;
   title: string;
@@ -27,6 +28,7 @@ export default function ActivityDetail() {
   const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
   const { toast } = useToast();
+  const { canAccessFullContent, isExpired, loading: subscriptionLoading } = useSubscription();
   
   const [activity, setActivity] = useState<Activity | null>(null);
   const [isCompleted, setIsCompleted] = useState(false);
@@ -100,7 +102,7 @@ export default function ActivityDetail() {
     setIsMarking(false);
   };
 
-  if (loading || !activity) {
+  if (loading || subscriptionLoading || !activity) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent"></div>
@@ -192,34 +194,66 @@ export default function ActivityDetail() {
             </TabsContent>
             
             <TabsContent value="instructions" className="mt-4">
-              <div className="bg-blue-light rounded-xl p-6">
-                <h3 className="font-bold text-lg text-blue mb-3">📋 Hướng dẫn thực hiện</h3>
-                <p className="text-blue whitespace-pre-line">
-                  {activity.instructions || 'Hướng dẫn chi tiết sẽ được cập nhật'}
-                </p>
-              </div>
+              {canAccessFullContent ? (
+                <div className="bg-blue-light rounded-xl p-6">
+                  <h3 className="font-bold text-lg text-blue mb-3">📋 Hướng dẫn thực hiện</h3>
+                  <p className="text-blue whitespace-pre-line">
+                    {activity.instructions || 'Hướng dẫn chi tiết sẽ được cập nhật'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-blue-light rounded-xl p-6 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-blue-light/95 z-10" />
+                    <h3 className="font-bold text-lg text-blue mb-3">📋 Hướng dẫn thực hiện</h3>
+                    <p className="text-blue whitespace-pre-line line-clamp-3 blur-sm">
+                      {activity.instructions || 'Hướng dẫn chi tiết sẽ được cập nhật'}
+                    </p>
+                  </div>
+                  <UpgradePrompt 
+                    title="Mở khóa hướng dẫn chi tiết"
+                    description="Nâng cấp Pro để xem đầy đủ hướng dẫn thực hiện"
+                  />
+                </div>
+              )}
             </TabsContent>
             
             <TabsContent value="video" className="mt-4">
-              <div className="bg-pink-light rounded-xl p-6">
-                <h3 className="font-bold text-lg text-pink mb-3">🎬 Video hướng dẫn</h3>
-                {activity.video_url ? (
-                  <div className="aspect-video rounded-lg overflow-hidden bg-card">
-                    <iframe
-                      src={activity.video_url}
-                      className="w-full h-full"
-                      allowFullScreen
-                    />
+              {canAccessFullContent ? (
+                <div className="bg-pink-light rounded-xl p-6">
+                  <h3 className="font-bold text-lg text-pink mb-3">🎬 Video hướng dẫn</h3>
+                  {activity.video_url ? (
+                    <div className="aspect-video rounded-lg overflow-hidden bg-card">
+                      <iframe
+                        src={activity.video_url}
+                        className="w-full h-full"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <p className="text-pink">Video sẽ được cập nhật sớm</p>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-pink-light rounded-xl p-6 relative">
+                    <div className="absolute inset-0 flex items-center justify-center bg-pink-light/80 rounded-xl z-10">
+                      <Lock className="w-12 h-12 text-pink/50" />
+                    </div>
+                    <h3 className="font-bold text-lg text-pink mb-3">🎬 Video hướng dẫn</h3>
+                    <div className="aspect-video rounded-lg bg-muted" />
                   </div>
-                ) : (
-                  <p className="text-pink">Video sẽ được cập nhật sớm</p>
-                )}
-              </div>
+                  <UpgradePrompt 
+                    title="Mở khóa video hướng dẫn"
+                    description="Nâng cấp Pro để xem video chi tiết"
+                  />
+                </div>
+              )}
             </TabsContent>
           </Tabs>
 
           {/* Complete Button */}
-          {!isCompleted && (
+          {!isCompleted && canAccessFullContent && (
             <Button 
               onClick={handleMarkComplete}
               disabled={isMarking}
@@ -227,6 +261,14 @@ export default function ActivityDetail() {
             >
               {isMarking ? 'Đang xử lý...' : `Hoàn thành (+${activity.points || 10} điểm)`}
             </Button>
+          )}
+          
+          {/* Expired user prompt */}
+          {isExpired && !isCompleted && (
+            <UpgradePrompt 
+              title="Nâng cấp để hoàn thành hoạt động"
+              description="Bạn cần tài khoản Pro để hoàn thành và nhận điểm"
+            />
           )}
         </div>
       </div>
