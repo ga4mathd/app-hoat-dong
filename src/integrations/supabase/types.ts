@@ -25,6 +25,7 @@ export type Database = {
           id: string
           image_url: string | null
           instructions: string | null
+          likes_count: number | null
           points: number | null
           scheduled_date: string | null
           tags: string[] | null
@@ -41,6 +42,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           instructions?: string | null
+          likes_count?: number | null
           points?: number | null
           scheduled_date?: string | null
           tags?: string[] | null
@@ -57,6 +59,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           instructions?: string | null
+          likes_count?: number | null
           points?: number | null
           scheduled_date?: string | null
           tags?: string[] | null
