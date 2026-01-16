@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SimpleHeader } from '@/components/home/SimpleHeader';
-import { HeroCard } from '@/components/home/HeroCard';
-import { ActivitySteps } from '@/components/home/ActivitySteps';
-import { MiniNav } from '@/components/home/MiniNav';
+import { ActivityFullCard } from '@/components/home/ActivityFullCard';
+import { BottomNavFixed } from '@/components/home/BottomNavFixed';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { FeedbackBubble } from '@/components/home/FeedbackBubble';
 import { SubscriptionBanner } from '@/components/subscription/SubscriptionBanner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 interface Activity {
   id: string;
@@ -25,6 +23,7 @@ interface Activity {
   expert_avatar?: string | null;
   video_url?: string | null;
   points?: number | null;
+  likes_count?: number | null;
 }
 
 const Index = () => {
@@ -32,8 +31,6 @@ const Index = () => {
   const { loading, user } = useAuth();
   const { isPendingActivation, loading: subscriptionLoading } = useSubscription();
   const [todayActivity, setTodayActivity] = useState<Activity | null>(null);
-  const [isActivityStarted, setIsActivityStarted] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
 
   const getDateString = (offset: number) => {
     const date = new Date();
@@ -82,29 +79,9 @@ const Index = () => {
     );
   }
 
-  // Handle start activity
-  const handleStartActivity = () => {
-    setIsActivityStarted(true);
-  };
-
-  // Handle close activity steps
-  const handleCloseSteps = () => {
-    setIsActivityStarted(false);
-  };
-
-  // Handle save activity for later
-  const handleSaveActivity = () => {
-    setIsSaved(!isSaved);
-    if (!isSaved) {
-      toast.success('Đã lưu hoạt động để xem sau!');
-    } else {
-      toast.info('Đã bỏ lưu hoạt động');
-    }
-  };
-
-  // Giao diện cho user đã đăng nhập - Card Story Design
+  // Giao diện cho user đã đăng nhập - One Page Full Content
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <div className="w-full max-w-md mx-auto px-4">
         {/* Simple Header with Streak */}
         <SimpleHeader />
@@ -112,32 +89,14 @@ const Index = () => {
         {/* Subscription Banner */}
         <SubscriptionBanner />
 
-        {/* Main Content */}
+        {/* Main Content - Full Activity Card */}
         <div className="py-3">
-          {!isActivityStarted ? (
-            // Hero Card View - Activity Story Card
-            <>
-              <HeroCard 
-                activity={todayActivity} 
-                onStart={handleStartActivity}
-                onSave={handleSaveActivity}
-                isSaved={isSaved}
-              />
-              
-              {/* Mini Navigation */}
-              <MiniNav />
-            </>
-          ) : (
-            // Activity Steps View - After clicking "Bắt đầu"
-            todayActivity && (
-              <ActivitySteps 
-                activity={todayActivity} 
-                onClose={handleCloseSteps}
-              />
-            )
-          )}
+          <ActivityFullCard activity={todayActivity} />
         </div>
       </div>
+
+      {/* Fixed Bottom Navigation */}
+      <BottomNavFixed />
 
       <FeedbackBubble />
     </div>
