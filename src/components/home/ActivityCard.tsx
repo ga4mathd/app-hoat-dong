@@ -55,7 +55,7 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [childConfirmed, setChildConfirmed] = useState(false);
   const [parentConfirmed, setParentConfirmed] = useState(false);
-  const [activeTab, setActiveTab] = useState('instructions');
+  const [activeTab, setActiveTab] = useState('goals');
   const [videoDialogOpen, setVideoDialogOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
 
@@ -225,26 +225,27 @@ export function ActivityCard({ activity }: ActivityCardProps) {
 
   return (
     <div className="px-4 pt-5 pb-6">
-      {/* Expert Info Section */}
-      <div className="flex items-center gap-3 mb-3">
-        <Avatar className="h-14 w-14 border-2 border-pink-200 shadow-md">
+      {/* Expert Info Badge - Compact */}
+      <div className="inline-flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5 mb-4">
+        <Avatar className="h-7 w-7 border border-pink-200">
           <AvatarImage 
             src={activity.expert_avatar || avatarBoy} 
             className="object-cover" 
           />
-          <AvatarFallback className="bg-gradient-to-br from-pink-400 to-pink-500 text-white font-bold text-lg">
+          <AvatarFallback className="bg-gradient-to-br from-pink-400 to-pink-500 text-white font-bold text-xs">
             {activity.expert_name?.charAt(0) || 'C'}
           </AvatarFallback>
         </Avatar>
-        <div>
-          <p className="text-xs text-muted-foreground">Giáo viên hướng dẫn</p>
-          <p className="font-bold text-foreground">{activity.expert_name || 'Chuyên gia'}</p>
-          <p className="text-sm text-muted-foreground">{activity.expert_title || 'Chuyên gia giáo dục & phát triển trẻ em'}</p>
-        </div>
+        <span className="text-sm text-muted-foreground">
+          <span className="font-medium text-foreground">{activity.expert_name || 'Chuyên gia'}</span>
+          {activity.expert_title && (
+            <>
+              <span className="mx-1.5">•</span>
+              <span>{activity.expert_title.split(' ').slice(0, 3).join(' ')}</span>
+            </>
+          )}
+        </span>
       </div>
-
-      {/* Divider Line */}
-      <div className="h-[1px] bg-gradient-to-r from-transparent via-border to-transparent my-8" />
 
       {/* Large Icon Tabs - Improved Design */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
