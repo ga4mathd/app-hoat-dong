@@ -1,4 +1,4 @@
-import { Bell, Crown, LogIn, User, History, LogOut, Shield, Menu } from 'lucide-react';
+import { Crown, LogIn, User, History, LogOut, Shield, Flame } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -16,12 +16,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+interface Profile {
+  full_name: string | null;
+  current_streak?: number | null;
+}
+
 export function SimpleHeader() {
   const { user, signOut } = useAuth();
   const { isAdmin } = useAdmin();
   const { isPro } = useSubscription();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<{ full_name: string | null } | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -31,7 +36,29 @@ export function SimpleHeader() {
         .eq('user_id', user.id)
         .maybeSingle()
         .then(({ data }) => {
-          if (data) setProfile(data);
+          // Fetch current_streak separately since types may not be updated yet
+          supabase.rpc('check_subscription_status').then(() => {
+            // After rpc call, re-fetch profile with streak
+            supabase
+              .from('profiles')
+              .select('*')
+              .eq('user_id', user.id)
+              .maybeSingle()
+              .then(({ data: fullData }) => {
+                if (fullData) {
+                  setProfile({
+                    full_name: fullData.full_name,
+                    current_streak: (fullData as any).current_streak || 0
+                  });
+                }
+              });
+          });
+          if (data) {
+            setProfile({
+              full_name: data.full_name,
+              current_streak: 0
+            });
+          }
         });
     }
   }, [user]);
@@ -59,6 +86,7 @@ export function SimpleHeader() {
   }
 
   const displayName = profile?.full_name?.split(' ').slice(-1)[0] || user?.email?.split('@')[0] || 'Bạn';
+  const streak = profile?.current_streak || 0;
 
   return (
     <header className="flex items-center justify-between py-3 animate-fade-in">
@@ -110,13 +138,17 @@ export function SimpleHeader() {
         </DropdownMenuContent>
       </DropdownMenu>
       
-      {/* Right: Notification */}
-      <button
-        onClick={() => navigate('/activities')}
-        className="w-9 h-9 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-all"
+      {/* Right: Streak Badge */}
+      <div 
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-sm transition-all ${
+          streak > 0 
+            ? 'bg-gradient-to-r from-orange to-orange-gradient-end text-white shadow-md' 
+            : 'bg-muted text-muted-foreground'
+        }`}
       >
-        <Bell className="h-4.5 w-4.5 text-muted-foreground" />
-      </button>
+        <Flame className={`h-4 w-4 ${streak > 0 ? 'text-yellow-200' : ''}`} />
+        <span>{streak}</span>
+      </div>
     </header>
   );
 }
