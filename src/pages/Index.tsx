@@ -10,6 +10,7 @@ import { SubscriptionBanner } from '@/components/subscription/SubscriptionBanner
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface Activity {
   id: string;
@@ -32,6 +33,7 @@ const Index = () => {
   const { isPendingActivation, loading: subscriptionLoading } = useSubscription();
   const [todayActivity, setTodayActivity] = useState<Activity | null>(null);
   const [isActivityStarted, setIsActivityStarted] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const getDateString = (offset: number) => {
     const date = new Date();
@@ -90,24 +92,36 @@ const Index = () => {
     setIsActivityStarted(false);
   };
 
-  // Giao diện cho user đã đăng nhập - Clean & Simple
+  // Handle save activity for later
+  const handleSaveActivity = () => {
+    setIsSaved(!isSaved);
+    if (!isSaved) {
+      toast.success('Đã lưu hoạt động để xem sau!');
+    } else {
+      toast.info('Đã bỏ lưu hoạt động');
+    }
+  };
+
+  // Giao diện cho user đã đăng nhập - Card Story Design
   return (
     <div className="min-h-screen bg-background">
       <div className="w-full max-w-md mx-auto px-4">
-        {/* Simple Header */}
+        {/* Simple Header with Streak */}
         <SimpleHeader />
 
         {/* Subscription Banner */}
         <SubscriptionBanner />
 
         {/* Main Content */}
-        <div className="py-4">
+        <div className="py-3">
           {!isActivityStarted ? (
-            // Hero Card View - Initial state
+            // Hero Card View - Activity Story Card
             <>
               <HeroCard 
                 activity={todayActivity} 
-                onStart={handleStartActivity} 
+                onStart={handleStartActivity}
+                onSave={handleSaveActivity}
+                isSaved={isSaved}
               />
               
               {/* Mini Navigation */}

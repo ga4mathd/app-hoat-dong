@@ -99,8 +99,10 @@ export type Database = {
           child_age: string | null
           child_gender: string | null
           created_at: string | null
+          current_streak: number | null
           full_name: string | null
           id: string
+          last_activity_date: string | null
           pro_expires_at: string | null
           subscription_status: string
           total_activities: number | null
@@ -115,8 +117,10 @@ export type Database = {
           child_age?: string | null
           child_gender?: string | null
           created_at?: string | null
+          current_streak?: number | null
           full_name?: string | null
           id?: string
+          last_activity_date?: string | null
           pro_expires_at?: string | null
           subscription_status?: string
           total_activities?: number | null
@@ -131,8 +135,10 @@ export type Database = {
           child_age?: string | null
           child_gender?: string | null
           created_at?: string | null
+          current_streak?: number | null
           full_name?: string | null
           id?: string
+          last_activity_date?: string | null
           pro_expires_at?: string | null
           subscription_status?: string
           total_activities?: number | null
@@ -142,6 +148,35 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      saved_activities: {
+        Row: {
+          activity_id: string
+          id: string
+          saved_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_id: string
+          id?: string
+          saved_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_id?: string
+          id?: string
+          saved_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_activities_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       shop_products: {
         Row: {
