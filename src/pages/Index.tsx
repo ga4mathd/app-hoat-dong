@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '@/components/home/Header';
-import { TodayActivity } from '@/components/home/TodayActivity';
-import { ActivityCard } from '@/components/home/ActivityCard';
-import { BottomActions } from '@/components/home/BottomActions';
+import { SimpleHeader } from '@/components/home/SimpleHeader';
+import { HeroCard } from '@/components/home/HeroCard';
+import { ActivitySteps } from '@/components/home/ActivitySteps';
+import { MiniNav } from '@/components/home/MiniNav';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { FeedbackBubble } from '@/components/home/FeedbackBubble';
 import { SubscriptionBanner } from '@/components/subscription/SubscriptionBanner';
@@ -21,6 +21,8 @@ interface Activity {
   expert_name: string | null;
   expert_title: string | null;
   image_url: string | null;
+  expert_avatar?: string | null;
+  video_url?: string | null;
   points?: number | null;
 }
 
@@ -28,11 +30,8 @@ const Index = () => {
   const navigate = useNavigate();
   const { loading, user } = useAuth();
   const { isPendingActivation, loading: subscriptionLoading } = useSubscription();
-  const [todayActivities, setTodayActivities] = useState<Activity[]>([]);
-  const [yesterdayActivities, setYesterdayActivities] = useState<Activity[]>([]);
-  const [tomorrowActivities, setTomorrowActivities] = useState<Activity[]>([]);
-  const [totalActivities, setTotalActivities] = useState<number>(0);
-  const [currentDay, setCurrentDay] = useState<'yesterday' | 'today' | 'tomorrow'>('today');
+  const [todayActivity, setTodayActivity] = useState<Activity | null>(null);
+  const [isActivityStarted, setIsActivityStarted] = useState(false);
 
   const getDateString = (offset: number) => {
     const date = new Date();
@@ -42,45 +41,15 @@ const Index = () => {
 
   useEffect(() => {
     if (user) {
-      // Fetch today's activities
+      // Fetch today's activity only
       supabase
         .from('activities')
         .select('*')
         .eq('scheduled_date', getDateString(0))
-        .then(({ data }) => {
-          if (data) setTodayActivities(data);
-        });
-
-      // Fetch yesterday's activities
-      supabase
-        .from('activities')
-        .select('*')
-        .eq('scheduled_date', getDateString(-1))
-        .then(({ data }) => {
-          if (data) setYesterdayActivities(data);
-        });
-
-      // Fetch tomorrow's activities
-      supabase
-        .from('activities')
-        .select('*')
-        .eq('scheduled_date', getDateString(1))
-        .then(({ data }) => {
-          if (data) setTomorrowActivities(data);
-        });
-    }
-  }, [user]);
-
-  // Fetch user's total activities for this month
-  useEffect(() => {
-    if (user) {
-      supabase
-        .from('profiles')
-        .select('total_activities')
-        .eq('user_id', user.id)
+        .limit(1)
         .maybeSingle()
         .then(({ data }) => {
-          if (data) setTotalActivities(data.total_activities || 0);
+          if (data) setTodayActivity(data);
         });
     }
   }, [user]);
@@ -91,22 +60,6 @@ const Index = () => {
       navigate('/activation');
     }
   }, [user, isPendingActivation, subscriptionLoading, navigate]);
-  // Get first activity from each day
-  const todayActivity = todayActivities[0] || null;
-  const yesterdayActivity = yesterdayActivities[0] || null;
-  const tomorrowActivity = tomorrowActivities[0] || null;
-
-  // Get current activity based on selected day
-  const getCurrentActivity = () => {
-    switch (currentDay) {
-      case 'yesterday': return yesterdayActivity;
-      case 'tomorrow': return tomorrowActivity;
-      default: return todayActivity;
-    }
-  };
-
-  // Lấy tags từ activities hôm nay
-  const availableTags = [...new Set(todayActivities.flatMap(a => a.tags || []))].slice(0, 2);
 
   if (loading || (user && subscriptionLoading)) {
     return (
@@ -127,43 +80,51 @@ const Index = () => {
     );
   }
 
-  // Giao diện cho user đã đăng nhập - White background
+  // Handle start activity
+  const handleStartActivity = () => {
+    setIsActivityStarted(true);
+  };
+
+  // Handle close activity steps
+  const handleCloseSteps = () => {
+    setIsActivityStarted(false);
+  };
+
+  // Giao diện cho user đã đăng nhập - Clean & Simple
   return (
     <div className="min-h-screen bg-background">
-      {/* Container for tablet/PC - centered layout */}
-      <div className="w-full max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto">
-        {/* Header section - White background */}
-        <div className="px-4 pt-2 bg-background">
-          <Header />
-        </div>
+      <div className="w-full max-w-md mx-auto px-4">
+        {/* Simple Header */}
+        <SimpleHeader />
 
         {/* Subscription Banner */}
-        <div className="w-full">
-          <SubscriptionBanner />
-        </div>
+        <SubscriptionBanner />
 
-        {/* Main content grid for tablet/PC */}
-        <div className="px-4 bg-background md:grid md:grid-cols-2 md:gap-6 lg:gap-8">
-          {/* Activity Section */}
-          <div className="md:col-span-2 lg:col-span-1">
-            <TodayActivity 
-              todayActivity={todayActivity}
-              yesterdayActivity={yesterdayActivity}
-              tomorrowActivity={tomorrowActivity}
-              availableTags={availableTags.length > 0 ? availableTags : ['Trò chơi']}
-              totalActivities={totalActivities}
-              onDayChange={setCurrentDay}
-            />
-          </div>
-          
-          {/* Activity Card section */}
-          <div className="pb-24 md:pb-28 md:col-span-2 lg:col-span-1">
-            <ActivityCard activity={getCurrentActivity()} />
-          </div>
+        {/* Main Content */}
+        <div className="py-4">
+          {!isActivityStarted ? (
+            // Hero Card View - Initial state
+            <>
+              <HeroCard 
+                activity={todayActivity} 
+                onStart={handleStartActivity} 
+              />
+              
+              {/* Mini Navigation */}
+              <MiniNav />
+            </>
+          ) : (
+            // Activity Steps View - After clicking "Bắt đầu"
+            todayActivity && (
+              <ActivitySteps 
+                activity={todayActivity} 
+                onClose={handleCloseSteps}
+              />
+            )
+          )}
         </div>
       </div>
-      
-      <BottomActions />
+
       <FeedbackBubble />
     </div>
   );
