@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SimpleHeader } from '@/components/home/SimpleHeader';
 import { ActivityFullCard } from '@/components/home/ActivityFullCard';
+import { ActivityCompletedCard } from '@/components/home/ActivityCompletedCard';
 import { BottomNavFixed } from '@/components/home/BottomNavFixed';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { FeedbackBubble } from '@/components/home/FeedbackBubble';
@@ -26,11 +27,19 @@ interface Activity {
   likes_count?: number | null;
 }
 
+interface UserStats {
+  currentStreak: number;
+  totalPoints: number;
+}
+
 const Index = () => {
   const navigate = useNavigate();
   const { loading, user } = useAuth();
   const { isPendingActivation, loading: subscriptionLoading } = useSubscription();
   const [todayActivity, setTodayActivity] = useState<Activity | null>(null);
+  const [isActivityCompleted, setIsActivityCompleted] = useState(false);
+  const [pointsEarned, setPointsEarned] = useState(0);
+  const [userStats, setUserStats] = useState<UserStats>({ currentStreak: 0, totalPoints: 0 });
 
   const getDateString = (offset: number) => {
     const date = new Date();
@@ -40,16 +49,48 @@ const Index = () => {
 
   useEffect(() => {
     if (user) {
-      // Fetch today's activity only
-      supabase
-        .from('activities')
-        .select('*')
-        .eq('scheduled_date', getDateString(0))
-        .limit(1)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data) setTodayActivity(data);
-        });
+      const fetchData = async () => {
+        // Fetch today's activity
+        const { data: activityData } = await supabase
+          .from('activities')
+          .select('*')
+          .eq('scheduled_date', getDateString(0))
+          .limit(1)
+          .maybeSingle();
+
+        if (activityData) {
+          setTodayActivity(activityData);
+
+          // Check if user has completed this activity
+          const { data: progressData } = await supabase
+            .from('user_progress')
+            .select('points_earned')
+            .eq('user_id', user.id)
+            .eq('activity_id', activityData.id)
+            .maybeSingle();
+
+          if (progressData) {
+            setIsActivityCompleted(true);
+            setPointsEarned(progressData.points_earned || 0);
+          }
+        }
+
+        // Fetch user stats from profile
+        const { data: profileData } = await supabase
+          .from('profiles')
+          .select('current_streak, total_points')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (profileData) {
+          setUserStats({
+            currentStreak: profileData.current_streak || 0,
+            totalPoints: profileData.total_points || 0
+          });
+        }
+      };
+
+      fetchData();
     }
   }, [user]);
 
@@ -89,9 +130,18 @@ const Index = () => {
         {/* Subscription Banner */}
         <SubscriptionBanner />
 
-        {/* Main Content - Full Activity Card */}
+        {/* Main Content - Conditional based on completion status */}
         <div className="py-3">
-          <ActivityFullCard activity={todayActivity} />
+          {isActivityCompleted ? (
+            <ActivityCompletedCard 
+              activity={todayActivity}
+              pointsEarned={pointsEarned}
+              currentStreak={userStats.currentStreak}
+              totalPoints={userStats.totalPoints}
+            />
+          ) : (
+            <ActivityFullCard activity={todayActivity} />
+          )}
         </div>
       </div>
 
