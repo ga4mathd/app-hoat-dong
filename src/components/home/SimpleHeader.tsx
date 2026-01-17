@@ -15,6 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import DateBadge from './DateBadge';
+import ActivityCalendarDialog from './ActivityCalendarDialog';
 
 interface Profile {
   full_name: string | null;
@@ -27,6 +29,7 @@ export function SimpleHeader() {
   const { isPro } = useSubscription();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -138,6 +141,9 @@ export function SimpleHeader() {
         </DropdownMenuContent>
       </DropdownMenu>
       
+      {/* Center: Date Badge */}
+      <DateBadge onClick={() => setCalendarOpen(true)} />
+      
       {/* Right: Streak Badge */}
       <div 
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-sm transition-all ${
@@ -149,6 +155,9 @@ export function SimpleHeader() {
         <Flame className={`h-4 w-4 ${streak > 0 ? 'text-yellow-200' : ''}`} />
         <span>{streak}</span>
       </div>
+
+      {/* Calendar Dialog */}
+      <ActivityCalendarDialog open={calendarOpen} onOpenChange={setCalendarOpen} />
     </header>
   );
 }
