@@ -5,6 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, Trophy, Star, Target, CheckCircle } from 'lucide-react';
 import { BottomActions } from '@/components/home/BottomActions';
 import { Progress } from '@/components/ui/progress';
+import { DevelopmentSummary } from '@/components/achievements/DevelopmentSummary';
+import { calculateDevelopmentData, DevelopmentData } from '@/lib/developmentCategories';
 
 interface UserProgress {
   id: string;
@@ -20,6 +22,7 @@ export default function Achievements() {
   const { user, loading } = useAuth();
   const [profile, setProfile] = useState<{ total_points: number; total_activities: number } | null>(null);
   const [completedActivities, setCompletedActivities] = useState<UserProgress[]>([]);
+  const [developmentData, setDevelopmentData] = useState<DevelopmentData[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -39,11 +42,23 @@ export default function Achievements() {
 
       supabase
         .from('user_progress')
-        .select('id, completed_at, points_earned, activities(title)')
+        .select('id, completed_at, points_earned, activities(title, tags)')
         .eq('user_id', user.id)
         .order('completed_at', { ascending: false })
         .then(({ data }) => {
-          if (data) setCompletedActivities(data as UserProgress[]);
+          if (data) {
+            setCompletedActivities(data as UserProgress[]);
+            
+            // Calculate development data from tags
+            const allTags: string[] = [];
+            data.forEach((item: any) => {
+              const tags = item.activities?.tags;
+              if (tags && Array.isArray(tags)) {
+                allTags.push(...tags);
+              }
+            });
+            setDevelopmentData(calculateDevelopmentData(allTags));
+          }
         });
     }
   }, [user, loading, navigate]);
@@ -94,6 +109,11 @@ export default function Achievements() {
               <p className="text-3xl font-bold">{profile?.total_activities || 0}</p>
               <p className="text-sm opacity-90">Hoạt động</p>
             </div>
+          </div>
+
+          {/* Development Summary Card */}
+          <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
+            <DevelopmentSummary data={developmentData} />
           </div>
 
           {/* Progress to next milestone */}
