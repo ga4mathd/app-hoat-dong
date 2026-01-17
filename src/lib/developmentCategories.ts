@@ -3,6 +3,7 @@
 export interface DevelopmentCategory {
   id: string;
   name: string;
+  shortName: string;
   icon: string;
   color: string;
   tags: string[];
@@ -12,43 +13,49 @@ export const developmentCategories: DevelopmentCategory[] = [
   {
     id: 'cognitive',
     name: 'Tư duy & Nhận thức',
+    shortName: 'Tư duy',
     icon: '🧠',
-    color: 'hsl(210, 85%, 55%)', // blue/primary
+    color: 'hsl(210, 85%, 55%)',
     tags: ['Tư duy', 'Nhận thức', 'Câu đố'],
   },
   {
     id: 'language',
     name: 'Ngôn ngữ & Giao tiếp',
+    shortName: 'Ngôn ngữ',
     icon: '💬',
-    color: 'hsl(280, 70%, 55%)', // purple
+    color: 'hsl(280, 70%, 55%)',
     tags: ['Giao tiếp', 'Ngôn ngữ', 'Câu chuyện'],
   },
   {
     id: 'emotional',
     name: 'Cảm xúc & Xã hội',
+    shortName: 'Cảm xúc',
     icon: '❤️',
-    color: 'hsl(340, 70%, 65%)', // pink/secondary
+    color: 'hsl(340, 70%, 65%)',
     tags: ['Cảm xúc', 'Phản tư'],
   },
   {
     id: 'family',
     name: 'Gia đình & Tự lập',
+    shortName: 'Gia đình',
     icon: '👨‍👩‍👧',
-    color: 'hsl(25, 90%, 55%)', // orange
+    color: 'hsl(25, 90%, 55%)',
     tags: ['Gia đình', 'Tự lập'],
   },
   {
     id: 'science',
     name: 'Khoa học & Khám phá',
+    shortName: 'Khoa học',
     icon: '🔬',
-    color: 'hsl(145, 60%, 45%)', // green
+    color: 'hsl(145, 60%, 45%)',
     tags: ['Khoa học'],
   },
   {
     id: 'learning',
     name: 'Học tập',
+    shortName: 'Học tập',
     icon: '📚',
-    color: 'hsl(45, 90%, 50%)', // yellow/accent
+    color: 'hsl(45, 90%, 50%)',
     tags: ['Học tập'],
   },
 ];
@@ -64,6 +71,7 @@ export function getCategoryForTag(tag: string): DevelopmentCategory | undefined 
 export interface DevelopmentData {
   category: string;
   categoryId: string;
+  shortName: string;
   value: number;
   fullMark: number;
   icon: string;
@@ -94,6 +102,7 @@ export function calculateDevelopmentData(
   return developmentCategories.map(cat => ({
     category: cat.name,
     categoryId: cat.id,
+    shortName: cat.shortName,
     value: categoryCounts[cat.id],
     fullMark: maxCount,
     icon: cat.icon,
