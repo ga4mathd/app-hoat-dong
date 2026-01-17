@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileSpreadsheet, Shield, LogIn } from 'lucide-react';
+import { ArrowLeft, FileSpreadsheet, Shield, LogIn, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
-import { useAdmin } from '@/hooks/useAdmin';
+import { useRole, type AppRole } from '@/hooks/useRole';
 import { supabase } from '@/integrations/supabase/client';
 import { ActivityTable } from '@/components/admin/ActivityTable';
 import { ActivityForm } from '@/components/admin/ActivityForm';
@@ -14,6 +14,7 @@ import { StoryMusicTable } from '@/components/admin/StoryMusicTable';
 import { StoryMusicImport } from '@/components/admin/StoryMusicImport';
 import { ShopProductTable } from '@/components/admin/ShopProductTable';
 import { ShopProductImport } from '@/components/admin/ShopProductImport';
+import { UserTable } from '@/components/admin/UserTable';
 import { Tables } from '@/integrations/supabase/types';
 import { convertToEmbedUrl } from '@/lib/youtube';
 
@@ -21,16 +22,25 @@ type Activity = Tables<'activities'>;
 type StoryMusic = Tables<'stories_music'>;
 type ShopProduct = Tables<'shop_products'>;
 
+interface UserWithRole {
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  role: AppRole;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, loading: authLoading } = useAuth();
-  const { isAdmin, loading: adminLoading } = useAdmin();
+  const { isAdmin, hasContentAccess, loading: roleLoading } = useRole();
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [storiesMusic, setStoriesMusic] = useState<StoryMusic[]>([]);
   const [shopProducts, setShopProducts] = useState<ShopProduct[]>([]);
+  const [users, setUsers] = useState<UserWithRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -54,11 +64,87 @@ const Admin = () => {
     setShopProducts(data || []);
   };
 
+  const fetchUsers = async () => {
+    if (!isAdmin) return;
+    
+    setUsersLoading(true);
+    try {
+      // Fetch all profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, full_name, avatar_url')
+        .order('created_at', { ascending: false });
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        return;
+      }
+
+      // Fetch all user roles
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      if (rolesError) {
+        console.error('Error fetching roles:', rolesError);
+        return;
+      }
+
+      // Combine profiles with their roles
+      const usersWithRoles: UserWithRole[] = (profiles || []).map(profile => {
+        const userRole = roles?.find(r => r.user_id === profile.user_id);
+        return {
+          user_id: profile.user_id,
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url,
+          role: (userRole?.role as AppRole) || 'user'
+        };
+      });
+
+      setUsers(usersWithRoles);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (isAdmin) {
+    if (hasContentAccess) {
       Promise.all([fetchActivities(), fetchStoriesMusic(), fetchShopProducts()]).finally(() => setLoading(false));
     }
+  }, [hasContentAccess]);
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchUsers();
+    }
   }, [isAdmin]);
+
+  const handleRoleChange = async (userId: string, newRole: AppRole) => {
+    try {
+      // First, delete existing role for this user
+      await supabase.from('user_roles').delete().eq('user_id', userId);
+
+      // If new role is not 'user', insert the new role
+      if (newRole !== 'user') {
+        const { error } = await supabase.from('user_roles').insert({
+          user_id: userId,
+          role: newRole
+        });
+
+        if (error) {
+          throw error;
+        }
+      }
+
+      toast({ title: 'Thành công', description: 'Đã cập nhật vai trò' });
+      fetchUsers();
+    } catch (error) {
+      console.error('Error changing role:', error);
+      toast({ title: 'Lỗi', description: 'Không thể cập nhật vai trò', variant: 'destructive' });
+    }
+  };
 
   const handleSave = async (data: Partial<Activity>) => {
     setSaving(true);
@@ -187,7 +273,7 @@ const Admin = () => {
     }
   };
 
-  if (authLoading || adminLoading) {
+  if (authLoading || roleLoading) {
     return <div className="min-h-screen bg-background flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
   }
 
@@ -195,8 +281,8 @@ const Admin = () => {
     return <div className="min-h-screen bg-background flex items-center justify-center p-4"><div className="text-center space-y-4"><LogIn className="h-16 w-16 mx-auto text-muted-foreground" /><h1 className="text-2xl font-bold">Vui lòng đăng nhập</h1><Button onClick={() => navigate('/auth')}>Đăng nhập</Button></div></div>;
   }
 
-  if (!isAdmin) {
-    return <div className="min-h-screen bg-background flex items-center justify-center p-4"><div className="text-center space-y-4"><Shield className="h-16 w-16 mx-auto text-destructive" /><h1 className="text-2xl font-bold">Không có quyền truy cập</h1><Button variant="outline" onClick={() => navigate('/')}>Về trang chủ</Button></div></div>;
+  if (!hasContentAccess) {
+    return <div className="min-h-screen bg-background flex items-center justify-center p-4"><div className="text-center space-y-4"><Shield className="h-16 w-16 mx-auto text-destructive" /><h1 className="text-2xl font-bold">Không có quyền truy cập</h1><p className="text-muted-foreground">Bạn cần có vai trò Admin hoặc Chuyên gia để truy cập trang này</p><Button variant="outline" onClick={() => navigate('/')}>Về trang chủ</Button></div></div>;
   }
 
   return (
@@ -209,13 +295,15 @@ const Admin = () => {
               <h1 className="text-lg font-bold flex items-center gap-2"><Shield className="h-5 w-5 text-primary" />Quản trị</h1>
             </div>
           </div>
-          <Button onClick={() => {
-            if (activeTab === 'activities') setImportOpen(true);
-            else if (activeTab === 'stories') setStoryMusicImportOpen(true);
-            else setShopProductImportOpen(true);
-          }} variant="outline" className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" />Import Excel
-          </Button>
+          {activeTab !== 'users' && (
+            <Button onClick={() => {
+              if (activeTab === 'activities') setImportOpen(true);
+              else if (activeTab === 'stories') setStoryMusicImportOpen(true);
+              else setShopProductImportOpen(true);
+            }} variant="outline" className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />Import Excel
+            </Button>
+          )}
         </div>
       </header>
 
@@ -225,6 +313,12 @@ const Admin = () => {
             <TabsTrigger value="activities">Hoạt động</TabsTrigger>
             <TabsTrigger value="stories">Truyện & Nhạc</TabsTrigger>
             <TabsTrigger value="shop">Shop</TabsTrigger>
+            {isAdmin && (
+              <TabsTrigger value="users" className="gap-1">
+                <Users className="h-4 w-4" />
+                Users
+              </TabsTrigger>
+            )}
           </TabsList>
           
           <TabsContent value="activities">
@@ -240,6 +334,16 @@ const Admin = () => {
           <TabsContent value="shop">
             <ShopProductTable items={shopProducts} onEdit={() => {}} onDelete={async (id) => { await supabase.from('shop_products').delete().eq('id', id); fetchShopProducts(); }} onAdd={() => setShopProductImportOpen(true)} />
           </TabsContent>
+
+          {isAdmin && (
+            <TabsContent value="users">
+              <UserTable 
+                users={users} 
+                onRoleChange={handleRoleChange}
+                loading={usersLoading}
+              />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
 
