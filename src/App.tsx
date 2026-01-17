@@ -13,6 +13,7 @@ import Achievements from "./pages/Achievements";
 import Development from "./pages/Development";
 import Profile from "./pages/Profile";
 import Shop from "./pages/Shop";
+import AskExpert from "./pages/AskExpert";
 import Admin from "./pages/Admin";
 import Activation from "./pages/Activation";
 import Upgrade from "./pages/Upgrade";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/development" element={<Development />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/ask-expert" element={<AskExpert />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/activation" element={<Activation />} />
             <Route path="/upgrade" element={<Upgrade />} />
