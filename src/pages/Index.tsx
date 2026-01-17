@@ -6,6 +6,7 @@ import { ActivityCompletedCard } from '@/components/home/ActivityCompletedCard';
 import { BottomNavFixed } from '@/components/home/BottomNavFixed';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { FeedbackBubble } from '@/components/home/FeedbackBubble';
+import { AppGuideHint } from '@/components/home/AppGuideHint';
 import { SubscriptionBanner } from '@/components/subscription/SubscriptionBanner';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -144,6 +145,9 @@ const Index = () => {
           )}
         </div>
       </div>
+
+      {/* App Guide Hint */}
+      <AppGuideHint />
 
       {/* Fixed Bottom Navigation */}
       <BottomNavFixed />
