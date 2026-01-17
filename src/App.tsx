@@ -10,6 +10,7 @@ import ActivityDetail from "./pages/ActivityDetail";
 import Activities from "./pages/Activities";
 import StoriesMusic from "./pages/StoriesMusic";
 import Achievements from "./pages/Achievements";
+import Development from "./pages/Development";
 import Profile from "./pages/Profile";
 import Shop from "./pages/Shop";
 import Admin from "./pages/Admin";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/activities" element={<Activities />} />
             <Route path="/stories-music" element={<StoriesMusic />} />
             <Route path="/achievements" element={<Achievements />} />
+            <Route path="/development" element={<Development />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/shop" element={<Shop />} />
             <Route path="/admin" element={<Admin />} />
