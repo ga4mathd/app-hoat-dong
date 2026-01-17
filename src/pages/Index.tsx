@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { SimpleHeader } from '@/components/home/SimpleHeader';
 import { ActivityFullCard } from '@/components/home/ActivityFullCard';
 import { ActivityCompletedCard } from '@/components/home/ActivityCompletedCard';
-import { BottomNavFixed } from '@/components/home/BottomNavFixed';
+import { BottomActions } from '@/components/home/BottomActions';
 import { GuestWelcome } from '@/components/home/GuestWelcome';
 import { FeedbackBubble } from '@/components/home/FeedbackBubble';
 import { AppGuideHint } from '@/components/home/AppGuideHint';
@@ -150,7 +150,7 @@ const Index = () => {
       <AppGuideHint />
 
       {/* Fixed Bottom Navigation */}
-      <BottomNavFixed />
+      <BottomActions />
 
       <FeedbackBubble />
     </div>
