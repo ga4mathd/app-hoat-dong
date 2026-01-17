@@ -16,6 +16,7 @@ import Admin from "./pages/Admin";
 import Activation from "./pages/Activation";
 import Upgrade from "./pages/Upgrade";
 import PaymentResult from "./pages/PaymentResult";
+import Guide from "./pages/Guide";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/activation" element={<Activation />} />
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/payment-result" element={<PaymentResult />} />
+            <Route path="/guide" element={<Guide />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
