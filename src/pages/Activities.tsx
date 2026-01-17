@@ -31,6 +31,8 @@ export default function Activities() {
   // Check mode
   const mode = searchParams.get('mode');
   const isTomorrowMode = mode === 'tomorrow';
+  const isUpcomingMode = mode === 'upcoming';
+  const isPastMode = mode === 'past';
 
   // Get month/year from URL params (default to current month)
   const monthParam = searchParams.get('month');
@@ -58,11 +60,21 @@ export default function Activities() {
 
     let startDate: Date;
     let endDate: Date;
+    let ascending = true;
 
     if (isTomorrowMode) {
       // Fetch from tomorrow to 7 days after
       startDate = tomorrow;
       endDate = addDays(tomorrow, 7);
+    } else if (isUpcomingMode) {
+      // Fetch from tomorrow to 30 days ahead
+      startDate = addDays(currentDate, 1);
+      endDate = addDays(currentDate, 30);
+    } else if (isPastMode) {
+      // Fetch from 30 days ago to yesterday
+      startDate = addDays(currentDate, -30);
+      endDate = addDays(currentDate, -1);
+      ascending = false; // Show newest first
     } else {
       // Fetch for selected month
       startDate = startOfMonth(targetDate);
@@ -74,11 +86,11 @@ export default function Activities() {
       .select('*')
       .gte('scheduled_date', startDate.toISOString().split('T')[0])
       .lte('scheduled_date', endDate.toISOString().split('T')[0])
-      .order('scheduled_date', { ascending: true })
+      .order('scheduled_date', { ascending })
       .then(({ data }) => {
         if (data) setActivities(data);
       });
-  }, [user, loading, navigate, month, year, isTomorrowMode]);
+  }, [user, loading, navigate, month, year, isTomorrowMode, isUpcomingMode, isPastMode]);
 
   if (loading) {
     return (
@@ -101,6 +113,118 @@ export default function Activities() {
     const dateStr = format(day, 'yyyy-MM-dd');
     return activities.filter((a) => a.scheduled_date === dateStr);
   };
+
+  // Upcoming/Past mode: List activities by date
+  if (isUpcomingMode || isPastMode) {
+    const title = isUpcomingMode ? 'Hoạt động sắp tới' : 'Hoạt động đã qua';
+    
+    // Group activities by date
+    const groupedActivities = activities.reduce((acc, activity) => {
+      const date = activity.scheduled_date;
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(activity);
+      return acc;
+    }, {} as Record<string, Activity[]>);
+    
+    const sortedDates = Object.keys(groupedActivities).sort((a, b) => 
+      isPastMode ? b.localeCompare(a) : a.localeCompare(b)
+    );
+
+    return (
+      <div className="min-h-screen bg-background pb-24 md:pb-28">
+        <div className="max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="sticky top-0 bg-background/95 backdrop-blur-sm z-10 p-4 flex items-center gap-4">
+            <button
+              onClick={() => navigate('/')}
+              className="p-2 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <h1 className="font-bold text-lg">{title}</h1>
+          </div>
+
+          <div className="p-4 md:p-6 space-y-4">
+            {sortedDates.length > 0 ? (
+              sortedDates.map((dateStr, index) => {
+                const dayActivities = groupedActivities[dateStr];
+                const day = new Date(dateStr);
+                
+                return (
+                  <div 
+                    key={dateStr} 
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 0.03}s` }}
+                  >
+                    {/* Day Header */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary">
+                        <div className="text-center">
+                          <span className="block font-bold text-lg leading-none">{format(day, 'd')}</span>
+                          <span className="block text-[10px] uppercase">{format(day, 'MMM', { locale: vi })}</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-foreground capitalize">
+                          {format(day, 'EEEE', { locale: vi })}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(day, 'dd/MM/yyyy')}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Activities for this day */}
+                    <div className="ml-6 pl-6 border-l-2 border-primary/20 space-y-3">
+                      {dayActivities.map((activity) => (
+                        <div
+                          key={activity.id}
+                          className="bg-card rounded-2xl p-4 card-shadow cursor-pointer hover:scale-[1.01] transition-transform"
+                          onClick={() => navigate(`/activity/${activity.id}`)}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <h3 className="font-bold text-foreground mb-1">{activity.title}</h3>
+                              <div className="flex flex-wrap gap-1 mb-2">
+                                {activity.tags?.map((tag) => (
+                                  <Badge 
+                                    key={tag} 
+                                    variant="secondary"
+                                    className={`text-[10px] px-1.5 py-0.5 ${tagColors[tag] || 'bg-muted text-muted-foreground'}`}
+                                  >
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2">{activity.description}</p>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                              <button className="p-2.5 rounded-full bg-primary/10 text-primary">
+                                <Play className="h-4 w-4" />
+                              </button>
+                              <span className="text-xs font-bold text-secondary">+{activity.points || 10}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-4xl mb-4">{isPastMode ? '📅' : '🗓️'}</div>
+                <p className="text-muted-foreground">
+                  {isPastMode ? 'Chưa có hoạt động đã qua' : 'Chưa có hoạt động sắp tới'}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+        <BottomActions />
+      </div>
+    );
+  }
 
   // Tomorrow mode: Hero + upcoming grid
   if (isTomorrowMode) {

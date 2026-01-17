@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Flame, Star, Trophy, ChevronDown, ChevronUp, Play, BookOpen } from 'lucide-react';
+import { Check, Flame, Star, Trophy, ChevronDown, ChevronUp, Play, CalendarDays, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { VideoDialog } from '@/components/ui/video-dialog';
@@ -42,6 +42,7 @@ export const ActivityCompletedCard = ({
   const navigate = useNavigate();
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [showPastOption, setShowPastOption] = useState(false);
 
   const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
 
@@ -199,12 +200,34 @@ export const ActivityCompletedCard = ({
         <p className="text-lg font-medium text-foreground mb-3">💡 {randomMessage}</p>
         <Button
           variant="outline"
-          onClick={() => navigate('/activities')}
+          onClick={() => navigate('/activities?mode=upcoming')}
           className="gap-2"
         >
-          <BookOpen className="w-4 h-4" />
-          Xem hoạt động khác
+          <CalendarDays className="w-4 h-4" />
+          Xem hoạt động sắp tới
         </Button>
+        
+        {/* Past activities option */}
+        <div className="mt-3">
+          {!showPastOption ? (
+            <button
+              onClick={() => setShowPastOption(true)}
+              className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+            >
+              Hoặc xem hoạt động đã qua
+            </button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/activities?mode=past')}
+              className="gap-2 animate-fade-in"
+            >
+              <History className="w-4 h-4" />
+              Xem hoạt động đã qua
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Video Dialog */}
