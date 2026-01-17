@@ -26,10 +26,10 @@ export function DevelopmentSummary({ data }: DevelopmentSummaryProps) {
 
       {hasData ? (
         <>
-          <div className="h-[180px] -mx-2">
-            <DevelopmentChart data={data} />
+          <div className="h-[220px] -mx-2">
+            <DevelopmentChart data={data} showLabels={false} />
           </div>
-          <p className="text-sm text-muted-foreground text-center mt-2">
+          <p className="text-xs text-muted-foreground text-center">
             Nhấn để xem chi tiết sự phát triển của con
           </p>
         </>
