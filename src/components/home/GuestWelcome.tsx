@@ -13,6 +13,7 @@ export function GuestWelcome() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [childAge, setChildAge] = useState('');
   const [childGender, setChildGender] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +32,7 @@ export function GuestWelcome() {
           toast.success('Đăng nhập thành công!');
         }
       } else {
-        const { error } = await signUp(email, password, fullName, childAge, childGender);
+        const { error } = await signUp(email, password, fullName, childAge, childGender, phoneNumber);
         if (error) {
           toast.error(error.message || 'Đăng ký thất bại');
         } else {
@@ -114,6 +115,14 @@ export function GuestWelcome() {
                 onChange={(e) => setFullName(e.target.value)}
                 className="h-12 rounded-xl bg-muted/50 border-0 text-sm"
                 required={!isLogin}
+              />
+              
+              <Input
+                type="tel"
+                placeholder="Số điện thoại"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="h-12 rounded-xl bg-muted/50 border-0 text-sm"
               />
               
               <Select value={childAge} onValueChange={setChildAge}>
