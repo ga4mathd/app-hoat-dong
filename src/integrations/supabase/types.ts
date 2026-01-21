@@ -106,6 +106,7 @@ export type Database = {
           full_name: string | null
           id: string
           last_activity_date: string | null
+          phone_number: string | null
           pro_expires_at: string | null
           subscription_status: string
           total_activities: number | null
@@ -124,6 +125,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           last_activity_date?: string | null
+          phone_number?: string | null
           pro_expires_at?: string | null
           subscription_status?: string
           total_activities?: number | null
@@ -142,6 +144,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           last_activity_date?: string | null
+          phone_number?: string | null
           pro_expires_at?: string | null
           subscription_status?: string
           total_activities?: number | null
