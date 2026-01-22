@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileSpreadsheet, Shield, LogIn, Users } from 'lucide-react';
+import { ArrowLeft, FileSpreadsheet, Shield, LogIn, Users, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +15,7 @@ import { StoryMusicImport } from '@/components/admin/StoryMusicImport';
 import { ShopProductTable } from '@/components/admin/ShopProductTable';
 import { ShopProductImport } from '@/components/admin/ShopProductImport';
 import { UserTable } from '@/components/admin/UserTable';
+import { SubscriptionTable } from '@/components/admin/SubscriptionTable';
 import { Tables } from '@/integrations/supabase/types';
 import { convertToEmbedUrl } from '@/lib/youtube';
 
@@ -29,6 +30,18 @@ interface UserWithRole {
   role: AppRole;
 }
 
+interface SubscriptionUser {
+  user_id: string;
+  email: string;
+  full_name: string | null;
+  phone_number: string | null;
+  subscription_status: string;
+  activated_at: string | null;
+  trial_ends_at: string | null;
+  pro_expires_at: string | null;
+  created_at: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -39,8 +52,10 @@ const Admin = () => {
   const [storiesMusic, setStoriesMusic] = useState<StoryMusic[]>([]);
   const [shopProducts, setShopProducts] = useState<ShopProduct[]>([]);
   const [users, setUsers] = useState<UserWithRole[]>([]);
+  const [subscriptionUsers, setSubscriptionUsers] = useState<SubscriptionUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [usersLoading, setUsersLoading] = useState(true);
+  const [subscriptionsLoading, setSubscriptionsLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
@@ -115,9 +130,30 @@ const Admin = () => {
     }
   }, [hasContentAccess]);
 
+  const fetchSubscriptions = async () => {
+    if (!isAdmin) return;
+    
+    setSubscriptionsLoading(true);
+    try {
+      const { data, error } = await supabase.rpc('admin_get_all_subscriptions');
+      
+      if (error) {
+        console.error('Error fetching subscriptions:', error);
+        return;
+      }
+      
+      setSubscriptionUsers((data as SubscriptionUser[]) || []);
+    } catch (error) {
+      console.error('Error fetching subscriptions:', error);
+    } finally {
+      setSubscriptionsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (isAdmin) {
       fetchUsers();
+      fetchSubscriptions();
     }
   }, [isAdmin]);
 
@@ -314,10 +350,16 @@ const Admin = () => {
             <TabsTrigger value="stories">Truyện & Nhạc</TabsTrigger>
             <TabsTrigger value="shop">Shop</TabsTrigger>
             {isAdmin && (
-              <TabsTrigger value="users" className="gap-1">
-                <Users className="h-4 w-4" />
-                Users
-              </TabsTrigger>
+              <>
+                <TabsTrigger value="subscriptions" className="gap-1">
+                  <Crown className="h-4 w-4" />
+                  Subscriptions
+                </TabsTrigger>
+                <TabsTrigger value="users" className="gap-1">
+                  <Users className="h-4 w-4" />
+                  Users
+                </TabsTrigger>
+              </>
             )}
           </TabsList>
           
@@ -336,13 +378,22 @@ const Admin = () => {
           </TabsContent>
 
           {isAdmin && (
-            <TabsContent value="users">
-              <UserTable 
-                users={users} 
-                onRoleChange={handleRoleChange}
-                loading={usersLoading}
-              />
-            </TabsContent>
+            <>
+              <TabsContent value="subscriptions">
+                <SubscriptionTable 
+                  users={subscriptionUsers}
+                  loading={subscriptionsLoading}
+                  onRefresh={fetchSubscriptions}
+                />
+              </TabsContent>
+              <TabsContent value="users">
+                <UserTable 
+                  users={users} 
+                  onRoleChange={handleRoleChange}
+                  loading={usersLoading}
+                />
+              </TabsContent>
+            </>
           )}
         </Tabs>
       </main>

@@ -348,6 +348,29 @@ export type Database = {
     }
     Functions: {
       activate_trial: { Args: never; Returns: Json }
+      admin_extend_pro: {
+        Args: { p_months: number; p_user_id: string }
+        Returns: Json
+      }
+      admin_get_all_subscriptions: {
+        Args: never
+        Returns: {
+          activated_at: string
+          created_at: string
+          email: string
+          full_name: string
+          phone_number: string
+          pro_expires_at: string
+          subscription_status: string
+          trial_ends_at: string
+          user_id: string
+        }[]
+      }
+      admin_revoke_pro: { Args: { p_user_id: string }; Returns: Json }
+      admin_upgrade_user_to_pro: {
+        Args: { p_duration_months?: number; p_user_id: string }
+        Returns: Json
+      }
       check_subscription_status: { Args: never; Returns: Json }
       has_role: {
         Args: {
