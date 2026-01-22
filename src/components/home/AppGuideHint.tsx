@@ -26,21 +26,21 @@ export const AppGuideHint = () => {
   if (hidden) return null;
 
   return (
-    <div className="fixed bottom-[70px] left-0 right-0 z-40 flex justify-center px-4 pb-2">
+    <div className="fixed bottom-[90px] left-0 right-0 z-40 flex justify-center px-4 pb-2">
       <div 
-        className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/60 backdrop-blur-sm border border-border/30 cursor-pointer hover:bg-muted/80 transition-colors"
+        className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/95 backdrop-blur-md border-2 border-primary/20 shadow-lg cursor-pointer hover:shadow-xl hover:scale-105 transition-all"
         onClick={handleClick}
       >
-        <HelpCircle className="h-3.5 w-3.5 text-muted-foreground/60" />
-        <span className="text-xs text-muted-foreground/60">
-          Hướng dẫn sử dụng app hiệu quả
+        <HelpCircle className="h-4 w-4 text-primary" />
+        <span className="text-sm font-medium text-foreground">
+          📚 Hướng dẫn sử dụng app
         </span>
         <button 
           onClick={handleDismiss}
-          className="ml-1 p-0.5 rounded-full hover:bg-background/50 transition-colors"
+          className="ml-1 p-1 rounded-full hover:bg-muted transition-colors"
           aria-label="Đóng"
         >
-          <X className="h-3 w-3 text-muted-foreground/50" />
+          <X className="h-3.5 w-3.5 text-muted-foreground" />
         </button>
       </div>
     </div>
