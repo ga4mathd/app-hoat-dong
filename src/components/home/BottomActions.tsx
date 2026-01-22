@@ -1,55 +1,112 @@
-import { Music, MessageCircleQuestion, ShoppingBag } from 'lucide-react';
+import { Music, MessageCircleQuestion, ShoppingBag, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 export function BottomActions() {
   const navigate = useNavigate();
   const location = useLocation();
   
+  const isHome = location.pathname === '/';
   const isStoriesMusicActive = location.pathname === '/stories-music';
   const isAskExpertActive = location.pathname === '/ask-expert';
   const isShopActive = location.pathname === '/shop';
 
+  const navItems = [
+    {
+      icon: Music,
+      label: 'Nhạc & Truyện',
+      path: '/stories-music',
+      isActive: isStoriesMusicActive,
+      gradient: 'from-purple to-pink',
+      bgColor: 'bg-purple-light',
+      iconColor: 'text-purple',
+    },
+    {
+      icon: Home,
+      label: 'Trang chủ',
+      path: '/',
+      isActive: isHome,
+      gradient: 'from-primary to-blue-500',
+      bgColor: 'bg-blue-light',
+      iconColor: 'text-primary',
+      isCenter: true,
+    },
+    {
+      icon: MessageCircleQuestion,
+      label: 'Hỏi chuyên gia',
+      path: '/ask-expert',
+      isActive: isAskExpertActive,
+      gradient: 'from-blue to-primary',
+      bgColor: 'bg-blue-light',
+      iconColor: 'text-blue',
+    },
+    {
+      icon: ShoppingBag,
+      label: 'Shop',
+      path: '/shop',
+      isActive: isShopActive,
+      gradient: 'from-orange to-yellow',
+      bgColor: 'bg-orange-light',
+      iconColor: 'text-orange',
+    },
+  ];
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border py-2 md:py-3 px-4 animate-fade-in z-50">
-      <div className="w-full max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-6xl mx-auto flex items-center justify-between md:justify-center md:gap-16 lg:gap-24">
-        {/* Nhạc, truyện free */}
-        <button
-          onClick={() => navigate('/stories-music')}
-          className="flex flex-col items-center gap-0.5 md:gap-1 transition-all hover:scale-105"
-        >
-          <div className={`p-2.5 md:p-3 rounded-full transition-all ${isStoriesMusicActive ? 'bg-purple-500' : 'bg-purple-100 hover:bg-purple-200'}`}>
-            <Music className={`h-5 w-5 md:h-6 md:w-6 ${isStoriesMusicActive ? 'text-white' : 'text-purple-600'}`} />
-          </div>
-          <span className={`text-[10px] md:text-xs font-medium text-center leading-tight ${isStoriesMusicActive ? 'text-purple-600' : 'text-muted-foreground'}`}>
-            Nhạc, truyện<br className="md:hidden"/>free
-          </span>
-        </button>
-
-        {/* Hỏi chuyên gia */}
-        <button
-          onClick={() => navigate('/ask-expert')}
-          className="flex flex-col items-center gap-0.5 md:gap-1 transition-all hover:scale-105"
-        >
-          <div className={`p-2.5 md:p-3 rounded-full transition-all ${isAskExpertActive ? 'bg-blue-500' : 'bg-blue-100 hover:bg-blue-200'}`}>
-            <MessageCircleQuestion className={`h-5 w-5 md:h-6 md:w-6 ${isAskExpertActive ? 'text-white' : 'text-blue-600'}`} />
-          </div>
-          <span className={`text-[10px] md:text-xs font-medium text-center leading-tight ${isAskExpertActive ? 'text-blue-600' : 'text-muted-foreground'}`}>
-            Hỏi chuyên<br className="md:hidden"/>gia
-          </span>
-        </button>
-
-        {/* Shop */}
-        <button
-          onClick={() => navigate('/shop')}
-          className="flex flex-col items-center gap-0.5 md:gap-1 transition-all hover:scale-105"
-        >
-          <div className={`p-2.5 md:p-3 rounded-full transition-all ${isShopActive ? 'bg-orange-500' : 'bg-orange-100 hover:bg-orange-200'}`}>
-            <ShoppingBag className={`h-5 w-5 md:h-6 md:w-6 ${isShopActive ? 'text-white' : 'text-orange-600'}`} />
-          </div>
-          <span className={`text-[10px] md:text-xs font-medium text-center leading-tight ${isShopActive ? 'text-orange-600' : 'text-muted-foreground'}`}>
-            SHOP
-          </span>
-        </button>
+    <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t-2 border-border py-2 px-3 animate-fade-in z-50 shadow-[0_-4px_20px_-4px_rgba(0,0,0,0.1)]">
+      <div className="w-full max-w-md mx-auto flex items-end justify-around">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          
+          // Center home button with FAB style
+          if (item.isCenter) {
+            return (
+              <button
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                className="relative -mt-6 focus:outline-none"
+              >
+                <div className={`
+                  relative p-4 rounded-full shadow-xl transition-all duration-300
+                  ${item.isActive 
+                    ? `bg-gradient-to-br ${item.gradient} scale-110` 
+                    : 'bg-card border-2 border-border hover:scale-105'
+                  }
+                `}>
+                  {/* Glow effect when active */}
+                  {item.isActive && (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} rounded-full blur-md opacity-50`} />
+                  )}
+                  <Icon className={`relative h-7 w-7 ${item.isActive ? 'text-white' : item.iconColor}`} />
+                </div>
+                <span className={`block text-[10px] font-bold text-center mt-1 ${item.isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                  {item.label}
+                </span>
+              </button>
+            );
+          }
+          
+          return (
+            <button
+              key={item.path}
+              onClick={() => navigate(item.path)}
+              className="flex flex-col items-center gap-1 transition-all hover:scale-105 focus:outline-none py-1"
+            >
+              <div className={`
+                p-3 rounded-2xl transition-all duration-300 shadow-md
+                ${item.isActive 
+                  ? `bg-gradient-to-br ${item.gradient}` 
+                  : `${item.bgColor} hover:shadow-lg`
+                }
+              `}>
+                <Icon className={`h-6 w-6 ${item.isActive ? 'text-white' : item.iconColor}`} />
+              </div>
+              <span className={`text-[10px] font-bold text-center leading-tight ${
+                item.isActive ? item.iconColor : 'text-muted-foreground'
+              }`}>
+                {item.label}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, Flame, Star, Trophy, ChevronDown, ChevronUp, Play, CalendarDays, History } from 'lucide-react';
+import { Check, Flame, Star, Trophy, ChevronDown, ChevronUp, Play, CalendarDays, History, Sparkles, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { VideoDialog } from '@/components/ui/video-dialog';
+import { Confetti } from '@/components/decorative/Confetti';
 
 interface Activity {
   id: string;
@@ -26,11 +27,11 @@ interface ActivityCompletedCardProps {
 }
 
 const motivationalMessages = [
-  "Hẹn gặp lại ngày mai! 🌟",
-  "Bạn thật tuyệt vời! 💪",
-  "Cứ tiếp tục như vậy nhé! 🚀",
-  "Một ngày thật ý nghĩa! ✨",
-  "Con bạn đang phát triển tuyệt vời! 🌈"
+  { text: "Hẹn gặp lại ngày mai!", emoji: "🌟" },
+  { text: "Bạn thật tuyệt vời!", emoji: "💪" },
+  { text: "Cứ tiếp tục như vậy nhé!", emoji: "🚀" },
+  { text: "Một ngày thật ý nghĩa!", emoji: "✨" },
+  { text: "Con bạn đang phát triển tuyệt vời!", emoji: "🌈" }
 ];
 
 export const ActivityCompletedCard = ({ 
@@ -43,6 +44,7 @@ export const ActivityCompletedCard = ({
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showPastOption, setShowPastOption] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(true);
 
   const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
 
@@ -63,11 +65,12 @@ export const ActivityCompletedCard = ({
 
   if (!activity) {
     return (
-      <div className="bg-card rounded-2xl p-6 shadow-sm border animate-fade-in">
-        <div className="text-center py-8">
-          <div className="text-4xl mb-4">🎉</div>
-          <h3 className="text-xl font-bold text-foreground mb-2">Tuyệt vời!</h3>
-          <p className="text-muted-foreground">Bạn đã hoàn thành hoạt động hôm nay!</p>
+      <div className="bg-gradient-to-br from-yellow-light via-pink-light to-purple-light rounded-3xl p-8 shadow-xl border-2 border-yellow/30 animate-fade-in relative overflow-hidden">
+        <Confetti active={showConfetti} />
+        <div className="text-center py-8 relative z-10">
+          <div className="text-6xl mb-4 animate-bounce">🎉</div>
+          <h3 className="text-2xl font-extrabold text-foreground mb-2">Tuyệt vời!</h3>
+          <p className="text-muted-foreground text-lg">Bạn đã hoàn thành hoạt động hôm nay!</p>
         </div>
       </div>
     );
@@ -77,50 +80,56 @@ export const ActivityCompletedCard = ({
   const instructions = parseInstructions(activity.instructions);
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="space-y-4 animate-fade-in relative">
+      {/* Confetti effect */}
+      <Confetti active={showConfetti} duration={4000} />
+
       {/* Celebration Card */}
-      <div className="bg-gradient-to-br from-primary/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-6 border border-primary/20 relative overflow-hidden">
-        {/* Confetti decoration */}
-        <div className="absolute top-2 left-4 text-2xl animate-bounce" style={{ animationDelay: '0s' }}>🎊</div>
-        <div className="absolute top-4 right-6 text-xl animate-bounce" style={{ animationDelay: '0.2s' }}>✨</div>
-        <div className="absolute bottom-4 left-8 text-lg animate-bounce" style={{ animationDelay: '0.4s' }}>🌟</div>
+      <div className="bg-gradient-to-br from-yellow-light via-pink-light to-purple-light rounded-3xl p-6 border-2 border-yellow/40 relative overflow-hidden shadow-xl">
+        {/* Animated decorations */}
+        <div className="absolute top-3 left-5 text-3xl animate-bounce" style={{ animationDuration: '2s' }}>🎊</div>
+        <div className="absolute top-5 right-7 text-2xl animate-bounce" style={{ animationDuration: '2.5s', animationDelay: '0.3s' }}>✨</div>
+        <div className="absolute bottom-5 left-10 text-xl animate-bounce" style={{ animationDuration: '3s', animationDelay: '0.5s' }}>🌟</div>
+        <div className="absolute bottom-3 right-5 text-2xl animate-bounce" style={{ animationDuration: '2.2s', animationDelay: '0.7s' }}>🎈</div>
         
         <div className="text-center relative z-10">
-          <div className="text-5xl mb-3">🎉</div>
-          <h2 className="text-2xl font-bold text-foreground mb-4">TUYỆT VỜI!</h2>
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4 animate-celebration">
+            <PartyPopper className="h-10 w-10 text-yellow" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-foreground mb-4 drop-shadow-sm">TUYỆT VỜI! 🎉</h2>
           
-          {/* Status Badge - moved below TUYỆT VỜI */}
-          <div className="flex items-center justify-center mb-4">
-            <div className="inline-flex items-center gap-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-full font-medium text-sm">
-              <Check className="w-4 h-4" />
-              <span>Đã hoàn thành hôm nay</span>
+          {/* Status Badge */}
+          <div className="flex items-center justify-center mb-5">
+            <div className="inline-flex items-center gap-2 bg-green/90 text-white px-5 py-2.5 rounded-full font-bold text-base shadow-lg">
+              <Check className="w-5 h-5" />
+              <span>Đã hoàn thành hôm nay!</span>
             </div>
           </div>
           
           {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
-            <div className="bg-background/80 backdrop-blur rounded-xl p-3 shadow-sm">
-              <div className="flex items-center justify-center gap-1 text-orange-500 mb-1">
-                <Flame className="w-5 h-5" />
-                <span className="font-bold text-lg">{currentStreak}</span>
+          <div className="grid grid-cols-3 gap-3 mb-2">
+            <div className="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg hover-lift">
+              <div className="flex items-center justify-center gap-1.5 text-orange mb-1">
+                <Flame className="w-6 h-6 animate-wiggle" />
+                <span className="font-extrabold text-2xl">{currentStreak}</span>
               </div>
-              <p className="text-xs text-muted-foreground">ngày liên tiếp</p>
+              <p className="text-xs font-medium text-muted-foreground">ngày liên tiếp</p>
             </div>
             
-            <div className="bg-background/80 backdrop-blur rounded-xl p-3 shadow-sm">
-              <div className="flex items-center justify-center gap-1 text-yellow-500 mb-1">
-                <Star className="w-5 h-5" />
-                <span className="font-bold text-lg">+{pointsEarned}</span>
+            <div className="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg hover-lift">
+              <div className="flex items-center justify-center gap-1.5 text-yellow mb-1">
+                <Star className="w-6 h-6 fill-current animate-sparkle" />
+                <span className="font-extrabold text-2xl">+{pointsEarned}</span>
               </div>
-              <p className="text-xs text-muted-foreground">điểm hôm nay</p>
+              <p className="text-xs font-medium text-muted-foreground">điểm hôm nay</p>
             </div>
             
-            <div className="bg-background/80 backdrop-blur rounded-xl p-3 shadow-sm">
-              <div className="flex items-center justify-center gap-1 text-purple-500 mb-1">
-                <Trophy className="w-5 h-5" />
-                <span className="font-bold text-lg">{totalPoints}</span>
+            <div className="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-lg hover-lift">
+              <div className="flex items-center justify-center gap-1.5 text-purple mb-1">
+                <Trophy className="w-6 h-6" />
+                <span className="font-extrabold text-2xl">{totalPoints}</span>
               </div>
-              <p className="text-xs text-muted-foreground">tổng điểm</p>
+              <p className="text-xs font-medium text-muted-foreground">tổng điểm</p>
             </div>
           </div>
         </div>
@@ -128,39 +137,43 @@ export const ActivityCompletedCard = ({
 
       {/* Completed Activity Details (Collapsible) */}
       <Collapsible open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <div className="bg-card rounded-2xl border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-3xl border-2 shadow-lg overflow-hidden">
           <CollapsibleTrigger className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-light to-green/20 flex items-center justify-center shadow">
+                <Check className="w-6 h-6 text-green" />
               </div>
               <div className="text-left">
-                <p className="text-xs text-muted-foreground">Hoạt động đã làm</p>
-                <h3 className="font-semibold text-foreground line-clamp-1">{activity.title}</h3>
+                <p className="text-xs font-medium text-muted-foreground">Hoạt động đã làm</p>
+                <h3 className="font-bold text-foreground line-clamp-1">{activity.title}</h3>
               </div>
             </div>
             {isDetailsOpen ? (
-              <ChevronUp className="w-5 h-5 text-muted-foreground" />
+              <ChevronUp className="w-6 h-6 text-muted-foreground" />
             ) : (
-              <ChevronDown className="w-5 h-5 text-muted-foreground" />
+              <ChevronDown className="w-6 h-6 text-muted-foreground" />
             )}
           </CollapsibleTrigger>
           
           <CollapsibleContent>
-            <div className="px-4 pb-4 space-y-4 border-t">
+            <div className="px-4 pb-4 space-y-4 border-t-2 border-dashed">
               {/* Author */}
-              <p className="text-sm text-muted-foreground pt-3">
+              <p className="text-sm text-muted-foreground pt-4 flex items-center gap-2">
+                <span className="bg-muted px-2 py-0.5 rounded-full">👨‍🏫</span>
                 By: {getAuthors()}
               </p>
 
               {/* Goals */}
               {goals.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">Mục tiêu:</h4>
-                  <ul className="space-y-1.5">
+                <div className="bg-green-light/30 p-4 rounded-2xl">
+                  <h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-green" />
+                    Mục tiêu:
+                  </h4>
+                  <ul className="space-y-2">
                     {goals.map((goal, index) => (
-                      <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <span className="text-green-500 mt-0.5">✓</span>
+                      <li key={index} className="flex items-start gap-2 text-sm text-foreground">
+                        <span className="text-green font-bold">✓</span>
                         <span>{goal}</span>
                       </li>
                     ))}
@@ -170,9 +183,9 @@ export const ActivityCompletedCard = ({
 
               {/* Instructions */}
               {instructions.length > 0 && (
-                <div>
-                  <h4 className="font-semibold text-foreground mb-2">Hướng dẫn:</h4>
-                  <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="bg-blue-light/30 p-4 rounded-2xl">
+                  <h4 className="font-bold text-foreground mb-3">📚 Hướng dẫn:</h4>
+                  <div className="space-y-2 text-sm text-foreground">
                     {instructions.map((instruction, index) => (
                       <p key={index}>{instruction}</p>
                     ))}
@@ -184,9 +197,11 @@ export const ActivityCompletedCard = ({
               {activity.video_url && (
                 <button
                   onClick={() => setShowVideo(true)}
-                  className="flex items-center gap-2 text-primary hover:text-primary/80 text-sm font-medium transition-colors"
+                  className="flex items-center gap-3 text-primary hover:text-primary/80 font-bold transition-colors bg-primary/10 hover:bg-primary/20 px-4 py-3 rounded-2xl w-full"
                 >
-                  <Play className="w-4 h-4" />
+                  <div className="bg-primary rounded-full p-2">
+                    <Play className="w-4 h-4 text-white" />
+                  </div>
                   <span>Xem lại video hướng dẫn</span>
                 </button>
               )}
@@ -196,23 +211,26 @@ export const ActivityCompletedCard = ({
       </Collapsible>
 
       {/* Motivational Message */}
-      <div className="bg-muted/50 rounded-2xl p-4 text-center">
-        <p className="text-lg font-medium text-foreground mb-3">💡 {randomMessage}</p>
+      <div className="bg-gradient-to-r from-primary/10 via-purple/10 to-pink/10 rounded-3xl p-6 text-center border-2 border-primary/20">
+        <div className="inline-flex items-center justify-center w-14 h-14 bg-white rounded-full shadow-lg mb-3">
+          <span className="text-3xl">{randomMessage.emoji}</span>
+        </div>
+        <p className="text-xl font-bold text-foreground mb-4">💡 {randomMessage.text}</p>
         <Button
           variant="outline"
           onClick={() => navigate('/activities?mode=upcoming')}
-          className="gap-2"
+          className="gap-2 rounded-2xl font-bold px-6 py-3 h-auto border-2 hover:bg-primary hover:text-white transition-all"
         >
-          <CalendarDays className="w-4 h-4" />
+          <CalendarDays className="w-5 h-5" />
           Xem hoạt động sắp tới
         </Button>
         
         {/* Past activities option */}
-        <div className="mt-3">
+        <div className="mt-4">
           {!showPastOption ? (
             <button
               onClick={() => setShowPastOption(true)}
-              className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors underline underline-offset-4"
             >
               Hoặc xem hoạt động đã qua
             </button>
@@ -221,7 +239,7 @@ export const ActivityCompletedCard = ({
               variant="ghost"
               size="sm"
               onClick={() => navigate('/activities?mode=past')}
-              className="gap-2 animate-fade-in"
+              className="gap-2 animate-fade-in rounded-2xl font-medium"
             >
               <History className="w-4 h-4" />
               Xem hoạt động đã qua
