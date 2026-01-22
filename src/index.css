@@ -36,23 +36,28 @@ All colors MUST be HSL.
     --input: 45 20% 88%;
     --ring: 210 85% 55%;
 
-    --radius: 1rem;
+    --radius: 1.25rem;
 
-    /* Custom app colors */
-    --pink: 340 70% 65%;
+    /* Custom app colors - playful palette */
+    --pink: 340 75% 60%;
     --pink-light: 340 80% 92%;
     --blue: 210 85% 55%;
     --blue-light: 210 90% 92%;
-    --yellow: 45 90% 65%;
+    --yellow: 45 95% 60%;
     --yellow-light: 45 100% 92%;
-    --green: 145 60% 45%;
+    --green: 145 65% 42%;
     --green-light: 145 70% 90%;
-    --orange: 25 90% 55%;
+    --orange: 25 95% 55%;
     --orange-light: 25 95% 90%;
+    --purple: 270 70% 60%;
+    --purple-light: 270 80% 92%;
     --orange-gradient-start: 25 95% 58%;
     --orange-gradient-end: 18 90% 52%;
-    --pink-gradient-start: 340 70% 60%;
+    --pink-gradient-start: 340 75% 58%;
     --pink-gradient-end: 280 70% 55%;
+    --rainbow-start: 340 75% 60%;
+    --rainbow-mid: 270 70% 60%;
+    --rainbow-end: 210 85% 55%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -103,10 +108,15 @@ All colors MUST be HSL.
     --green-light: 145 40% 20%;
     --orange: 25 90% 55%;
     --orange-light: 25 50% 25%;
+    --purple: 270 70% 60%;
+    --purple-light: 270 40% 25%;
     --orange-gradient-start: 25 95% 58%;
     --orange-gradient-end: 18 90% 52%;
     --pink-gradient-start: 340 70% 60%;
     --pink-gradient-end: 280 70% 55%;
+    --rainbow-start: 340 75% 60%;
+    --rainbow-mid: 270 70% 60%;
+    --rainbow-end: 210 85% 55%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -134,12 +144,118 @@ All colors MUST be HSL.
   .text-gradient {
     @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
   }
+
+  .text-gradient-rainbow {
+    background: linear-gradient(135deg, hsl(var(--rainbow-start)), hsl(var(--rainbow-mid)), hsl(var(--rainbow-end)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   
   .card-shadow {
-    box-shadow: 0 4px 20px -4px hsl(var(--primary) / 0.15);
+    box-shadow: 0 8px 32px -8px hsl(var(--primary) / 0.2);
+  }
+
+  .card-shadow-playful {
+    box-shadow: 
+      0 4px 20px -4px hsl(var(--pink) / 0.15),
+      0 8px 40px -8px hsl(var(--primary) / 0.1);
   }
   
   .glass {
     @apply bg-card/80 backdrop-blur-md;
+  }
+
+  .bg-playful {
+    background: linear-gradient(135deg, 
+      hsl(var(--background)) 0%, 
+      hsl(var(--pink-light)) 25%, 
+      hsl(var(--yellow-light)) 50%, 
+      hsl(var(--blue-light)) 75%, 
+      hsl(var(--background)) 100%
+    );
+  }
+
+  .bg-rainbow-soft {
+    background: linear-gradient(135deg, 
+      hsl(var(--pink-light)) 0%, 
+      hsl(var(--purple-light)) 33%, 
+      hsl(var(--blue-light)) 66%, 
+      hsl(var(--green-light)) 100%
+    );
+  }
+
+  .border-rainbow {
+    border: 3px solid transparent;
+    background: 
+      linear-gradient(hsl(var(--card)), hsl(var(--card))) padding-box,
+      linear-gradient(135deg, hsl(var(--pink)), hsl(var(--purple)), hsl(var(--blue)), hsl(var(--green))) border-box;
+  }
+
+  .btn-bounce {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .btn-bounce:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px hsl(var(--primary) / 0.4);
+  }
+
+  .btn-bounce:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -8px hsl(var(--foreground) / 0.15);
+  }
+
+  /* Floating animation for decorative elements */
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float 3s ease-in-out infinite;
+    animation-delay: 1.5s;
+  }
+
+  /* Sparkle animation */
+  @keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+  }
+
+  .animate-sparkle {
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+
+  /* Wiggle animation for playful elements */
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  .animate-wiggle {
+    animation: wiggle 0.5s ease-in-out infinite;
+  }
+
+  /* Celebration pulse */
+  @keyframes celebration-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .animate-celebration {
+    animation: celebration-pulse 0.6s ease-in-out infinite;
   }
 }
