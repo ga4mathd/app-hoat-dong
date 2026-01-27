@@ -95,6 +95,33 @@ export type Database = {
         }
         Relationships: []
       }
+      page_views: {
+        Row: {
+          created_at: string
+          id: string
+          page_path: string
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          page_path: string
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          page_path?: string
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activated_at: string | null
@@ -342,6 +369,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_sessions: {
+        Row: {
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          last_activity_at: string
+          session_id: string
+          started_at: string
+          user_id: string | null
+        }
+        Insert: {
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          last_activity_at?: string
+          session_id: string
+          started_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          last_activity_at?: string
+          session_id?: string
+          started_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -366,6 +423,25 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_get_daily_analytics: {
+        Args: { p_days?: number }
+        Returns: {
+          avg_duration_seconds: number
+          date: string
+          page_views: number
+          sessions: number
+          unique_users: number
+        }[]
+      }
+      admin_get_popular_pages: {
+        Args: { p_days?: number }
+        Returns: {
+          page_path: string
+          unique_viewers: number
+          view_count: number
+        }[]
+      }
+      admin_get_realtime_stats: { Args: never; Returns: Json }
       admin_revoke_pro: { Args: { p_user_id: string }; Returns: Json }
       admin_upgrade_user_to_pro: {
         Args: { p_duration_months?: number; p_user_id: string }
