@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, Users, Eye, Clock, Activity } from 'lucide-react';
+import { RefreshCw, Users, Eye, Clock, Activity, User, Phone, Mail } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { vi } from 'date-fns/locale';
@@ -29,6 +30,19 @@ interface PopularPage {
   page_path: string;
   view_count: number;
   unique_viewers: number;
+}
+
+interface SessionDetail {
+  session_id: string;
+  user_id: string | null;
+  email: string;
+  full_name: string;
+  phone_number: string | null;
+  started_at: string;
+  ended_at: string | null;
+  duration_seconds: number | null;
+  page_count: number;
+  is_online: boolean;
 }
 
 const chartConfig = {
@@ -77,16 +91,18 @@ export const AnalyticsDashboard = () => {
   const [realtimeStats, setRealtimeStats] = useState<RealtimeStats | null>(null);
   const [dailyAnalytics, setDailyAnalytics] = useState<DailyAnalytics[]>([]);
   const [popularPages, setPopularPages] = useState<PopularPage[]>([]);
+  const [sessionDetails, setSessionDetails] = useState<SessionDetail[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [days, setDays] = useState<string>('7');
 
   const fetchData = useCallback(async () => {
     try {
-      const [realtimeResult, dailyResult, pagesResult] = await Promise.all([
+      const [realtimeResult, dailyResult, pagesResult, sessionsResult] = await Promise.all([
         supabase.rpc('admin_get_realtime_stats'),
         supabase.rpc('admin_get_daily_analytics', { p_days: parseInt(days) }),
-        supabase.rpc('admin_get_popular_pages', { p_days: parseInt(days) })
+        supabase.rpc('admin_get_popular_pages', { p_days: parseInt(days) }),
+        supabase.rpc('admin_get_session_details', { p_days: parseInt(days) })
       ]);
 
       if (realtimeResult.data) {
@@ -99,6 +115,10 @@ export const AnalyticsDashboard = () => {
 
       if (pagesResult.data) {
         setPopularPages(pagesResult.data as unknown as PopularPage[]);
+      }
+
+      if (sessionsResult.data) {
+        setSessionDetails(sessionsResult.data as unknown as SessionDetail[]);
       }
     } catch (error) {
       console.error('Error fetching analytics:', error);
@@ -306,6 +326,91 @@ export const AnalyticsDashboard = () => {
               )}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+
+      {/* Session Details Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <User className="h-5 w-5" />
+            Chi tiết tài khoản truy cập
+          </CardTitle>
+          <CardDescription>
+            Danh sách người dùng đã truy cập trong {days} ngày qua (100 phiên gần nhất)
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Trạng thái</TableHead>
+                  <TableHead>Tài khoản</TableHead>
+                  <TableHead>Liên hệ</TableHead>
+                  <TableHead>Thời gian</TableHead>
+                  <TableHead className="text-right">Trang xem</TableHead>
+                  <TableHead className="text-right">Thời lượng</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sessionDetails.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                      Chưa có dữ liệu
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  sessionDetails.map((session) => (
+                    <TableRow key={session.session_id}>
+                      <TableCell>
+                        {session.is_online ? (
+                          <Badge variant="default" className="text-primary-foreground">
+                            <span className="mr-1 h-2 w-2 rounded-full bg-primary-foreground animate-pulse inline-block" />
+                            Online
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary">Offline</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col">
+                          <span className="font-medium">{session.full_name}</span>
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Mail className="h-3 w-3" />
+                            {session.email}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {session.phone_number ? (
+                          <span className="text-sm flex items-center gap-1">
+                            <Phone className="h-3 w-3" />
+                            {session.phone_number}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-col text-sm">
+                          <span>{format(new Date(session.started_at), 'dd/MM/yyyy', { locale: vi })}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {format(new Date(session.started_at), 'HH:mm', { locale: vi })}
+                            {session.ended_at && ` - ${format(new Date(session.ended_at), 'HH:mm', { locale: vi })}`}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">{session.page_count}</TableCell>
+                      <TableCell className="text-right">
+                        {session.duration_seconds ? formatDuration(session.duration_seconds) : '-'}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

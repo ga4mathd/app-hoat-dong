@@ -442,6 +442,21 @@ export type Database = {
         }[]
       }
       admin_get_realtime_stats: { Args: never; Returns: Json }
+      admin_get_session_details: {
+        Args: { p_days?: number }
+        Returns: {
+          duration_seconds: number
+          email: string
+          ended_at: string
+          full_name: string
+          is_online: boolean
+          page_count: number
+          phone_number: string
+          session_id: string
+          started_at: string
+          user_id: string
+        }[]
+      }
       admin_revoke_pro: { Args: { p_user_id: string }; Returns: Json }
       admin_upgrade_user_to_pro: {
         Args: { p_duration_months?: number; p_user_id: string }
