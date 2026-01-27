@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileSpreadsheet, Shield, LogIn, Users, Crown } from 'lucide-react';
+import { ArrowLeft, FileSpreadsheet, Shield, LogIn, Users, Crown, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
@@ -16,6 +16,7 @@ import { ShopProductTable } from '@/components/admin/ShopProductTable';
 import { ShopProductImport } from '@/components/admin/ShopProductImport';
 import { UserTable } from '@/components/admin/UserTable';
 import { SubscriptionTable } from '@/components/admin/SubscriptionTable';
+import { AnalyticsDashboard } from '@/components/admin/AnalyticsDashboard';
 import { Tables } from '@/integrations/supabase/types';
 import { convertToEmbedUrl } from '@/lib/youtube';
 
@@ -331,7 +332,7 @@ const Admin = () => {
               <h1 className="text-lg font-bold flex items-center gap-2"><Shield className="h-5 w-5 text-primary" />Quản trị</h1>
             </div>
           </div>
-          {activeTab !== 'users' && (
+          {activeTab !== 'users' && activeTab !== 'analytics' && (
             <Button onClick={() => {
               if (activeTab === 'activities') setImportOpen(true);
               else if (activeTab === 'stories') setStoryMusicImportOpen(true);
@@ -351,6 +352,10 @@ const Admin = () => {
             <TabsTrigger value="shop">Shop</TabsTrigger>
             {isAdmin && (
               <>
+                <TabsTrigger value="analytics" className="gap-1">
+                  <BarChart3 className="h-4 w-4" />
+                  Analytics
+                </TabsTrigger>
                 <TabsTrigger value="subscriptions" className="gap-1">
                   <Crown className="h-4 w-4" />
                   Subscriptions
@@ -379,6 +384,9 @@ const Admin = () => {
 
           {isAdmin && (
             <>
+              <TabsContent value="analytics">
+                <AnalyticsDashboard />
+              </TabsContent>
               <TabsContent value="subscriptions">
                 <SubscriptionTable 
                   users={subscriptionUsers}
