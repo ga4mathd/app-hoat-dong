@@ -18,7 +18,7 @@ export const useSessionTracking = () => {
   const sessionIdRef = useRef<string | null>(null);
   const startTimeRef = useRef<number>(Date.now());
   const lastPathRef = useRef<string>('');
-  const heartbeatRef = useRef<NodeJS.Timeout | null>(null);
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Get or create session ID
   const getSessionId = useCallback(() => {
